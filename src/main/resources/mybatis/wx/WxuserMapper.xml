@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.wx.dao.WxuserDao">
+
+	<select id="get" resultType="com.bootdo.wx.domain.WxuserDO">
+		select `account`,`usercode`,`wxid`,`nickname`,`deadTime`,`settings`,`token`,`wxdat`,`serverid`,`softwareId`,`randomid`,`status` from wxuser where account = #{value}
+	</select>
+
+	<select id="list" resultType="com.bootdo.wx.domain.WxuserDO">
+		select `account`,`usercode`,`wxid`,`nickname`,`deadTime`,`settings`,`token`,`wxdat`,`serverid`,`softwareId`,`randomid`,`status` from wxuser
+        <where>  
+		  		  <if test="account != null and account != ''"> and account = #{account} </if>
+		  		  <if test="usercode != null and usercode != ''"> and usercode = #{usercode} </if>
+		  		  <if test="wxid != null and wxid != ''"> and wxid = #{wxid} </if>
+		  		  <if test="nickname != null and nickname != ''"> and nickname = #{nickname} </if>
+		  		  <if test="deadtime != null and deadtime != ''"> and deadTime = #{deadtime} </if>
+		  		  <if test="settings != null and settings != ''"> and settings = #{settings} </if>
+		  		  <if test="token != null and token != ''"> and token = #{token} </if>
+		  		  <if test="wxdat != null and wxdat != ''"> and wxdat = #{wxdat} </if>
+		  		  <if test="serverid != null and serverid != ''"> and serverid = #{serverid} </if>
+		  		  <if test="softwareid != null and softwareid != ''"> and softwareId = #{softwareid} </if>
+		  		  <if test="randomid != null and randomid != ''"> and randomid = #{randomid} </if>
+		  		  <if test="status != null and status != ''"> and status = #{status} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by account desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from wxuser
+		 <where>  
+		  		  <if test="account != null and account != ''"> and account = #{account} </if>
+		  		  <if test="usercode != null and usercode != ''"> and usercode = #{usercode} </if>
+		  		  <if test="wxid != null and wxid != ''"> and wxid = #{wxid} </if>
+		  		  <if test="nickname != null and nickname != ''"> and nickname = #{nickname} </if>
+		  		  <if test="deadtime != null and deadtime != ''"> and deadTime = #{deadtime} </if>
+		  		  <if test="settings != null and settings != ''"> and settings = #{settings} </if>
+		  		  <if test="token != null and token != ''"> and token = #{token} </if>
+		  		  <if test="wxdat != null and wxdat != ''"> and wxdat = #{wxdat} </if>
+		  		  <if test="serverid != null and serverid != ''"> and serverid = #{serverid} </if>
+		  		  <if test="softwareid != null and softwareid != ''"> and softwareId = #{softwareid} </if>
+		  		  <if test="randomid != null and randomid != ''"> and randomid = #{randomid} </if>
+		  		  <if test="status != null and status != ''"> and status = #{status} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.bootdo.wx.domain.WxuserDO">
+		insert into wxuser
+		(
+			`account`, 
+			`usercode`, 
+			`wxid`, 
+			`nickname`, 
+			`deadTime`, 
+			`settings`, 
+			`token`, 
+			`wxdat`, 
+			`serverid`, 
+			`softwareId`, 
+			`randomid`, 
+			`status`
+		)
+		values
+		(
+			#{account}, 
+			#{usercode}, 
+			#{wxid}, 
+			#{nickname}, 
+			#{deadtime}, 
+			#{settings}, 
+			#{token}, 
+			#{wxdat}, 
+			#{serverid}, 
+			#{softwareid}, 
+			#{randomid}, 
+			#{status}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.bootdo.wx.domain.WxuserDO">
+		update wxuser 
+		<set>
+			<if test="usercode != null">`usercode` = #{usercode}, </if>
+			<if test="wxid != null">`wxid` = #{wxid}, </if>
+			<if test="nickname != null">`nickname` = #{nickname}, </if>
+			<if test="deadtime != null">`deadTime` = #{deadtime}, </if>
+			<if test="settings != null">`settings` = #{settings}, </if>
+			<if test="token != null">`token` = #{token}, </if>
+			<if test="wxdat != null">`wxdat` = #{wxdat}, </if>
+			<if test="serverid != null">`serverid` = #{serverid}, </if>
+			<if test="softwareid != null">`softwareId` = #{softwareid}, </if>
+			<if test="randomid != null">`randomid` = #{randomid}, </if>
+			<if test="status != null">`status` = #{status}</if>
+		</set>
+		where account = #{account}
+	</update>
+	
+	<delete id="remove">
+		delete from wxuser where account = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from wxuser where account in 
+		<foreach item="account" collection="array" open="(" separator="," close=")">
+			#{account}
+		</foreach>
+	</delete>
+
+</mapper>

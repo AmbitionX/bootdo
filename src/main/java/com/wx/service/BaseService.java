@@ -1,16 +1,15 @@
 package com.wx.service;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.bootdo.common.redis.shiro.RedisCache;
 import com.bootdo.common.redis.shiro.RedisCacheManager;
 import com.bootdo.common.redis.shiro.RedisManager;
-import com.bootdo.common.redis.shiro.SerializeUtils;
+import com.bootdo.common.utils.SpringContextHolder;
+import com.bootdo.wx.domain.WxuserDO;
+import com.bootdo.wx.service.WxuserService;
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import com.wx.DB.DBUtil;
 import com.wx.DB.WXDBUser;
 import com.wx.bean.CallBack;
 import com.wx.bean.LoginResponse;
@@ -28,11 +27,12 @@ import static com.wx.tools.ConfigService.getMac;
 
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.Resource;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class BaseService {
     private static Logger logger = Logger.getLogger(BaseService.class);
@@ -285,26 +285,58 @@ public abstract class BaseService {
         }
     }
     protected void initWxuser(){
-    	String sql = "SELECT * FROM wxuser WHERE account='%s' AND wxid = '%s'";
-    	JSONArray jsonArray = DBUtil.executeQuery(String.format(sql, getAccount(), wxId));
-    	if(jsonArray != null && jsonArray.size() > 0){
-    		JSONObject obj = (JSONObject) jsonArray.get(0);
-        	wxdbUser = JSON.parseObject(obj.toString(), WXDBUser.class);
-        	userSetting = JSON.parseObject(wxdbUser.settings, UserSetting.class);
-    	}
+        Map<String,Object> map= Maps.newHashMap();
+        map.put("account", getAccount());
+        map.put("wxid", wxId);
+        WxuserService wxuserService=SpringContextHolder.getBean(WxuserService.class);
+        List<WxuserDO> list = wxuserService.list(map);
+        if(list != null && list.size() > 0){
+            WxuserDO obj = list.get(0);
+            if (wxdbUser==null) {
+                wxdbUser=new WXDBUser();
+            }
+            wxdbUser.account=obj.getAccount();
+            wxdbUser.settings=obj.getSettings();
+            wxdbUser.nickName = obj.getNickname();
+            wxdbUser.serverId = obj.getServerid();
+            wxdbUser.softwareId=obj.getSoftwareid();
+            wxdbUser.wxId = obj.getWxid();
+            wxdbUser.deadTime=obj.getDeadtime()!=null?obj.getDeadtime():0;
+            wxdbUser.token= obj.getToken()!=null?obj.getToken():null;
+            wxdbUser.userCode=obj.getUsercode();
+            wxdbUser.wxDat=obj.getWxdat()!=null?obj.getWxdat():null;
+            userSetting = JSON.parseObject(wxdbUser.settings, UserSetting.class);
+        }
+
     	if(wxdbUser == null){
     		wxdbUser = new WXDBUser();
         	if(userSetting == null)userSetting = new UserSetting();
         	//赋值wxdbUser
+            if (qrRes==null) {
+                qrRes = new Response();
+                qrRes.Nickname = "缺省";
+            }
         	wxdbUser.account = getAccount();
         	wxdbUser.nickName = qrRes.Nickname;
             wxdbUser.wxId = wxId;
             wxdbUser.serverId = ConfigService.serverid;
             wxdbUser.softwareId = getSoftwareId();
             wxdbUser.settings = new Gson().toJson(userSetting);
+
+            WxuserDO wxuserDO=new WxuserDO();
+            wxuserDO.setAccount(wxdbUser.account);
+            wxuserDO.setNickname(wxdbUser.nickName);
+            wxuserDO.setWxid(wxdbUser.wxId);
+            wxuserDO.setServerid(wxdbUser.serverId);
+            wxuserDO.setSoftwareid(softwareId);
+            wxuserDO.setSettings(wxdbUser.settings);
+            wxuserDO.setStatus(1);
+            wxuserDO.setRandomid(randomid);
+
+            wxuserService.save(wxuserDO);
             //新增数据,数据库字段serverid，类型改成varchar长度需要改成30
-            String insertSql = "INSERT INTO wxuser (account,wxid,nickname,serverid,softwareId,settings,randomid,status) VALUES('%s','%s','%s','%s','%s','%s','%s','%s')";
-            DBUtil.executeUpdate(String.format(insertSql,getAccount(), wxId, qrRes.Nickname, ConfigService.serverid,getSoftwareId(),new Gson().toJson(userSetting) ,randomid,1));
+//            String insertSql = "INSERT INTO wxuser (account,wxid,nickname,serverid,softwareId,settings,randomid,status) VALUES('%s','%s','%s','%s','%s','%s','%s','%s')";
+//            DBUtil.executeUpdate(String.format(insertSql,getAccount(), wxId, qrRes.Nickname, ConfigService.serverid,getSoftwareId(),new Gson().toJson(userSetting) ,randomid,1));
     	}
     }
     protected void begin() {
