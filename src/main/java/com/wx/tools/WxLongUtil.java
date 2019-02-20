@@ -25,19 +25,10 @@ import java.util.*;
 
 public class WxLongUtil {
     private SocketClient vxClient;
-    private static byte[] sessionKey = ConfigService.sessionKey;
-    private static String version = ConfigService.VERSION;
-    private static String machineCode =  ConfigService.APPTOCKEN;
-    private static int protocolVer =  ConfigService.protocolVer;
-    private String shortServerHost = ConfigService.shortServerHost;
-    private String longServerHost = ConfigService.longServerHost;
-    private List<String> shortServerList;
-    private List<String> longServerList;
-    private String deviceUuid = ConfigService.getUUID();
-    private String deviceId = ConfigService.getDevideId(deviceUuid);
-    private String deviceName = ConfigService.getname();
-    private String deviceType = ConfigService.getDeviceType(deviceId);
-    private String myip = ConfigService.ServerIp;
+    public static byte[] sessionKey = new byte[]{80, 117, -128, 85, 2, 55, -76, 126, -115, 93, -71, -36, 112, -114, 15, -128};
+    private String secondUUid = UUID.randomUUID().toString().toUpperCase();
+    private String devideId = ConfigService.getMd5(secondUUid.getBytes());
+    private String ip;
     /**
      * 登录成功后返回的user对象
      */
@@ -45,7 +36,8 @@ public class WxLongUtil {
 
     String notifyKey = null;
     byte[] uuid = null;
-
+    protected String shortServer;
+    protected String longServer;
     private CallBack dataBack;
     // 发送获取二维码封包的返回结果(第一次请求)
     private WechatMsg temWechatMsg;
@@ -60,21 +52,21 @@ public class WxLongUtil {
             this.dataBack = data -> {
                 baseService.onData(data);
             };
-            myip = ConfigService.getPublicIpAddress();
-            longServerHost = Settings.getSet().longServer;
+            ip = CommonUtil.getPublicIpAddress();
+            longServer = Settings.getSet().longServer;
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void connectToWx(CallBack callBack) {
-        if (longServerHost == null || longServerHost.equals("null") || longServerHost.equals("")) {
-            longServerHost = Settings.getSet().longServer;
+        if (longServer == null || longServer.equals("null") || longServer.equals("")) {
+            longServer = Settings.getSet().longServer;
         }
         if (vxClient != null) {
             releaseVxClent();
         }
-        vxClient = new SocketClient(longServerHost, 80, () -> secondLogin(), () -> async(), callBack);
+        vxClient = new SocketClient(longServer, 80, () -> secondLogin(), () -> async(), callBack);
     }
 
     public void sendAppMsg(String userName, String content) {
@@ -88,68 +80,10 @@ public class WxLongUtil {
         });
     }
 
-    /**
-     * 发起登录
-     *
-     * @param back 登录成功后的回调
-     */
-    public void login(Response qrRes, final WxLongUtilCallBack back) {//从基类里调用接口类
-        // TODO:设置登录信息
-        HashMap<String, Object> loginData = new HashMap<String, Object>();
-        loginData.put("Username", qrRes.Username);
-        loginData.put("PassWord", qrRes.Password);
-        loginData.put("UUid", deviceUuid);
-        loginData.put("DeviceType", deviceType);
-        loginData.put("DeviceName", deviceName);
-        loginData.put("ProtocolVer", protocolVer);
-        UtilMsg reqMsg = new UtilMsg();
-        reqMsg.Version = Settings.getSet().version;
-        reqMsg.TimeStamp = System.currentTimeMillis() / 1000;
-        reqMsg.ip = myip;
-        reqMsg.Token = Settings.getSet().machineCode;
-        reqMsg.baseMsg.Cmd = 1111;
-        try {
-            reqMsg.baseMsg.PayLoads = new Gson().toJson(loginData).getBytes("utf-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        reqMsg.baseMsg.user.SessionKey = sessionKey;
-        reqMsg.baseMsg.user.DeviceId = deviceId;
-        WechatMsg convert = convert(reqMsg);
-        WechatMsg logRes = helloWechat(convert);
-        final UtilMsg resMsg = convert(logRes);
-        // 发送请求给腾讯
-        byte[] bys = getBuffers(logRes);
-        vxClient.asynSend(bys, data -> {
-            resMsg.baseMsg.Cmd = -1001;
-            resMsg.baseMsg.PayLoads = data;
-            WechatMsg res = helloWechat(convert(resMsg));
-            UtilMsg loginedRes = convert(res);
-            if (loginedRes.baseMsg.Ret == 0) {
-                loginedUser = convert(res).baseMsg.user;
-                shortServerHost = loginedRes.baseMsg.ShortHost;
-                if (back != null) {
-                    back.onData(new Gson().toJson(loginedRes));
-                }
-                syncToRedis();
-            } else if (loginedRes.baseMsg.Ret == -301) {
-                // 重定向
-                logger.info("重定向");
-                longServerHost = loginedRes.baseMsg.LongHost;
-                connectToWx(data1 -> {
-                    login(qrRes, back);
-                });
-                return;
-            } else {
-                logger.info("登录失败");
-            }
-        });
-    }
-
     public void getQrcode(CallBack callBack) {
-        HashMap<String, Object> params = new HashMap<>(16);
-        params.put("ProtocolVer", 1);
-        longServerRequest(502, params, callBack);
+        HashMap<String, Object> loginData = new HashMap<String, Object>();
+        loginData.put("ProtocolVer", 1);
+        longServerRequest(502, null, callBack);
     }
 
     public void checkLogin(Response qrRes, CallBack callBack) {
@@ -161,46 +95,85 @@ public class WxLongUtil {
         }
         longServerRequest(503, null, callBack);
     }
-    private WechatMsg helloWechat(BaseMsg.Builder baseMsgBuilder) {
-        WechatMsg.Builder wechatMsgBuilder =  WechatMsg.newBuilder();
-        User.Builder userBuilder =  baseMsgBuilder.getUser().toBuilder();
-        wechatMsgBuilder.setBaseMsg(baseMsgBuilder);
-        wechatMsgBuilder.setToken(machineCode);
-        wechatMsgBuilder.setVersion(version);
-        wechatMsgBuilder.setTimeStamp((int)System.currentTimeMillis()/1000);
-        wechatMsgBuilder.setIP(myip);
-        logger.info("请求数据:[" + wechatMsgBuilder.build().toString() + "]");
-        WechatMsg msg = GrpcPool.getInstance().helloWechat(wechatMsgBuilder.build());
-        WechatMsg.Builder wechatMsgBuilderss = wechatMsgBuilder.mergeFrom(msg);
-        BaseMsg.Builder baseMsgBuilderss = baseMsgBuilder.mergeFrom(msg.getBaseMsg());
-        User.Builder userBuilderss = userBuilder.mergeFrom(msg.getBaseMsg().getUser());
-        baseMsgBuilderss.setUser(userBuilderss);
-        wechatMsgBuilderss.setBaseMsg(baseMsgBuilderss);
-        if(msg.getBaseMsg().getLongHost() != null && !msg.getBaseMsg().getLongHost().equals("")){
-            longServerHost = msg.getBaseMsg().getLongHost();
+
+    /**
+     * 发起登录
+     *
+     * @param back 登录成功后的回调
+     */
+    public void login(Response qrRes, final WxLongUtilCallBack back) {
+        // TODO:设置登录信息
+        String deviceType = "<k21>TP_lINKS_5G</k21><k22>中国移动</k22><k24>" + CommonUtil.getMac(devideId) + "</k24>";
+        HashMap<String, Object> loginData = new HashMap<String, Object>();
+        loginData.put("Username", qrRes.Username);
+        loginData.put("PassWord", qrRes.Password);
+        loginData.put("UUid", secondUUid);
+        loginData.put("DeviceType", deviceType);
+        loginData.put("DeviceName", "shangan 的 ipad");
+        loginData.put("ProtocolVer", 1);
+
+        UtilMsg reqMsg = new UtilMsg();
+        reqMsg.Version = Settings.getSet().version;
+        reqMsg.TimeStamp = System.currentTimeMillis() / 1000;
+        reqMsg.ip = ip;
+        reqMsg.Token = Settings.getSet().machineCode;
+        reqMsg.baseMsg.Cmd = 1111;
+        try {
+            reqMsg.baseMsg.PayLoads = new Gson().toJson(loginData).getBytes("utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
-        if(msg.getBaseMsg().getShortHost() != null && !msg.getBaseMsg().getShortHost().equals("")){
-            shortServerHost = msg.getBaseMsg().getShortHost();
-        }
-        logger.info("返回数据:[" + msg.toString() + "]");
-        return msg;
+        reqMsg.baseMsg.user.SessionKey = sessionKey;
+        reqMsg.baseMsg.user.DeviceId = devideId;
+        WechatMsg convert = convert(reqMsg);
+        WechatMsg logRes = helloWechat(convert);
+        final UtilMsg resMsg = convert(logRes);
+        // 发送请求给腾讯
+        byte[] bys = getBuffers(logRes);
+        vxClient.asynSend(bys, data -> {
+            if(data.length>16&&data[16]==-65) {
+                resMsg.baseMsg.Cmd = -1001;
+                resMsg.baseMsg.PayLoads = data;
+                WechatMsg res = helloWechat(convert(resMsg));
+                UtilMsg loginedRes = convert(res);
+                if (loginedRes.baseMsg.Ret == 0) {
+                    loginedUser = convert(res).baseMsg.user;
+                    shortServer = loginedRes.baseMsg.ShortHost;
+                    if (back != null) {
+                        back.onData(new Gson().toJson(loginedRes));
+                    }
+                    syncToRedis();
+                } else if (loginedRes.baseMsg.Ret == -301) {
+                    // 重定向
+                    logger.info("重定向");
+                    longServer = loginedRes.baseMsg.LongHost;
+                    connectToWx(data1 -> {
+                        login(qrRes, back);
+                    });
+                    return;
+                } else {
+                    logger.info("登录失败");
+                }
+            }
+        });
     }
 
     private WechatMsg helloWechat(WechatMsg msg) {
-        return GrpcPool.getInstance().helloWechat(msg);
+        int cmd = msg.getBaseMsg().getCmd();
+        if(cmd == 137 ){
+            WechatMsg.Builder builder = WechatMsg.newBuilder(msg)
+                    .setToken(ConfigService.apiusercode);
+            return GrpcPool.getInstance().helloapiWechat(builder.build());
+        }else {
+            return GrpcPool.getInstance().helloWechat(msg);
+        }
     }
 
     /**
      * 心跳
      */
     public void async() {
-        longServerRequest(138, null, dataBack->{
-            if (dataBack[11] == 121 && dataBack[16] == 126 && dataBack[41] == -118 && dataBack[21] == -13) {
-                baseService.setIsDead(true);
-                return;
-            }
-        });
-
+        longServerRequest(138, null, dataBack);
     }
 
     /**
@@ -268,14 +241,14 @@ public class WxLongUtil {
         msg.Token = Settings.getSet().machineCode;
         msg.Version = Settings.getSet().version;
         msg.TimeStamp = System.currentTimeMillis() / 1000;
-        msg.ip = myip;
+        msg.ip = ip;
         msg.baseMsg.Cmd = code;
         msg.baseMsg.user = loginedUser;
         msg.baseMsg.PayLoads = new Gson().toJson(params).getBytes();
         final WechatMsg res = helloWechat(convert(msg));
         UtilMsg utilMsg = convert(res);
         try {
-            URL url = new URL("http://" + shortServerHost + utilMsg.baseMsg.CmdUrl);
+            URL url = new URL("http://" + shortServer + utilMsg.baseMsg.CmdUrl);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setDoOutput(true);
             con.setDoInput(true);
@@ -293,11 +266,13 @@ public class WxLongUtil {
             bos.close();
             os.close();
             is.close();
-            byte[] vxRes = bos.toByteArray();
-            utilMsg.baseMsg.PayLoads = vxRes;
-            utilMsg.baseMsg.Cmd = -code;
-            utilMsg = convert(helloWechat(convert(utilMsg)));
-            return new String(utilMsg.baseMsg.PayLoads, "utf-8");
+            byte[] data = bos.toByteArray();
+            if(data.length>0&&data[0]==-65) {
+                utilMsg.baseMsg.PayLoads = data;
+                utilMsg.baseMsg.Cmd = -code;
+                utilMsg = convert(helloWechat(convert(utilMsg)));
+                return new String(utilMsg.baseMsg.PayLoads, "utf-8");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -535,32 +510,32 @@ public class WxLongUtil {
         return loginedUser;
     }
 
-    public String getShortServerHost() {
-        return shortServerHost;
+    public String getShortServer() {
+        return shortServer;
     }
 
     public String getSecondUUid() {
-        return deviceUuid;
+        return secondUUid;
     }
 
-    public String getLongServerHost() {
-        return longServerHost;
+    public String getLongServer() {
+        return longServer;
     }
 
     public void setSecondUUid(String secondUUid) {
-        this.deviceUuid = secondUUid;
+        this.secondUUid = secondUUid;
     }
 
     public void setLoginedUser(UtilMsg.UtilUser loginedUser) {
         this.loginedUser = loginedUser;
     }
 
-    public void setShortServerHost(String shortServerHost) {
-        this.shortServerHost = shortServerHost;
+    public void setShortServer(String shortServer) {
+        this.shortServer = shortServer;
     }
 
-    public void setLongServerHost(String longServerHost) {
-        this.longServerHost = longServerHost;
+    public void setLongServer(String longServer) {
+        this.longServer = longServer;
     }
 
     public void sendMessage(String userName, String string) {
@@ -731,12 +706,11 @@ public class WxLongUtil {
             msg.Token = Settings.getSet().machineCode;
             msg.Version = Settings.getSet().version;
             msg.TimeStamp = System.currentTimeMillis() / 1000;
-            msg.ip = myip;
+            msg.ip = ip;
             msg.baseMsg.Cmd = code;
             if (loginedUser == null) {
                 msg.baseMsg.user.SessionKey = sessionKey;
-                msg.baseMsg.user.DeviceId = deviceId;
-                loginedUser = msg.baseMsg.user;
+                msg.baseMsg.user.DeviceId = devideId;
             } else {
                 msg.baseMsg.user = loginedUser;
             }
@@ -754,13 +728,15 @@ public class WxLongUtil {
             }
             byte[] buffers = getBuffers(res);
             vxClient.asynSend(buffers, data -> {
-                if (call != null) {
-                    UtilMsg req = convert(res);
-                    req.baseMsg.Cmd = code == 211 ? -212 : -code;
-                    req.baseMsg.PayLoads = data;
-                    req = convert(helloWechat(convert(req)));
-                    loginedUser = req.baseMsg.user;
-                    call.onData(req.baseMsg.PayLoads);
+                if(data.length>16&&data[16]==-65) {
+                    if (call != null) {
+                        UtilMsg req = convert(res);
+                        req.baseMsg.Cmd = code == 211 ? -212 : -code;
+                        req.baseMsg.PayLoads = data;
+                        req = convert(helloWechat(convert(req)));
+                        loginedUser = req.baseMsg.user;
+                        call.onData(req.baseMsg.PayLoads);
+                    }
                 }
             });
         } catch (UnsupportedEncodingException e) {
@@ -903,17 +879,18 @@ public class WxLongUtil {
         if (loginedUser == null) {
             return;
         }
-        String deviceType = "<k21>TP_lINKS_5G</k21><k22>中国移动</k22><k24>" + ConfigService.getMac(deviceId) + "</k24>";
+        String deviceType = "<k21>TP_lINKS_5G</k21><k22>中国移动</k22><k24>" + CommonUtil.getMac(devideId) + "</k24>";
         HashMap<String, Object> loginData = new HashMap<String, Object>();
-        loginData.put("UUid", deviceUuid);
+        loginData.put("UUid", secondUUid);
         loginData.put("DeviceType", deviceType);
-        loginData.put("DeviceName", deviceName);
-        loginData.put("ProtocolVer", protocolVer);
+        loginData.put("DeviceName", "shangan 的 ipad");
+        loginData.put("ProtocolVer", 1);
+
         UtilMsg msg = new UtilMsg();
         msg.Token = Settings.getSet().machineCode;
         msg.Version = Settings.getSet().version;
         msg.TimeStamp = System.currentTimeMillis() / 1000;
-        msg.ip = myip;
+        msg.ip = ip;
         msg.baseMsg.Cmd = 702;
         msg.baseMsg.user = loginedUser;
         try {
@@ -941,7 +918,7 @@ public class WxLongUtil {
             } else if (loginedRes.baseMsg.Ret == -301) {
                 // 重定向
                 logger.info("二次登陆重定向");
-                longServerHost = loginedRes.baseMsg.LongHost;
+                longServer = loginedRes.baseMsg.LongHost;
                 connectToWx(data1 -> secondLogin());
             } else {
                 logger.info("二次登陆失败");
@@ -954,12 +931,12 @@ public class WxLongUtil {
     public void syncToRedis() {
         RedisBean redisBean = new RedisBean();
         redisBean.loginedUser = getLoginedUser();
-        redisBean.shortServerHost = getShortServerHost();
+        redisBean.shortServerHost = getShortServer();
         redisBean.randomid = baseService.getrandomid();
         redisBean.softwareId = baseService.getSoftwareId();
         redisBean.account = baseService.getAccount();
         redisBean.uuid = getSecondUUid();
-        redisBean.longServerHost = getLongServerHost();
+        redisBean.longServerHost = getLongServer();
         redisBean.serverid = getMd5(Settings.getSet().server_ip + ":" + Settings.getSet().server_port);
         redisBean.extraData = baseService.getExtraData();
         RedisUtils.hset((Constant.redisk_key_loinged_user + ConfigService.serverid).getBytes(), baseService.getrandomid().getBytes(), RedisBean.serialise(redisBean));

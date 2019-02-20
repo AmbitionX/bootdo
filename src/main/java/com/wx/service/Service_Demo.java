@@ -1,12 +1,16 @@
 package com.wx.service;
 
+import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonObject;
+import com.wx.tools.WxLongUtil;
 import org.apache.log4j.Logger;
 
 import com.wx.bean.Message;
 
 public class Service_Demo extends BaseService {
-
 	private static Logger logger = Logger.getLogger(Service_Demo.class);
+	private boolean longUtilyes=true;
+
 
 	public Service_Demo(String randomids) {
 		super(randomids);//创建时这个逻辑类这个父类生成的基类
@@ -15,9 +19,14 @@ public class Service_Demo extends BaseService {
 	@Override
 	public void parseMsg(Message msg) {
 		logger.info(msg.toString());
+		System.out.println(JSONObject.toJSON(msg));
 	}
 
+	@Override
+	public void setBackName(String wxid, String remark) {
+		longUtil.setBackName(wxid,remark);
 
+	}
 	//这里是父类的回调，等于是你创建的时候面试先创建的父类，然后基类是继承的这个类，
 	//在收到消息后，就会进入这个回调，所以在这里，写全部的逻辑，所以这里也就是逻辑类，在这里的话，调用函数，可以直接调用接口类，
 	//因为接口类是基类创建的，基类又是继承的这个逻辑类，所以可以直接在这里调用，你可能会说那我直接从api创建的这个逻辑类，是没错，但是我个人会觉得很乱，所以就这么设计的

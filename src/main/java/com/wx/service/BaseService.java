@@ -1,15 +1,12 @@
 package com.wx.service;
 
 import com.alibaba.fastjson.JSON;
-import com.bootdo.common.redis.shiro.RedisCacheManager;
-import com.bootdo.common.redis.shiro.RedisManager;
-import com.bootdo.common.utils.SpringContextHolder;
-import com.bootdo.wx.domain.WxuserDO;
-import com.bootdo.wx.service.WxuserService;
-import com.google.common.collect.Maps;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+
 import com.wx.DB.WXDBUser;
 import com.wx.bean.CallBack;
 import com.wx.bean.LoginResponse;
@@ -23,19 +20,20 @@ import static com.wx.httpHandler.HttpResult.getMd5;
 
 import com.wx.tools.*;
 
-import static com.wx.tools.ConfigService.getMac;
-
+import static com.wx.tools.CommonUtil.getMac;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.Resource;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 import java.util.concurrent.*;
 
 public abstract class BaseService {
-    private static Logger logger = Logger.getLogger(BaseService.class);
     protected WxLongUtil longUtil;
     protected Response qrRes; //二维码结果
     protected long createTime;
@@ -54,22 +52,13 @@ public abstract class BaseService {
     protected static ExecutorService executorService = Executors.newCachedThreadPool();
     protected String wxId;
     protected final ConcurrentHashMap<Long, Boolean> parsedMsgIdMap = new ConcurrentHashMap<>();
-
+    private static Logger logger = Logger.getLogger(BaseService.class);
     protected WXDBUser wxdbUser;
     protected UserSetting userSetting;
 
-    private RedisManager redisManager;
-    private RedisCacheManager redisCacheManager;
 
-    public RedisCacheManager getRedisCacheManager() {
-        return redisCacheManager;
-    }
 
-    public void setRedisCacheManager(RedisCacheManager redisCacheManager) {
-        this.redisCacheManager = redisCacheManager;
-    }
-
-    public BaseService(String randomids) {//这里是每个微信号，不管逻辑是什么都要执行的一些函数，是必走的流程，所以放在基类里，等这些全部走完进入到心跳，待命的时候，就回到了刚才的父类里，去执行不同的逻辑
+    public BaseService(String randomids) {
         this.randomid = randomids;
         longUtil = new WxLongUtil(this);
         createTime = System.currentTimeMillis();
@@ -173,17 +162,10 @@ public abstract class BaseService {
             try {
                 qrRes = new Gson().fromJson(new String(resData, "utf-8"), Response.class);
                 if (qrRes.Status == 0) {
-
-                    RedisUtils.set("qrcode",qrRes.ImgBuf);
-
                     curStatus.ImgBuf = qrRes.ImgBuf;
                     curStatus.code = qrRes.Status;
                     QrBuf = qrRes.ImgBuf;
-                    curStatus.msg = "二维码创建完成,请扫码!";//你现在的问题是卡在哪里，你跑下我看看
-                    if(ConfigService.test){
-                        //javaSE窗口先注释
-//                        QrcodeWindows.getQrcode(curStatus.msg,qrRes.ImgBuf);
-                    }
+                    curStatus.msg = "二维码创建完成,请扫码!";
                     checkQrCode(qrRes);
                 }
             } catch (UnsupportedEncodingException e) {
@@ -191,6 +173,7 @@ public abstract class BaseService {
             }
         });
     }
+
     public HttpResult getState() {
         return curStatus;
     }
@@ -201,7 +184,6 @@ public abstract class BaseService {
                 qrRes = new Gson().fromJson(new String(resData, "utf8"), Response.class);
                 // 只有当持续检测时间小于两分钟 且用户没有在手机上点击登录按钮时 循环检测登录状态
                 if (System.currentTimeMillis() - createTime < 1000 * 60 * 5) {
-                    logger.info(qrRes);
                     if (qrRes.Status == 2) {
                         curStatus.code = 2;
                         qrRes.hasSaoMa = true;
@@ -210,8 +192,8 @@ public abstract class BaseService {
                         curStatus.bigHeadImgUrl = qrRes.HeadImgUrl;
                         curStatus.ImgBuf = "";
                         curStatus.msg = "已扫码,已确认,等待登陆";
-//                        QrcodeWindows.overQrcode();
                         waitlogin();
+
                     } else if (qrRes.Status == 1) {
                         curStatus.code = 1;
                         curStatus.nickname = qrRes.Nickname;
@@ -220,7 +202,6 @@ public abstract class BaseService {
                         curStatus.ImgBuf = "";
                         curStatus.msg = "已扫码,未确认,请在手机上点击确认";
                     } else if (qrRes.Status == 4) {
-//                        QrcodeWindows.overQrcode();
                         curStatus.code = -2;
                         curStatus.ImgBuf = "";
                         curStatus.msg = "扫描二维码超时,请重新获取二维码.";
@@ -254,7 +235,7 @@ public abstract class BaseService {
         }
     }
 
-    public void login() {//这就是api调用，需要先到这个基类然后从基类调用接口，
+    public void login() {
         if (qrRes.hasSaoMa) {
             longUtil.login(qrRes, resData -> {
                 LoginResponse res = new Gson().fromJson(resData, LoginResponse.class);
@@ -284,61 +265,9 @@ public abstract class BaseService {
             e.printStackTrace();
         }
     }
-    protected void initWxuser(){
-        Map<String,Object> map= Maps.newHashMap();
-        map.put("account", getAccount());
-        map.put("wxid", wxId);
-        WxuserService wxuserService=SpringContextHolder.getBean(WxuserService.class);
-        List<WxuserDO> list = wxuserService.list(map);
-        if(list != null && list.size() > 0){
-            WxuserDO obj = list.get(0);
-            if (wxdbUser==null) {
-                wxdbUser=new WXDBUser();
-            }
-            wxdbUser.account=obj.getAccount();
-            wxdbUser.settings=obj.getSettings();
-            wxdbUser.nickName = obj.getNickname();
-            wxdbUser.serverId = obj.getServerid();
-            wxdbUser.softwareId=obj.getSoftwareid();
-            wxdbUser.wxId = obj.getWxid();
-            wxdbUser.deadTime=obj.getDeadtime()!=null?obj.getDeadtime():0;
-            wxdbUser.token= obj.getToken()!=null?obj.getToken():null;
-            wxdbUser.userCode=obj.getUsercode();
-            wxdbUser.wxDat=obj.getWxdat()!=null?obj.getWxdat():null;
-            userSetting = JSON.parseObject(wxdbUser.settings, UserSetting.class);
-        }
+    
 
-    	if(wxdbUser == null){
-    		wxdbUser = new WXDBUser();
-        	if(userSetting == null)userSetting = new UserSetting();
-        	//赋值wxdbUser
-            if (qrRes==null) {
-                qrRes = new Response();
-                qrRes.Nickname = "缺省";
-            }
-        	wxdbUser.account = getAccount();
-        	wxdbUser.nickName = qrRes.Nickname;
-            wxdbUser.wxId = wxId;
-            wxdbUser.serverId = ConfigService.serverid;
-            wxdbUser.softwareId = getSoftwareId();
-            wxdbUser.settings = new Gson().toJson(userSetting);
 
-            WxuserDO wxuserDO=new WxuserDO();
-            wxuserDO.setAccount(wxdbUser.account);
-            wxuserDO.setNickname(wxdbUser.nickName);
-            wxuserDO.setWxid(wxdbUser.wxId);
-            wxuserDO.setServerid(wxdbUser.serverId);
-            wxuserDO.setSoftwareid(softwareId);
-            wxuserDO.setSettings(wxdbUser.settings);
-            wxuserDO.setStatus(1);
-            wxuserDO.setRandomid(randomid);
-
-            wxuserService.save(wxuserDO);
-            //新增数据,数据库字段serverid，类型改成varchar长度需要改成30
-//            String insertSql = "INSERT INTO wxuser (account,wxid,nickname,serverid,softwareId,settings,randomid,status) VALUES('%s','%s','%s','%s','%s','%s','%s','%s')";
-//            DBUtil.executeUpdate(String.format(insertSql,getAccount(), wxId, qrRes.Nickname, ConfigService.serverid,getSoftwareId(),new Gson().toJson(userSetting) ,randomid,1));
-    	}
-    }
     protected void begin() {
         heartBeatExe.scheduleAtFixedRate(new Runnable() {
             long cnt = 0;
@@ -362,7 +291,7 @@ public abstract class BaseService {
             }
         }, 1, 1, TimeUnit.SECONDS);
         //加载用户
-        initWxuser();
+
     }
     
 
@@ -413,9 +342,9 @@ public abstract class BaseService {
         account = redisBean.account;
         curStatus.setData(redisBean.loginedUser.NickName);
         longUtil.setLoginedUser(redisBean.loginedUser);
-        longUtil.setShortServerHost(redisBean.shortServerHost);
+        longUtil.setShortServer(redisBean.shortServerHost);
         longUtil.setSecondUUid(redisBean.uuid);
-        longUtil.setLongServerHost(redisBean.longServerHost);
+        longUtil.setLongServer(redisBean.longServerHost);
         connectToWx(data -> {
             begin();
         });
@@ -434,6 +363,10 @@ public abstract class BaseService {
     }
 
     abstract public void parseMsg(Message msg);
+    abstract public void setBackName(String wxid, String remark);
+    public WxLongUtil getLongUtil() {
+        return longUtil;
+    }
 
     protected void exit() {
         logger.info("------------用户" + wxId + "离线---------------");
