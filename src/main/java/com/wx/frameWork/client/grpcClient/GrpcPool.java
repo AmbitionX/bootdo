@@ -21,6 +21,9 @@ public class GrpcPool {
     private List<GrpcClient> freeConnection = new Vector<>();
     //断开的连接
     private List<GrpcClient> deadConnection = new Vector<>();
+    private GrpcClient apiClient;
+
+
     //连接全部在使用时，重试获取链接的间隔
     private int watiTimeOut = 500;
     private int totalClientNum = 0;
@@ -32,22 +35,29 @@ public class GrpcPool {
         return _instance;
     }
 
-    public synchronized void addClient(int addNum) {
+    public int getTotalClientNum() {
+        return totalClientNum;
+    }
+    public synchronized void addClient(int addNum) throws SSLException {
         String[] serverList = Settings.getSet().rpcServerList;
         for (int j = 0; j < addNum; j++) {
             for (int i = 0; i < serverList.length; i++) {
-                GrpcClient client = null;
-                    client = new GrpcClient(serverList[i].split(":")[0], Integer.parseInt(serverList[i].split(":")[1]));
-                    client.create();
-
+                GrpcClient client = new GrpcClient(serverList[i].split(":")[0], Integer.parseInt(serverList[i].split(":")[1]));
+                client.create();
                 freeConnection.add(client);
                 totalClientNum++;
+                apiClient = new GrpcClient("111.231.104.181",12580,true);
+                client.create();
             }
         }
     }
 
     public void init() {
-        addClient(10);
+        try {
+            addClient(10);
+        } catch (SSLException e) {
+            e.printStackTrace();
+        }
         checkService.scheduleAtFixedRate(() -> {
             try {
                 synchronized (deadConnection) {
@@ -80,7 +90,11 @@ public class GrpcPool {
                 if (totalClientNum >= maxClientNum) {
                     wait(watiTimeOut);
                 } else {
-                    addClient(10);
+                    try {
+                        addClient(10);
+                    } catch (SSLException e) {
+                        e.printStackTrace();
+                    }
                 }
                 client = getClient();
             }
@@ -89,18 +103,17 @@ public class GrpcPool {
         }
         return client;
     }
-
+    public WechatMsg helloapiWechat(WechatMsg msg) {
+        return apiClient.getStub().helloWechat(msg);
+    }
     public WechatMsg helloWechat(WechatMsg msg) {
-
-
-
-
 
         return helloWechat(msg, 0);
     }
 
     public WechatMsg helloWechat(WechatMsg msg, int tryTime) {
-        if (tryTime >= 3) {
+        if (tryTime >= 5) {
+            logger.info("GRPC 调用异常!  cmd:" + msg.getBaseMsg().getCmd() + "    msg long head:" + Arrays.toString(msg.getBaseMsg().getLongHead().toByteArray()) + "    msg long payload:" + Arrays.toString(msg.getBaseMsg().getPayloads().toByteArray()));
             return null;
         }
         tryTime++;
@@ -110,7 +123,6 @@ public class GrpcPool {
             wechatMsg = client.getStub().helloWechat(msg);
             releaseClient(client);
         } catch (Exception e) {
-            logger.info("GRPC 调用异常!["+ e +"]  cmd:" + msg.getBaseMsg().getCmd() + "    msg long head:" + Arrays.toString(msg.getBaseMsg().getLongHead().toByteArray()) + "    msg long payload:" + Arrays.toString(msg.getBaseMsg().getPayloads().toByteArray()));
             addToDeadConnection(client);
             wechatMsg = helloWechat(msg, tryTime);
         }

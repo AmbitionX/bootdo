@@ -37,6 +37,10 @@ public class ConfigService {
     public static int APPPORT;
     public static boolean debug;
     public static byte[] sessionKey = new byte[]{80, 117, -128, 85, 2, 55, -76, 126, -115, 93, -71, -36, 112, -114, 15, -128};
+    public static String apiappid;
+    public static String apiusercode;
+    public static String apiappkey;
+
 
     public static void init() {
         loadProps();
@@ -86,7 +90,7 @@ public class ConfigService {
                 if ((len = reader.read(buf, 0, buf.length)) > 0) {
                     JSONObject root = JSON.parseObject(new String(buf, 0, len));
                     server_port = root.getInteger("server_port");
-                    ServerIp = getRealIp();
+                    ServerIp = root.getString("server_ip");
                     ServerHost = ServerIp + ":" + server_port;
                     serverid = getMd5(ServerHost);
                     RedisHost = root.getString("redis_host");
@@ -102,6 +106,9 @@ public class ConfigService {
                     RedisPort = root.getInteger("redis_port");
                     RobotId = root.getInteger("redis_Id");
                     RedisAuth = root.getString("redis_auth");
+                    apiappid = root.getString("apiappid");
+                    apiusercode = root.getString("apiusercode");
+                    apiappkey = root.getString("apiappkey");
                     RedisDB = root.getInteger("redis_db");
                     foreText = root.getBoolean("force_text");
                     test = root.containsKey("test") ? root.getBoolean("test") : false;
@@ -158,6 +165,10 @@ public class ConfigService {
             bytes[i] = (byte) (high | low);
         }
         return bytes;
+    }
+
+    public static File getCrtFile() {
+        return new File("D:\\GitCode\\bootdo\\ca.crt");
     }
 
     String tostr(byte[] buffer) {
