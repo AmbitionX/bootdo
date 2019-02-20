@@ -67,10 +67,7 @@ public class server {
         // 启动Grpc客户端
         GrpcPool.getInstance().init();// uploginedUsers(serverid);
         uploginedUsers();
-        HttpServer hs = HttpServer.create(new InetSocketAddress(ConfigService.server_port), 0);
-        hs.createContext("/wx", new MyHttpHandler()).getFilters();
-        hs.setExecutor(executorService); // creates a default executor
-        hs.start();
+
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {

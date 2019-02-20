@@ -37,21 +37,18 @@ public class ServiceManager {
     public static ServiceManager getInstance() {
         return instance;
     }
-//这个就是逻辑idsoftwareId，你比如说，这个号，只做阅读，那么我定义softwareId=888，我还有个号，要刷朋友圈，那么我可以传入softwareId=77就是不同的逻辑，而不会乱
-    //这个是为了微服务而定义的
+
     public BaseService createService(String randomid, String softwareId, boolean autoLogin, String extraData) {
         BaseService service = serviceMap.get(randomid);
-        if (service == null) {//根据softwareId来进入或者创建逻辑类
-            if (!Strings.isNullOrEmpty(softwareId) && softwareId.equals(ServiceSoftwareId.SOFTWARE_Demo.softwareId)) {
-                service = new Service_Demo(randomid);//这就是最初，创建属于这个微信号的时候的地方
-            }else if (!Strings.isNullOrEmpty(softwareId) && softwareId.equals(ServiceSoftwareId.SOFTWARE_Demo.softwareId)) {
-                service = new Service_Demo(randomid);//这就是最初，创建属于这个微信号的时候的地方
+        if (service == null) {
+            if (!Strings.isNullOrEmpty(softwareId) && softwareId.equals(ServiceSoftwareId.SOFTWARE_YY.softwareId)) {
+                service = new Service_Demo(randomid);
             } else {
                 service = new Service_Demo(randomid);
             }
 
-            BaseService finalService = service;//没有找到就创建一个，然后在下面，吧randomid和server进行绑定
-            service.connectToWx(data -> {//这里就是创建之后调用getqrcode
+            BaseService finalService = service;
+            service.connectToWx(data -> {
                 finalService.getQRcode();
             });
             serviceMap.put(randomid, service);
@@ -66,12 +63,16 @@ public class ServiceManager {
     public BaseService createServiceForReLogin(String randomid, String softwareId) {
         BaseService service = serviceMap.get(randomid);
         if (service == null && softwareId != null) {
-            if (softwareId.equals(ServiceSoftwareId.SOFTWARE_Demo.softwareId)) {
+            if (softwareId.equals(ServiceSoftwareId.SOFTWARE_YY.softwareId)) {
+                service = new Service_Demo(randomid);
+            } else if (softwareId.equals(ServiceSoftwareId.QLJSF.softwareId)) {
+                service = new Service_Demo(randomid);
+            }  else if (softwareId.equals(ServiceSoftwareId.MENE.softwareId)) {
                 service = new Service_Demo(randomid);
             } else {
                 service = new Service_Demo(randomid);
             }
-            serviceMap.put(randomid, service);//绑定，返回server
+            serviceMap.put(randomid, service);
         }
         return service;
     }

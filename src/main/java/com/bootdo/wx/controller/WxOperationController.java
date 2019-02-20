@@ -31,42 +31,9 @@ public class WxOperationController {
 
     @Autowired
     private static Logger logger = LoggerFactory.getLogger(WxOperationController.class);
-    @Autowired
+/*    @Autowired
     private RedisManager redisManager;
-
-    @ResponseBody
-    @RequestMapping("/getQrCode")
-    public R getQrCode(HttpServletRequest request, HttpServletResponse response){
-
-//        String randomid1 = request.getParameter("redisKey");
-//        if (true) {
-//            redisManager.get(randomid1.getBytes());
-//            return new R();
-//        }
-        R ret=new R();
-        String randomid = request.getParameter("randomid");
-        String account = request.getParameter("account");
-        String softwareId = request.getParameter("softwareId");
-//        boolean autoLogin = param.containsKey("autoLogin") ? Boolean.parseBoolean(param.get("autoLogin")) : false;
-        boolean autoLogin =  false;
-//        String extraData = param.containsKey("extraData") ? param.get("extraData") : "";
-        String extraData =  "";
-        boolean isNew = false;
-        if (randomid == null) {
-            isNew = true;
-            randomid = UUID.randomUUID().toString();
-        }
-        if (account == null || randomid.length() == 0) {
-
-            return ret.error(-1,"randomId、account、softwareId 不能为空");
-        }
-
-        BaseService baseService = ServiceManager.getInstance().createService(randomid, softwareId, autoLogin, extraData);
-        baseService.setSoftwareId(softwareId);
-        baseService.setNew(isNew);
-        baseService.setAccount(account);
-        return ret.put("randomid", randomid);
-    }
+    */
 
     /**
      * 获取用户登录二维码
@@ -78,30 +45,22 @@ public class WxOperationController {
         logger.info("###### 开始获取户登录二维码 ######");
         long startTime = System.currentTimeMillis();
         String logPrefix = "[获取用登录二维码]";
-//        JSONObject po = getJsonParam(request);
-//        _log.info("{}请求参数:{}", logPrefix, po);
-//        String account = getStringRequired(po,"account");
-//        String randomId = getStringRequired(po,"randomId");
-//        String softwareId = getStringRequired(po,"softwareId");
-//        Boolean autoLogin = getBoolean(po,"autoLogin");
-//        String extraData = getString(po,"extraData");
         boolean isNew;
         randomId= UUID.randomUUID().toString();
         BaseService service = ServiceManager.getInstance().getServiceByRandomId(randomId);
         if (service == null) {
-
             isNew = true;
             BaseService baseService = ServiceManager.getInstance().createService(randomId, softwareId, autoLogin, extraData);
             baseService.setSoftwareId(softwareId);
             baseService.setNew(isNew);
             baseService.setAccount(account);
+            //baseService.setBackName();
+
             return R.ok().put("uuid",randomId);
         }
         long endTime = System.currentTimeMillis();
         logger.info("{}randomId:{}, 耗时：{} ms", logPrefix, randomId, endTime - startTime);
-
         return R.ok().put("uuid",randomId);
-//        return ResponseEntity.ok(DataResponse.buildSuccess(service.getState()));
     }
 
     /**
@@ -109,21 +68,13 @@ public class WxOperationController {
      */
     @ResponseBody
     @RequestMapping(value = "/login_status")
-    public R getLoginState(HttpServletRequest request,String account,String randomId,String softwareId,
-                           Boolean autoLogin,String extraData) {
+    public R getLoginState(HttpServletRequest request,String randomId) {
         logger.info("###### 获取用户登录状态 ######");
         String logPrefix = "[获取用登录状态]";
-//        JSONObject po = getJsonParam(request);
-//        _log.info("{}请求参数:{}", logPrefix, po);
-//        String randomId = getStringRequired(po, "randomId");
         BaseService service = ServiceManager.getInstance().getServiceByRandomId(randomId);
         if (service == null) {
-//            return ResponseEntity.ok(BaseResponse.build(RetEnum.RET_COMM_1002));
             return R.error(1002, "null");
         }
-        // 这里调用 getQRcode ，拿到二维码， 通过调用这个方法想拿到
-      //  BaseService baseService = ServiceManager.getInstance().createService(randomId, softwareId, autoLogin, extraData);
-//        return ResponseEntity.ok(DataResponse.buildSuccess(service.getState()));
         return R.ok().put("status",service);
     }
 
@@ -168,15 +119,15 @@ public class WxOperationController {
         return R.ok().put("status",service);
     }
 
-    @ResponseBody
-    @RequestMapping("/setQrCode")
-    public R setQrCode(HttpServletRequest request, HttpServletResponse response){
-        String randomid = request.getParameter("redisKey");
-        String randomids = request.getParameter("redisValue");
-
-        redisManager.set(randomid.getBytes(), randomids.getBytes());
-        return new R();
-
-    }
+//    @ResponseBody
+//    @RequestMapping("/setQrCode")
+//    public R setQrCode(HttpServletRequest request, HttpServletResponse response){
+//        String randomid = request.getParameter("redisKey");
+//        String randomids = request.getParameter("redisValue");
+//
+//        redisManager.set(randomid.getBytes(), randomids.getBytes());
+//        return new R();
+//
+//    }
 
 }

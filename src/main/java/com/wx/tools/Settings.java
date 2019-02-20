@@ -20,6 +20,8 @@ public class Settings {
         public String server_ip = "182.87.240.24";
         public String grpc_host = "grpc.wxipad.com:12580";
         public String bindGame;
+        public String apiappId;
+        public String apiappKey;
         public int rateTime;
         public String SOFTWARE_DEMO = "666";
         public int server_port = 4567;
