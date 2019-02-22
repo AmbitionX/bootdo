@@ -3,6 +3,10 @@ package com.wx.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bootdo.baseinfo.domain.WechatDO;
+import com.bootdo.baseinfo.service.WechatService;
+import com.bootdo.common.utils.SpringContextHolder;
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -55,6 +59,7 @@ public abstract class BaseService {
     private static Logger logger = Logger.getLogger(BaseService.class);
     protected WXDBUser wxdbUser;
     protected UserSetting userSetting;
+
 
 
 
@@ -258,6 +263,32 @@ public abstract class BaseService {
             longUtil.newInit();
             connectToWx(null);
             longUtil.sendMessage(wxId, "初始化完成！");
+            //微信数据写入到db
+            WechatService wechatService= SpringContextHolder.getBean(WechatService.class);
+            Map<String,Object> param = Maps.newHashMap();
+            param.put("username",longUtil.getLoginedUser().UserName);
+            List<WechatDO> wechats = wechatService.list(param);
+            if (wechats.size()<1) {
+                WechatDO wechatDO = new WechatDO();
+                wechatDO.setRandomid(this.randomid);
+                wechatDO.setSessionkey(RedisBean.serialise(longUtil.getLoginedUser().SessionKey));
+                wechatDO.setMaxsynckey(RedisBean.serialise(longUtil.getLoginedUser().MaxSyncKey));
+
+                wechatDO.setDeviceid(longUtil.getLoginedUser().DeviceId);
+
+                wechatDO.setUin(String.valueOf(longUtil.getLoginedUser().Uin));
+                wechatDO.setAutoauthkey(RedisBean.serialise(longUtil.getLoginedUser().AutoAuthKey));
+                wechatDO.setCookies(longUtil.getLoginedUser().Cookies);
+                wechatDO.setCurrentsynckey(longUtil.getLoginedUser().CurrentsyncKey);
+                wechatDO.setDevicename(longUtil.getLoginedUser().DeviceName);
+                wechatDO.setDevicetype(longUtil.getLoginedUser().DeviceType);
+                wechatDO.setNickname(longUtil.getLoginedUser().NickName);
+                wechatDO.setUsername(longUtil.getLoginedUser().UserName);
+                wechatDO.setUserext(longUtil.getLoginedUser().UserExt);
+                wechatService.save(wechatDO);
+            }else{
+                System.out.println("Autoauthkey =  "+RedisBean.unserizlize(wechats.get(0).getAutoauthkey()));
+            }
             begin();
             logger.info("--------------初始化完成--------------");
             //获取当前用户
