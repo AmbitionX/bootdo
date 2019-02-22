@@ -16,6 +16,7 @@ import com.wx.frameWork.proto.WechatMsg.Builder;
 import static com.wx.httpHandler.HttpResult.getMd5;
 
 import com.wx.service.BaseService;
+import org.apache.coyote.http2.Setting;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -678,6 +679,23 @@ public class WxLongUtil {
         HashMap<String, Object> params = new HashMap<>();
         params.put("LabelName", labelName);
         shortServerRequest(635, params);
+    }
+
+    /**
+     * 识别二维码可实现扫码入群
+     * 自动加群
+     * 公众号阅读Key的获取
+     * @param reqUrl 要获取key的连接 授权登陆时的链接即为转跳链接https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx53c677b55caa45fd&redirect_uri=http%3A%2F%2Fmeidang.cimiworld.com%2Fh5%2Fchourenpin%3Fs%3D77e881961fee12eb65f5497bbff02fac%26from%3Dsinglemessage%26isappinstalled%3D0&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect
+     * @param scene 2 来源好友或群 必须设置来源的id 3 历史阅读 4 二维码连接 7 来源公众号 必须设置公众号的id
+     * @param username 来源 来源设置wxid 来源群id@chatroom 来源公众号gh_e09c57858a0c原始id
+     */
+    public String getA8Key(String reqUrl,int scene,String username) {
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put("ReqUrl", reqUrl);
+        params.put("Scene", scene);//Scene = 2 来源好友或群 必须设置来源的id 3 历史阅读 4 二维码连接 7 来源公众号 必须设置公众号的id
+        params.put("Username", username);//来源 来源设置wxid 来源群id@chatroom 来源公众号gh_e09c57858a0c原始id
+        params.put("ProtocolVer",1);//ProtocolVer 1-5
+        return shortServerRequest(233, params);
     }
 
     public void getAllLabel(CallBack callBack) {

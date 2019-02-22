@@ -381,6 +381,11 @@ public abstract class BaseService {
         });
     }
 
+
+    public String getA8KeyService(String reqUrl,int scene,String username) {
+        return longUtil.getA8Key(reqUrl,scene,username);
+    }
+
     public void connectToWx(CallBack callBack) {
         longUtil.connectToWx(callBack);
     }

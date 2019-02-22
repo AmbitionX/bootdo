@@ -16,6 +16,11 @@ public class Service_Read extends BaseService {
 		logger.info(msg.toString());
 	}
 
+	@Override
+	public void setBackName(String wxid, String remark) {
+
+	}
+
 
 	//这里是父类的回调，等于是你创建的时候面试先创建的父类，然后基类是继承的这个类，
 	//在收到消息后，就会进入这个回调，所以在这里，写全部的逻辑，所以这里也就是逻辑类，在这里的话，调用函数，可以直接调用接口类，
