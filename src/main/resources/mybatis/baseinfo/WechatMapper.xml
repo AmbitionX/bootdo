@@ -4,11 +4,11 @@
 <mapper namespace="com.bootdo.baseinfo.dao.WechatDao">
 
 	<select id="get" resultType="com.bootdo.baseinfo.domain.WechatDO">
-		select `id`,`uid`,`Wechat`,`Password`,`Data62`,`LastDate`,`TotalTaskQuantity`,`TodayTaskQuantity`,`Stauts`,`Remark`,`Createdate`,`Modifydate`,`Taskid` from use_wechat where id = #{value}
+		select `id`,`uid`,`Wechat`,`Password`,`Data62`,`LastDate`,`TotalTaskQuantity`,`TodayTaskQuantity`,`Stauts`,`Remark`,`Createdate`,`Modifydate`,`Taskid`,`randomid`,`sessionkey`,`deviceid`,`maxsynckey`,`uin`,`AutoAuthKey`,`Cookies`,`CurrentsyncKey`,`DeviceName`,`DeviceType`,`NickName`,`UserName`,`UserExt` from use_wechat where id = #{value}
 	</select>
 
 	<select id="list" resultType="com.bootdo.baseinfo.domain.WechatDO">
-		select `id`,`uid`,`Wechat`,`Password`,`Data62`,`LastDate`,`TotalTaskQuantity`,`TodayTaskQuantity`,`Stauts`,`Remark`,`Createdate`,`Modifydate`,`Taskid` from use_wechat
+		select `id`,`uid`,`Wechat`,`Password`,`Data62`,`LastDate`,`TotalTaskQuantity`,`TodayTaskQuantity`,`Stauts`,`Remark`,`Createdate`,`Modifydate`,`Taskid`,`randomid`,`sessionkey`,`deviceid`,`maxsynckey`,`uin`,`AutoAuthKey`,`Cookies`,`CurrentsyncKey`,`DeviceName`,`DeviceType`,`NickName`,`UserName`,`UserExt` from use_wechat
         <where>  
 		  		  <if test="id != null and id != ''"> and id = #{id} </if>
 		  		  <if test="uid != null and uid != ''"> and uid = #{uid} </if>
@@ -23,6 +23,19 @@
 		  		  <if test="createdate != null and createdate != ''"> and Createdate = #{createdate} </if>
 		  		  <if test="modifydate != null and modifydate != ''"> and Modifydate = #{modifydate} </if>
 		  		  <if test="taskid != null and taskid != ''"> and Taskid = #{taskid} </if>
+		  		  <if test="randomid != null and randomid != ''"> and randomid = #{randomid} </if>
+		  		  <if test="sessionkey != null and sessionkey != ''"> and sessionkey = #{sessionkey} </if>
+		  		  <if test="deviceid != null and deviceid != ''"> and deviceid = #{deviceid} </if>
+		  		  <if test="maxsynckey != null and maxsynckey != ''"> and maxsynckey = #{maxsynckey} </if>
+		  		  <if test="uin != null and uin != ''"> and uin = #{uin} </if>
+		  		  <if test="autoauthkey != null and autoauthkey != ''"> and AutoAuthKey = #{autoauthkey} </if>
+		  		  <if test="cookies != null and cookies != ''"> and Cookies = #{cookies} </if>
+		  		  <if test="currentsynckey != null and currentsynckey != ''"> and CurrentsyncKey = #{currentsynckey} </if>
+		  		  <if test="devicename != null and devicename != ''"> and DeviceName = #{devicename} </if>
+		  		  <if test="devicetype != null and devicetype != ''"> and DeviceType = #{devicetype} </if>
+		  		  <if test="nickname != null and nickname != ''"> and NickName = #{nickname} </if>
+		  		  <if test="username != null and username != ''"> and UserName = #{username} </if>
+		  		  <if test="userext != null and userext != ''"> and UserExt = #{userext} </if>
 		  		</where>
         <choose>
             <when test="sort != null and sort.trim() != ''">
@@ -53,6 +66,19 @@
 		  		  <if test="createdate != null and createdate != ''"> and Createdate = #{createdate} </if>
 		  		  <if test="modifydate != null and modifydate != ''"> and Modifydate = #{modifydate} </if>
 		  		  <if test="taskid != null and taskid != ''"> and Taskid = #{taskid} </if>
+		  		  <if test="randomid != null and randomid != ''"> and randomid = #{randomid} </if>
+		  		  <if test="sessionkey != null and sessionkey != ''"> and sessionkey = #{sessionkey} </if>
+		  		  <if test="deviceid != null and deviceid != ''"> and deviceid = #{deviceid} </if>
+		  		  <if test="maxsynckey != null and maxsynckey != ''"> and maxsynckey = #{maxsynckey} </if>
+		  		  <if test="uin != null and uin != ''"> and uin = #{uin} </if>
+		  		  <if test="autoauthkey != null and autoauthkey != ''"> and AutoAuthKey = #{autoauthkey} </if>
+		  		  <if test="cookies != null and cookies != ''"> and Cookies = #{cookies} </if>
+		  		  <if test="currentsynckey != null and currentsynckey != ''"> and CurrentsyncKey = #{currentsynckey} </if>
+		  		  <if test="devicename != null and devicename != ''"> and DeviceName = #{devicename} </if>
+		  		  <if test="devicetype != null and devicetype != ''"> and DeviceType = #{devicetype} </if>
+		  		  <if test="nickname != null and nickname != ''"> and NickName = #{nickname} </if>
+		  		  <if test="username != null and username != ''"> and UserName = #{username} </if>
+		  		  <if test="userext != null and userext != ''"> and UserExt = #{userext} </if>
 		  		</where>
 	</select>
 	 
@@ -70,7 +96,20 @@
 			`Remark`, 
 			`Createdate`, 
 			`Modifydate`, 
-			`Taskid`
+			`Taskid`, 
+			`randomid`, 
+			`sessionkey`, 
+			`deviceid`, 
+			`maxsynckey`, 
+			`uin`, 
+			`AutoAuthKey`, 
+			`Cookies`, 
+			`CurrentsyncKey`, 
+			`DeviceName`, 
+			`DeviceType`, 
+			`NickName`, 
+			`UserName`, 
+			`UserExt`
 		)
 		values
 		(
@@ -85,7 +124,20 @@
 			#{remark}, 
 			#{createdate}, 
 			#{modifydate}, 
-			#{taskid}
+			#{taskid}, 
+			#{randomid}, 
+			#{sessionkey}, 
+			#{deviceid}, 
+			#{maxsynckey}, 
+			#{uin}, 
+			#{autoauthkey}, 
+			#{cookies}, 
+			#{currentsynckey}, 
+			#{devicename}, 
+			#{devicetype}, 
+			#{nickname}, 
+			#{username}, 
+			#{userext}
 		)
 	</insert>
 	 
@@ -103,7 +155,20 @@
 			<if test="remark != null">`Remark` = #{remark}, </if>
 			<if test="createdate != null">`Createdate` = #{createdate}, </if>
 			<if test="modifydate != null">`Modifydate` = #{modifydate}, </if>
-			<if test="taskid != null">`Taskid` = #{taskid}</if>
+			<if test="taskid != null">`Taskid` = #{taskid}, </if>
+			<if test="randomid != null">`randomid` = #{randomid}, </if>
+			<if test="sessionkey != null">`sessionkey` = #{sessionkey}, </if>
+			<if test="deviceid != null">`deviceid` = #{deviceid}, </if>
+			<if test="maxsynckey != null">`maxsynckey` = #{maxsynckey}, </if>
+			<if test="uin != null">`uin` = #{uin}, </if>
+			<if test="autoauthkey != null">`AutoAuthKey` = #{autoauthkey}, </if>
+			<if test="cookies != null">`Cookies` = #{cookies}, </if>
+			<if test="currentsynckey != null">`CurrentsyncKey` = #{currentsynckey}, </if>
+			<if test="devicename != null">`DeviceName` = #{devicename}, </if>
+			<if test="devicetype != null">`DeviceType` = #{devicetype}, </if>
+			<if test="nickname != null">`NickName` = #{nickname}, </if>
+			<if test="username != null">`UserName` = #{username}, </if>
+			<if test="userext != null">`UserExt` = #{userext}</if>
 		</set>
 		where id = #{id}
 	</update>
@@ -118,24 +183,5 @@
 			#{id}
 		</foreach>
 	</delete>
-
-	<!--可以做任务的号-->
-	<select id="taskwxlist" resultType="com.bootdo.baseinfo.domain.WechatDO">
-		select `id`,`uid`,`Wechat`,`Password`,`Data62`,`LastDate`,`TotalTaskQuantity`,`TodayTaskQuantity`,`Stauts`,`Remark`,`Createdate`,`Modifydate`,`Taskid`
-		from use_wechat where Taskid is null and Stauts=1
-			<if test="lastdate != null and lastdate != ''"> and LastDate <![CDATA[ < ]]>  #{lastdate} </if>
-			<if test="todaytaskquantity != null and todaytaskquantity != ''"> and TodayTaskQuantity <![CDATA[ < ]]> #{todaytaskquantity} </if>
-		<choose>
-			<when test="sort != null and sort.trim() != ''">
-				order by ${sort} ${order}
-			</when>
-			<otherwise>
-				order by id desc
-			</otherwise>
-		</choose>
-		<if test="offset != null and limit != null">
-			limit #{offset}, #{limit}
-		</if>
-	</select>
 
 </mapper>

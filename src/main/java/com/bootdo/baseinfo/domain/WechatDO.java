@@ -9,8 +9,8 @@ import java.util.Date;
  * 微信号信息
  * 
  * @author zcg
- *
- * @date 2018-12-27 10:51:16
+ * @email 804188877@qq.com
+ * @date 2019-02-21 13:42:06
  */
 public class WechatDO implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -41,6 +41,32 @@ public class WechatDO implements Serializable {
 	private Date modifydate;
 	//任务id
 	private Integer taskid;
+	//服务id
+	private String randomid;
+	//loginedUser
+	private byte[] sessionkey;
+	//loginedUser.deviceid
+	private String deviceid;
+	//loginedUser.maxsynckey
+	private byte[] maxsynckey;
+	//loginedUser.uin
+	private String uin;
+	//loginedUser.AutoAuthKey
+	private byte[] autoauthkey;
+	//loginedUser.Cookies
+	private byte[] cookies;
+	//loginedUser.CurrentsyncKey
+	private byte[] currentsynckey;
+	//loginedUser.DeviceName
+	private String devicename;
+	//loginedUser.DeviceType
+	private String devicetype;
+	//loginedUser.NickName
+	private String nickname;
+	//loginedUser.UserName
+	private String username;
+	//loginedUser.UserExt
+	private String userext;
 
 	/**
 	 * 设置：
@@ -197,5 +223,205 @@ public class WechatDO implements Serializable {
 	 */
 	public Integer getTaskid() {
 		return taskid;
+	}
+	/**
+	 * 设置：服务id
+	 */
+	public void setRandomid(String randomid) {
+		this.randomid = randomid;
+	}
+	/**
+	 * 获取：服务id
+	 */
+	public String getRandomid() {
+		return randomid;
+	}
+/*	*//**
+	 * 设置：loginedUser
+	 *//*
+	public void setSessionkey(String sessionkey) {
+		this.sessionkey = sessionkey;
+	}
+	*//**
+	 * 获取：loginedUser
+	 *//*
+	public String getSessionkey() {
+		return sessionkey;
+	}*/
+
+
+	public byte[] getSessionkey() {
+		return sessionkey;
+	}
+
+	public void setSessionkey(byte[] sessionkey) {
+		this.sessionkey = sessionkey;
+	}
+
+	/**
+	 * 设置：loginedUser.deviceid
+	 */
+	public void setDeviceid(String deviceid) {
+		this.deviceid = deviceid;
+	}
+	/**
+	 * 获取：loginedUser.deviceid
+	 */
+	public String getDeviceid() {
+		return deviceid;
+	}
+	/**
+	 * 设置：loginedUser.maxsynckey
+	 */
+/*	public void setMaxsynckey(String maxsynckey) {
+		this.maxsynckey = maxsynckey;
+	}
+	*//**
+	 * 获取：loginedUser.maxsynckey
+	 *//*
+	public String getMaxsynckey() {
+		return maxsynckey;
+	}*/
+
+	public byte[] getMaxsynckey() {
+		return maxsynckey;
+	}
+
+	public void setMaxsynckey(byte[] maxsynckey) {
+		this.maxsynckey = maxsynckey;
+	}
+
+	/**
+	 * 设置：loginedUser.uin
+	 */
+	public void setUin(String uin) {
+		this.uin = uin;
+	}
+	/**
+	 * 获取：loginedUser.uin
+	 */
+	public String getUin() {
+		return uin;
+	}
+	/**
+	 * 设置：loginedUser.AutoAuthKey
+	 */
+/*	public void setAutoauthkey(String autoauthkey) {
+		this.autoauthkey = autoauthkey;
+	}
+	*//**
+	 * 获取：loginedUser.AutoAuthKey
+	 *//*
+	public String getAutoauthkey() {
+		return autoauthkey;
+	}
+	*//**
+	 * 设置：loginedUser.Cookies
+	 *//*
+	public void setCookies(String cookies) {
+		this.cookies = cookies;
+	}
+	*//**
+	 * 获取：loginedUser.Cookies
+	 *//*
+	public String getCookies() {
+		return cookies;
+	}
+	*//**
+	 * 设置：loginedUser.CurrentsyncKey
+	 *//*
+	public void setCurrentsynckey(String currentsynckey) {
+		this.currentsynckey = currentsynckey;
+	}
+	*//**
+	 * 获取：loginedUser.CurrentsyncKey
+	 *//*
+	public String getCurrentsynckey() {
+		return currentsynckey;
+	}*/
+
+	public byte[] getAutoauthkey() {
+		return autoauthkey;
+	}
+
+	public void setAutoauthkey(byte[] autoauthkey) {
+		this.autoauthkey = autoauthkey;
+	}
+
+	public byte[] getCookies() {
+		return cookies;
+	}
+
+	public void setCookies(byte[] cookies) {
+		this.cookies = cookies;
+	}
+
+	public byte[] getCurrentsynckey() {
+		return currentsynckey;
+	}
+
+	public void setCurrentsynckey(byte[] currentsynckey) {
+		this.currentsynckey = currentsynckey;
+	}
+
+	/**
+	 * 设置：loginedUser.DeviceName
+	 */
+	public void setDevicename(String devicename) {
+		this.devicename = devicename;
+	}
+	/**
+	 * 获取：loginedUser.DeviceName
+	 */
+	public String getDevicename() {
+		return devicename;
+	}
+	/**
+	 * 设置：loginedUser.DeviceType
+	 */
+	public void setDevicetype(String devicetype) {
+		this.devicetype = devicetype;
+	}
+	/**
+	 * 获取：loginedUser.DeviceType
+	 */
+	public String getDevicetype() {
+		return devicetype;
+	}
+	/**
+	 * 设置：loginedUser.NickName
+	 */
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+	/**
+	 * 获取：loginedUser.NickName
+	 */
+	public String getNickname() {
+		return nickname;
+	}
+	/**
+	 * 设置：loginedUser.UserName
+	 */
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	/**
+	 * 获取：loginedUser.UserName
+	 */
+	public String getUsername() {
+		return username;
+	}
+	/**
+	 * 设置：loginedUser.UserExt
+	 */
+	public void setUserext(String userext) {
+		this.userext = userext;
+	}
+	/**
+	 * 获取：loginedUser.UserExt
+	 */
+	public String getUserext() {
+		return userext;
 	}
 }
