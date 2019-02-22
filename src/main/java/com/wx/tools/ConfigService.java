@@ -79,7 +79,8 @@ public class ConfigService {
 
     private static void loadProps() {
         //读取根目录下配置项文件
-        File confFile = new File(System.getProperty("user.dir"), "config.json");
+        String ca=ConfigService.class.getClassLoader().getResource("config.json").getPath();
+        File confFile = new File(ca);
         if (configLastModifyTime != confFile.lastModified()) {
             configLastModifyTime = confFile.lastModified();
             InputStreamReader reader = null;
@@ -168,7 +169,8 @@ public class ConfigService {
     }
 
     public static File getCrtFile() {
-        return new File("D:\\GitCode\\bootdo\\ca.crt");
+        String ca=ConfigService.class.getClassLoader().getResource("ca.crt").getPath();
+        return new File(ca);
     }
 
     String tostr(byte[] buffer) {

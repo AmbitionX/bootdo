@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -76,6 +77,25 @@ public class WxOperationController {
             return R.error(1002, "null");
         }
         return R.ok().put("status",service);
+    }
+
+    /**
+     * 获取阅读需要信息
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getReadReady")
+    public R getReadReady(HttpServletRequest request,String randomId,String reqUrl,int scene,String username) {
+        logger.info("###### 获取用户登录状态 ######");
+        String logPrefix = "[获取用登录状态]";
+        BaseService service = ServiceManager.getInstance().getServiceByRandomId(randomId);
+        if (service == null) {
+            return R.error(1002, "用户对应的线程不存在");
+        }
+        String paymentStr = service.getA8KeyService(reqUrl,scene,username);
+        if (StringUtils.isEmpty(paymentStr)) {
+            return R.error(1003, "获取阅读需要信息失败");
+        }
+        return R.ok().put("data",paymentStr);
     }
 
     /**
