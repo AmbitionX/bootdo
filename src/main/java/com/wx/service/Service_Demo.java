@@ -18,8 +18,8 @@ public class Service_Demo extends BaseService {
 
 	@Override
 	public void parseMsg(Message msg) {
-		logger.info(msg.toString());
-		System.out.println(JSONObject.toJSON(msg));
+//		logger.info(msg.toString());
+//		System.out.println(JSONObject.toJSON(msg));
 	}
 
 	@Override
