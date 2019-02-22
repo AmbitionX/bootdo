@@ -35,6 +35,7 @@
             <li><input type="button" id="getQrCode" name="getQrCode" onclick="getQrCode()" value="获取二维码"/> </li>
             <li><input type="button" id="getQrCodeStatus" name="getQrCode" onclick="getQrCodeStatus()" value="获取二维码状态"/> </li>
             <li><input type="button" id="getLoginStatus" name="getLoginStatus" onclick="getLoginStatus()" value="获取登录状态"/> </li>
+            <li><input type="button" id="getReadReady" name="getReadReady" onclick="getReadReady()" value="获取阅读准备数据"/> </li>
             <li>平台使用用户绑定的微信号做任务，完成任务微信号获得佣金直接汇总到用户平台账户上.</li>
             <li>用户发起佣金提现，提现金额将在3个工作日内到账,用户获得现金收益.</li>
         </ul>
@@ -75,6 +76,14 @@
 
     function getLoginStatus(){
         $.post("http://localhost/wx/wxoperation/getLoginStatus?randomId="+$("#randomId").val(),function (data) {
+            if (data != null&&data.code==0) {
+                console.info(data);
+            }
+        });
+    }
+
+    function getReadReady(){
+        $.post("http://localhost/wx/wxoperation/getReadReady?randomId="+$("#randomId").val()+"&reqUrl=https://mp.weixin.qq.com/s/QA_qkiLjY_JKjaVdZLX6bg&scene=2&username=公众号",function (data) {
             if (data != null&&data.code==0) {
                 console.info(data);
             }
