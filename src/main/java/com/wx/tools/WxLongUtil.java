@@ -1,6 +1,10 @@
 package com.wx.tools;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bootdo.common.utils.JSONUtils;
+import com.bootdo.common.utils.StringUtils;
+import com.bootdo.util.HxHttpClient;
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 import com.wx.bean.CallBack;
@@ -695,7 +699,32 @@ public class WxLongUtil {
         params.put("Scene", scene);//Scene = 2 来源好友或群 必须设置来源的id 3 历史阅读 4 二维码连接 7 来源公众号 必须设置公众号的id
         params.put("Username", username);//来源 来源设置wxid 来源群id@chatroom 来源公众号gh_e09c57858a0c原始id
         params.put("ProtocolVer",1);//ProtocolVer 1-5
-        return shortServerRequest(233, params);
+
+        String reqJson = "";
+        try {
+            String a8kJson=shortServerRequest(233, params);
+            Map<String, Object> a8kMap = JSONUtils.jsonToMap(a8kJson);
+            if (a8kMap.size() > 0) {
+                Map<String,String> readReq=Maps.newHashMap();
+                StringBuilder fullUrl=new StringBuilder();
+                fullUrl.append(a8kMap.get("Url").toString());
+                String XWechatUin=a8kMap.get("XWechatUin").toString();
+                String XWechatKey=a8kMap.get("XWechatKey").toString();
+                if (StringUtils.isNotBlank(XWechatUin)) {
+//                    fullUrl.append("&X-WECHAT-UIN=" + XWechatUin);
+                    readReq.put("X-WECHAT-UIN", XWechatUin);
+                }
+                if (StringUtils.isNotBlank(XWechatKey)) {
+//                    fullUrl.append("&X-WECHAT-KEY=" + XWechatKey);
+                    readReq.put("X-WECHAT-KEY", XWechatKey);
+                }
+                reqJson=HxHttpClient.postBytes(fullUrl.toString(), JSONUtils.beanToJson(readReq));
+                return reqJson;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return reqJson;
     }
 
     public void getAllLabel(CallBack callBack) {
