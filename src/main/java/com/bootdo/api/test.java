@@ -99,7 +99,7 @@ public class test {
         }
         System.out.println("检查二维码状态：end 通过！");
 
-        System.out.println("登录>>WXQRCodeLogin>>"+ JSONObject.toJSON(ret));
+        System.out.println("登录>>WXQRCodeLogin>>"+ JSONObject.toJSON(ret)+"--->jsonMap："+ com.bootdo.common.utils.JSONUtils.beanToJson(jsonMap));
         qdPos.WXQRCodeLogin(x,jsonMap.get("user_name").toString(),jsonMap.get("password").toString(),ret);
         System.out.println("登录>>WXQRCodeLogin>>info"+ JSONObject.toJSON(ret));
 
@@ -115,7 +115,7 @@ public class test {
         String tokenLicecseSend = ret8.getValue().getString(0, "UTF-8");
         System.out.println("发送APP消息Info："+tokenLicecseSend);**/
 
-        System.out.println("\n获取url访问token："+qdPos.WXGetRequestToken(x,"郑州住房公积金管理中心","https://mp.weixin.qq.com/s/ORGbl1e_kiJK4enMVJMkRA",ret9));
+        System.out.println("\n获取url访问token："+qdPos.WXGetRequestToken(x,"yindongli2018","https://mp.weixin.qq.com/s/uhSa8QkqqqZ38iJYQMKDRQ",ret9));
         String tokenLicecseUrl = ret9.getValue().getString(0, "UTF-8");
         Map<String,Object> urlMap= Maps.newHashMap();
         json = ret9.getValue().getString(0, "UTF-8");
@@ -128,9 +128,12 @@ public class test {
             String info=urlMap.get("info").toString();
             Map<String,Object> infoMap= Maps.newHashMap();
             infoMap=com.bootdo.common.utils.JSONUtils.jsonToMap(info);
-            xWechatKey=infoMap.get("X-WECHAT-KEY").toString();
-            fullUrl=urlMap.get("full_url").toString();
-            uin=infoMap.get("X-WECHAT-UIN").toString();
+//            xWechatKey=infoMap.get("X-WECHAT-KEY").toString();
+//            fullUrl=urlMap.get("full_url").toString();
+//            uin=infoMap.get("X-WECHAT-UIN").toString();
+            xWechatKey="d79f64025a3eaf7a94e53c575fe5324b8b1d6f898155be18f7ad846b0dfce801b86140a3cabe6f789aeb4feaf351925366641b5b36cf36b9cbb06b5fc99c414569a1bd3ddaf9f9590f7c5ca0cacdb93b";
+            fullUrl="https://mp.weixin.qq.com/s?__biz=MzUyNTkyMDQ3MQ==&mid=2247484901&idx=3&sn=f1095f61587884331dc93e8927b53d44&ascene=7&devicetype=iPad+iPhone+OS9.3.3&version=16060520&nettype=WIFI&lang=zh_CN&fontScale=100&pass_ticket=h2aMjduhPk2oTmqkRowwYbayYbKBBrIM3FUFAfsQ7mjDu%2FcJk26zt%2BRamLOr5pjl&wx_header=1";
+            uin="ODk4OTc0NDAx";
         }
         System.out.println("获取url访问token Info：{"+tokenLicecseUrl+"},key:{"+xWechatKey+"},uin:{"+uin+"}");
 
@@ -141,20 +144,20 @@ public class test {
         System.out.println("访问url-info："+tokenLicecseVisit);
 
 
-        System.out.println("获取用户token："+qdPos.WXGetLoginToken(x,ret1));
-        String tokenLicecse = ret1.getValue().getString(0, "UTF-8");
-        System.out.println("用户token："+tokenLicecse);
-
-
-
-        System.out.println("获取用户62数据："+qdPos.WXGenerateWxDat(x,ret2));
-        String licecse62 = ret2.getValue().getString(0, "UTF-8");
-        System.out.println("获取用户62数据："+licecse62);
-
-        System.out.println("获取用户信息："+qdPos.WXGetContact(x, "s13686605193", ret3));
-        String tokenLicecse1 = ret3.getValue().getString(0, "UTF-8");
-        System.out.println("获取用户信息："+tokenLicecse1);
-
+//        System.out.println("获取用户token："+qdPos.WXGetLoginToken(x,ret1));
+//        String tokenLicecse = ret1.getValue().getString(0, "UTF-8");
+//        System.out.println("用户token："+tokenLicecse);
+//
+//
+//
+//        System.out.println("获取用户62数据："+qdPos.WXGenerateWxDat(x,ret2));
+//        String licecse62 = ret2.getValue().getString(0, "UTF-8");
+//        System.out.println("获取用户62数据："+licecse62);
+//
+//        System.out.println("获取用户信息："+qdPos.WXGetContact(x, "s13686605193", ret3));
+//        String tokenLicecse1 = ret3.getValue().getString(0, "UTF-8");
+//        System.out.println("获取用户信息："+tokenLicecse1);
+//
 //        System.out.println("获取标签列表："+qdPos.WXGetContactLabelList(x, ret4));
 //        String tokenLicecse12= ret4.getValue().getString(0, "UTF-8");
 //        System.out.println("获取标签列表info："+tokenLicecse12);
