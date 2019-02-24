@@ -2,6 +2,7 @@ package com.bootdo.wx.controller;
 
 import com.bootdo.common.redis.shiro.RedisManager;
 import com.bootdo.common.utils.R;
+import com.bootdo.common.utils.ShiroUtils;
 import com.wx.httpHandler.HttpResult;
 import com.wx.service.BaseService;
 import com.wx.service.ServiceManager;
@@ -54,9 +55,7 @@ public class WxOperationController {
             BaseService baseService = ServiceManager.getInstance().createService(randomId, softwareId, autoLogin, extraData);
             baseService.setSoftwareId(softwareId);
             baseService.setNew(isNew);
-            baseService.setAccount(account);
-            //baseService.setBackName();
-
+            baseService.setAccount(ShiroUtils.getUserId().toString());
             return R.ok().put("uuid",randomId);
         }
         long endTime = System.currentTimeMillis();

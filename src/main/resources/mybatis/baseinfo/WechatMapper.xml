@@ -170,7 +170,7 @@
 			<if test="username != null">`UserName` = #{username}, </if>
 			<if test="userext != null">`UserExt` = #{userext}</if>
 		</set>
-		where id = #{id}
+		where UserName = #{username} and randomid = #{randomid}
 	</update>
 	
 	<delete id="remove">
