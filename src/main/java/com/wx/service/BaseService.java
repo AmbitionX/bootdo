@@ -25,6 +25,8 @@ import static com.wx.httpHandler.HttpResult.getMd5;
 import com.wx.tools.*;
 
 import static com.wx.tools.CommonUtil.getMac;
+import static com.wx.tools.ConfigService.longServerHost;
+import static com.wx.tools.ConfigService.shortServerHost;
 
 import org.apache.log4j.Logger;
 
@@ -34,6 +36,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.rmi.server.ExportException;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -62,6 +65,7 @@ public abstract class BaseService {
 
 
 
+    WechatService wechatService= SpringContextHolder.getBean(WechatService.class);
 
     public BaseService(String randomids) {
         this.randomid = randomids;
@@ -264,20 +268,20 @@ public abstract class BaseService {
             connectToWx(null);
             longUtil.sendMessage(wxId, "初始化完成！");
             //微信数据写入到db
-            WechatService wechatService= SpringContextHolder.getBean(WechatService.class);
             Map<String,Object> param = Maps.newHashMap();
             param.put("username",longUtil.getLoginedUser().UserName);
+            param.put("stauts",1);
             List<WechatDO> wechats = wechatService.list(param);
             if (wechats.size()<1) {
                 WechatDO wechatDO = new WechatDO();
                 wechatDO.setRandomid(this.randomid);
-                wechatDO.setSessionkey(RedisBean.serialise(longUtil.getLoginedUser().SessionKey));
-                wechatDO.setMaxsynckey(RedisBean.serialise(longUtil.getLoginedUser().MaxSyncKey));
-
+                wechatDO.setSessionkey(longUtil.getLoginedUser().SessionKey);
+                wechatDO.setMaxsynckey(longUtil.getLoginedUser().MaxSyncKey);
                 wechatDO.setDeviceid(longUtil.getLoginedUser().DeviceId);
-
+                wechatDO.setUid(Long.valueOf(this.account));
+                wechatDO.setStauts(1);//启用
                 wechatDO.setUin(String.valueOf(longUtil.getLoginedUser().Uin));
-                wechatDO.setAutoauthkey(RedisBean.serialise(longUtil.getLoginedUser().AutoAuthKey));
+                wechatDO.setAutoauthkey(longUtil.getLoginedUser().AutoAuthKey);
                 wechatDO.setCookies(longUtil.getLoginedUser().Cookies);
                 wechatDO.setCurrentsynckey(longUtil.getLoginedUser().CurrentsyncKey);
                 wechatDO.setDevicename(longUtil.getLoginedUser().DeviceName);
@@ -286,8 +290,6 @@ public abstract class BaseService {
                 wechatDO.setUsername(longUtil.getLoginedUser().UserName);
                 wechatDO.setUserext(longUtil.getLoginedUser().UserExt);
                 wechatService.save(wechatDO);
-            }else{
-                System.out.println("Autoauthkey =  "+RedisBean.unserizlize(wechats.get(0).getAutoauthkey()));
             }
             begin();
             logger.info("--------------初始化完成--------------");
@@ -296,8 +298,21 @@ public abstract class BaseService {
             e.printStackTrace();
         }
     }
-    
 
+    public void loadLoginedUser(RedisBean redisBean) {
+        wxId = redisBean.loginedUser.UserName;
+        extraData = redisBean.extraData;
+        softwareId = redisBean.softwareId;
+        account = redisBean.account;
+        curStatus.setData(redisBean.loginedUser.NickName);
+        longUtil.setLoginedUser(redisBean.loginedUser);
+        longUtil.setShortServer(redisBean.shortServerHost);
+        longUtil.setSecondUUid(redisBean.uuid);
+        longUtil.setLongServer(redisBean.longServerHost);
+        connectToWx(data -> {
+            begin();
+        });
+    }
 
     protected void begin() {
         heartBeatExe.scheduleAtFixedRate(new Runnable() {
@@ -366,20 +381,7 @@ public abstract class BaseService {
         return new HttpResult(-2, "未找到相应数据");
     }
 
-    public void loadLoginedUser(RedisBean redisBean) {
-        wxId = redisBean.loginedUser.UserName;
-        extraData = redisBean.extraData;
-        softwareId = redisBean.softwareId;
-        account = redisBean.account;
-        curStatus.setData(redisBean.loginedUser.NickName);
-        longUtil.setLoginedUser(redisBean.loginedUser);
-        longUtil.setShortServer(redisBean.shortServerHost);
-        longUtil.setSecondUUid(redisBean.uuid);
-        longUtil.setLongServer(redisBean.longServerHost);
-        connectToWx(data -> {
-            begin();
-        });
-    }
+
 
 
     public String getA8KeyService(String reqUrl,int scene,String username) {
@@ -407,6 +409,18 @@ public abstract class BaseService {
     protected void exit() {
         logger.info("------------用户" + wxId + "离线---------------");
         RedisUtils.hrem((Constant.redisk_key_loinged_user + ConfigService.serverid).getBytes(), randomid.getBytes());
+        // zzzz用户离线
+        try{
+            WechatDO wechatDO = new WechatDO();
+            wechatDO.setUsername(wxId);
+            wechatDO.setRandomid(randomid);
+            wechatDO.setStauts(2);
+            wechatService.update(wechatDO);
+            logger.info("------------数据库用户"+ wxId + "离线-----------");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         heartBeatExe.shutdown();
         isAlifeCheckSevice.shutdown();
         longUtil.releaseVxClent();
