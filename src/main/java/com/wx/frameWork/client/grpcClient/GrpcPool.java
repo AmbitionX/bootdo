@@ -104,7 +104,7 @@ public class GrpcPool {
         return client;
     }
     public WechatMsg helloapiWechat(WechatMsg msg) {
-        return apiClient.getStub().helloWechat(msg);
+        return helloWechat(msg,0);
     }
     public WechatMsg helloWechat(WechatMsg msg) {
 

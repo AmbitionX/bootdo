@@ -98,6 +98,32 @@ public class WxOperationController {
     }
 
     /**
+     *
+     */
+    @ResponseBody
+    @RequestMapping(value = "/contactOperateService")
+    public R contactOperateService(HttpServletRequest request,String randomId) {
+        logger.info("###### 获取用户登录状态 ######");
+        String logPrefix = "[获取用登录状态]";
+        BaseService service = ServiceManager.getInstance().getServiceByRandomId(randomId);
+        if (service == null) {
+            return R.error(1002, "用户对应的线程不存在");
+        }
+        try {
+            String encrypUserName = "yindongli2018";
+            String ticket = "";
+            String content = "";
+            int type = 1;
+            int Scene = 3;
+            service.contactOperateService(encrypUserName, ticket, content, type, Scene);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.error();
+        }
+        return R.ok();
+    }
+
+    /**
      * 获取用户登录状态
      */
     @ResponseBody
