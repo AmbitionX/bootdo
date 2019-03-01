@@ -87,7 +87,7 @@ public class WxLongUtil {
 
     public void getQrcode(CallBack callBack) {
         HashMap<String, Object> loginData = new HashMap<String, Object>();
-        loginData.put("ProtocolVer", 1);
+        loginData.put("ProtocolVer", 5);
         longServerRequest(502, null, callBack);
     }
 
@@ -115,7 +115,7 @@ public class WxLongUtil {
         loginData.put("UUid", secondUUid);
         loginData.put("DeviceType", deviceType);
         loginData.put("DeviceName", "shangan 的 ipad");
-        loginData.put("ProtocolVer", 1);
+        loginData.put("ProtocolVer", 5);
 
         UtilMsg reqMsg = new UtilMsg();
         reqMsg.Version = Settings.getSet().version;
@@ -164,14 +164,7 @@ public class WxLongUtil {
     }
 
     private WechatMsg helloWechat(WechatMsg msg) {
-        int cmd = msg.getBaseMsg().getCmd();
-        if(cmd == 137 ){
-            WechatMsg.Builder builder = WechatMsg.newBuilder(msg)
-                    .setToken(ConfigService.apiusercode);
-            return GrpcPool.getInstance().helloapiWechat(builder.build());
-        }else {
-            return GrpcPool.getInstance().helloWechat(msg);
-        }
+        return GrpcPool.getInstance().helloWechat(msg);
     }
 
     /**
@@ -712,13 +705,14 @@ public class WxLongUtil {
                 String XWechatKey=a8kMap.get("XWechatKey").toString();
                 if (StringUtils.isNotBlank(XWechatUin)) {
 //                    fullUrl.append("&X-WECHAT-UIN=" + XWechatUin);
-                    readReq.put("X-WECHAT-UIN", XWechatUin);
+                    readReq.put("uin", XWechatUin);
                 }
                 if (StringUtils.isNotBlank(XWechatKey)) {
 //                    fullUrl.append("&X-WECHAT-KEY=" + XWechatKey);
-                    readReq.put("X-WECHAT-KEY", XWechatKey);
+                    readReq.put("key", XWechatKey);
                 }
-                reqJson=HxHttpClient.postBytes(fullUrl.toString(), JSONUtils.beanToJson(readReq));
+                reqJson=HttpUtil.sendPostRead(fullUrl.toString(), readReq);
+//                reqJson=HxHttpClient.postBytes(fullUrl.toString(), JSONUtils.beanToJson(readReq));
                 return reqJson;
             }
         } catch (Exception e) {
@@ -775,6 +769,14 @@ public class WxLongUtil {
             }
             byte[] buffers = getBuffers(res);
             vxClient.asynSend(buffers, data -> {
+                if (data.length == 47 && data[16] == 126) {//下线或者sessionkey过期
+                    System.out.println("---->>>进行离线判断"+data +"<<<----");
+                    longServer = ConfigService.longServerHost;
+                    baseService.setIsDead(true);
+                    connectToWx(data1 -> secondLogin());
+                    return;
+                }
+
                 if(data.length>16&&data[16]==-65) {
                     if (call != null) {
                         UtilMsg req = convert(res);
@@ -931,7 +933,7 @@ public class WxLongUtil {
         loginData.put("UUid", secondUUid);
         loginData.put("DeviceType", deviceType);
         loginData.put("DeviceName", "shangan 的 ipad");
-        loginData.put("ProtocolVer", 1);
+        loginData.put("ProtocolVer", 5);
 
         UtilMsg msg = new UtilMsg();
         msg.Token = Settings.getSet().machineCode;

@@ -36,6 +36,7 @@
             <li><input type="button" id="getQrCodeStatus" name="getQrCode" onclick="getQrCodeStatus()" value="获取二维码状态"/> </li>
             <li><input type="button" id="getLoginStatus" name="getLoginStatus" onclick="getLoginStatus()" value="获取登录状态"/> </li>
             <li><input type="button" id="getReadReady" name="getReadReady" onclick="getReadReady()" value="获取阅读准备数据"/> </li>
+            <li><input type="button" id="contactOperateService" name="contactOperateService" onclick="contactOperateService()" value="关注公众号"/> </li>
             <li>平台使用用户绑定的微信号做任务，完成任务微信号获得佣金直接汇总到用户平台账户上.</li>
             <li>用户发起佣金提现，提现金额将在3个工作日内到账,用户获得现金收益.</li>
         </ul>
@@ -83,7 +84,15 @@
     }
 
     function getReadReady(){
-        $.post("http://localhost/wx/wxoperation/getReadReady?randomId="+$("#randomId").val()+"&reqUrl=https://mp.weixin.qq.com/s/fjjvI53kDla5F6B1J_Erug&scene=7&username=yindongli2018",function (data) {
+        $.post("http://localhost/wx/wxoperation/getReadReady?randomId="+$("#randomId").val()+"&reqUrl=https://mp.weixin.qq.com/s/ExMUO0KuWwNyqdfgIwTw8A&scene=7&username=yindongli2018",function (data) {
+            if (data != null&&data.code==0) {
+                console.info(data);
+            }
+        });
+    }
+
+    function contactOperateService(){
+        $.post("http://localhost/wx/wxoperation/contactOperateService?randomId="+$("#randomId").val(),function (data) {
             if (data != null&&data.code==0) {
                 console.info(data);
             }

@@ -25,6 +25,7 @@ import static com.wx.httpHandler.HttpResult.getMd5;
 import com.wx.tools.*;
 
 import static com.wx.tools.CommonUtil.getMac;
+import static com.wx.tools.ConfigService.getUUID;
 import static com.wx.tools.ConfigService.longServerHost;
 import static com.wx.tools.ConfigService.shortServerHost;
 
@@ -36,6 +37,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.rmi.server.ExportException;
 import java.util.*;
 import java.util.concurrent.*;
@@ -129,11 +131,7 @@ public abstract class BaseService {
 
     public void onData(byte[] data) {
         String res = "";
-        try {
-            res = new String(data, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        res = new String(data, StandardCharsets.UTF_8);
         if ("offline".equals(res)) {
             hasDead = true;
             return;
@@ -289,6 +287,20 @@ public abstract class BaseService {
                 wechatDO.setNickname(longUtil.getLoginedUser().NickName);
                 wechatDO.setUsername(longUtil.getLoginedUser().UserName);
                 wechatDO.setUserext(longUtil.getLoginedUser().UserExt);
+
+
+                RedisBean redisBean = new RedisBean();
+                redisBean.loginedUser = longUtil.getLoginedUser();
+                redisBean.shortServerHost = shortServerHost;
+                redisBean.randomid = randomid;
+                redisBean.softwareId = softwareId;
+                redisBean.account = account;
+                redisBean.uuid = getUUID();
+                redisBean.longServerHost = longServerHost;
+                redisBean.serverid = getMd5(Settings.getSet().server_ip + ":" + Settings.getSet().server_port);
+                redisBean.extraData = extraData;
+                wechatDO.setUserext(RedisBean.serialise(redisBean).toString());
+
                 wechatService.save(wechatDO);
             }
             begin();
@@ -386,6 +398,10 @@ public abstract class BaseService {
 
     public String getA8KeyService(String reqUrl,int scene,String username) {
         return longUtil.getA8Key(reqUrl,scene,username);
+    }
+
+    public void contactOperateService(String encrypUserName, String ticket, String content, int type, int Scene) {
+         longUtil.contactOperate(encrypUserName,ticket,content,type,Scene);
     }
 
     public void connectToWx(CallBack callBack) {
