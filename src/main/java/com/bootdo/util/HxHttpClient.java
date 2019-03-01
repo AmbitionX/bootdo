@@ -75,6 +75,44 @@ public class HxHttpClient {
     }
 
     /**
+     * @param url 请求的全路径 例如：http://localhost:8088/json.html
+     * @return 返回json字符串
+     */
+    public static String getByHeader(String url,Map<String,String> map) {
+        String returnStr = "";
+        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        try {
+            HttpGet httpGet = new HttpGet(url);
+            /**
+             * setConnectTimeout(20000)：设置连接超时时间，单位毫秒。
+             * setConnectionRequestTimeout(20000) 设置从connect Manager获取Connection 超时时间，单位毫秒。这个属性是新加的属性，因为目前版本是可以共享连接池的
+             * setSocketTimeout(20000) 请求获取数据的超时时间，单位毫秒。 如果访问一个接口，多少时间内无法返回数据，就直接放弃此次调用。
+             */
+            RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(20000).setConnectionRequestTimeout(20000).setConnectTimeout(20000).build();//设置请求和传输超时时间
+            httpGet.setConfig(requestConfig);
+            HttpResponse response = httpClient.execute(httpGet);
+            /*
+             * 判断HTTP的返回状态码，如果正确继续解析返回的数据
+             */
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {//HttpStatus.SC_OK=200
+                returnStr = EntityUtils.toString(response.getEntity());
+            } else {
+                returnStr = "{\"code\":\"500\",\"msg\":\"请求地址异常("+response.getStatusLine().getStatusCode()+")\",\"content\":\"\",\"extendData\":\"\"}";
+                logger.info(">>>>>>>httpClient Get 请求地址异常---》url:" + url);
+            }
+        } catch (ClientProtocolException e) {
+            logger.error(">>>>>>>httpClient Get ClientProtocolException 异常---》" + e.getMessage());
+            returnStr = "{\"code\":\"601\",\"msg\":\"请求地址异常\",\"content\":\"\",\"extendData\":\"\"}";
+            logger.info(">>>>>>>httpClient Get ClientProtocolException 异常---》url:" + url);
+        } catch (IOException e) {
+            logger.error(">>>>>>>httpClient Get IOException 异常---》" + e.getMessage());
+            returnStr = "{\"code\":\"602\",\"msg\":\"IO异常\",\"content\":\"\",\"extendData\":\"\"}";
+            logger.info(">>>>>>>httpClient Get IOException 异常---》url:" + url);
+        }
+        return returnStr;
+    }
+
+    /**
      * 表单方式请求
      * @param url            请求的全路径 例如：http://localhost:8088/json.html
      * @param postParameters 使用post的方式请求的参数，此参数为一个map
@@ -207,6 +245,7 @@ public class HxHttpClient {
             ByteArrayEntity entity = new ByteArrayEntity(json.getBytes());
 
 
+
             // 此处设置请求参数的编码为 utf-8
             httpPost.setEntity(entity);
             HttpResponse response = httpClient.execute(httpPost);
@@ -231,6 +270,14 @@ public class HxHttpClient {
         return returnStr;
     }
 
+    private static int[] byte2Int(byte[] bys) {
+        int[] res = new int[bys.length];
+        for (int x = 0; x < bys.length; x++) {
+            res[x] = bys[x] & 0xff;
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         String xkey = "bd28fb68c380f98a3c23b934be97014acc236c95d62bccc1c24e2db9e8a34dd5cd1a531bce3118fa119b7d0041dcf13ca1eb5d84d5f49f5754154aa52aba6aee9c8862d8ae4c8b479a0a054093eac594";
         String uin = "ODk4OTc0NDAx";
@@ -238,11 +285,11 @@ public class HxHttpClient {
 //                "&X-WECHAT-KEY=" +xkey+
 //                "&X-WECHAT-UIN="+uin;
         Map<String,String> map= Maps.newHashMap();
-        map.put("X-WECHAT-KEY", xkey);
-        map.put("X-WECHAT-UIN", uin);
+        map.put("key", xkey);
+        map.put("uin", uin);
         String json = JSONUtils.beanToJson(map);
-        //byte方式
-        send(reqUrl, json.getBytes());
+        //byte方式    这里main方法直接调下面的方法 post 各种方式等下 语音说， 好
+        getByHeader(reqUrl, map);
         //form方式
 //        post(reqUrl, map);
         //json
@@ -258,10 +305,9 @@ public class HxHttpClient {
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setDoOutput(true);
             con.setDoInput(true);
-            con.setRequestMethod("GET");
-            OutputStream os = con.getOutputStream();
-            os.write(data);
-            os.flush();
+//            OutputStream os = con.getOutputStream();
+//            os.write(data);
+//            os.flush();
             InputStream is = con.getInputStream();
             int x = 0;
             byte[] bys = new byte[1024];
@@ -271,7 +317,7 @@ public class HxHttpClient {
                 bos.flush();
             }
             bos.close();
-            os.close();
+//            os.close();
             is.close();
             byte[] vxRes = bos.toByteArray();
             String ret = new String(vxRes);
