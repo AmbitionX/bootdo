@@ -113,7 +113,7 @@ public class GrpcPool {
 
     public WechatMsg helloWechat(WechatMsg msg, int tryTime) {
         if (tryTime >= 5) {
-            logger.info("GRPC 调用异常!  cmd:" + msg.getBaseMsg().getCmd() + "    msg long head:" + Arrays.toString(msg.getBaseMsg().getLongHead().toByteArray()) + "    msg long payload:" + Arrays.toString(msg.getBaseMsg().getPayloads().toByteArray()));
+            logger.info("GRPC 调用异常!  cmd:" + msg.getBaseMsg().getCmd() + "    msg long head:" + Arrays.toString(msg.getBaseMsg().getLongHead().toByteArray()) + "    msg long payload:" + msg.getBaseMsg().getPayloads().toStringUtf8());
             return null;
         }
         tryTime++;

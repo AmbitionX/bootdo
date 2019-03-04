@@ -31,6 +31,17 @@ public class test {
         Wxxy qdPos=Wxxy.INSTANCE;
         Pointer obj = new Pointer(200);
 
+        if (true) {
+            String xWechatKey="d79f64025a3eaf7a94e53c575fe5324b8b1d6f898155be18f7ad846b0dfce801b86140a3cabe6f789aeb4feaf351925366641b5b36cf36b9cbb06b5fc99c414569a1bd3ddaf9f9590f7c5ca0cacdb93b";
+            String fullUrl="https://mp.weixin.qq.com/s?__biz=MzUyNTkyMDQ3MQ==&mid=2247484901&idx=3&sn=f1095f61587884331dc93e8927b53d44&ascene=7&devicetype=iPad+iPhone+OS9.3.3&version=16060520&nettype=WIFI&lang=zh_CN&fontScale=100&pass_ticket=h2aMjduhPk2oTmqkRowwYbayYbKBBrIM3FUFAfsQ7mjDu%2FcJk26zt%2BRamLOr5pjl&wx_header=1";
+            String uin="ODk4OTc0NDAx";
+            PointerByReference ret10 = new PointerByReference();
+            System.out.println("\n访问url："+qdPos.WXRequestUrl(0,fullUrl,xWechatKey,uin,ret10));
+            String tokenLicecseVisit = ret10.getValue().getString(0, "UTF-8");
+            System.out.println("访问url-info："+tokenLicecseVisit);
+            return ;
+        }
+
         ByReference aa=new PointerByReference();
         int[] a={30,1,3,100};
         Memory mymem1 = new Memory(16);
