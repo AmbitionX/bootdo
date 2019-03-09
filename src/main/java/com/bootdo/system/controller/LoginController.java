@@ -11,9 +11,10 @@ import com.bootdo.common.utils.R;
 import com.bootdo.common.utils.ShiroUtils;
 import com.bootdo.system.domain.MenuDO;
 import com.bootdo.system.service.MenuService;
-import com.wx.service.BaseService;
-import com.wx.service.ServiceManager;
-import io.swagger.models.auth.In;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.wx.demo.frameWork.protocol.ServiceManagerDemo;
+import com.wx.demo.frameWork.protocol.WechatServiceGrpc;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -26,9 +27,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
+import java.util.Set;
 
 @Controller
 public class LoginController extends BaseController {
@@ -103,8 +107,19 @@ public class LoginController extends BaseController {
     }
 
     @GetMapping("/main")
-    String main() {
-        return "main";
+    ModelAndView main() {
+        Map<String, WechatServiceGrpc> serviceByRandomMap = ServiceManagerDemo.getInstance().getServiceByRandomMap();
+        Set set=serviceByRandomMap.keySet();
+        Iterator it=set.iterator();
+        List randomids= Lists.newArrayList();
+        while (it.hasNext()) {
+            String key=it.next().toString();
+            randomids.add(key);
+        }
+        Map<String,List> ret= Maps.newConcurrentMap();
+        ret.put("randomIds", randomids);
+
+        return new ModelAndView("main",ret);
     }
 
 }

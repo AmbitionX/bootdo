@@ -25,6 +25,9 @@
             <input type="hidden" id="randomId" name="randomId"></input>
             <div id="qrcodeUUID"></div>
             <img id="qrImg" src="" width="150px" height="150px" alt="微信登录二维码" />
+            <div id="existRandomIds">
+
+            </div>
 
 
         </ul>
@@ -48,43 +51,120 @@
 <script th:inline="javascript"> var ctx = [[@{/}]] ; </script>
 <script type="text/javascript">
     var ind = "";
+    var randomIds='${randomIds}';
+
+    handleRandomIds();
+
+    function handleRandomIds() {
+        $("#existRandomIds").empty();
+        $(randomIds).each(function(index,element){
+            $("#existRandomIds").append("<p>"+element+"<p>");
+        })
+
+    }
+
+
     function getQrCode(){
-        $.post("http://localhost/wx/wxoperation/login_qrcode?account=asd&softwareId=666&autoLogin=true&extraData=null&d="+new Date(),function (data) {
-            console.info(data);
-            if (data != null) {
-                $("#qrcodeUUID").html(data.uuid);
-                $("#randomId").val(data.uuid);
-
-                ind=setInterval(getQrCodeStatus, 1000);
-
-            }
+        $.ajax({
+            type: 'POST',
+            contentType:"application/json;charset=utf-8",
+            url: "http://localhost/wx/wxoperation/login_qrcode",
+            data:JSON.stringify({
+                randomId: "asdf54wq6qwe65r4651aasdf",
+                account: "asd",
+                softwareId: "666",
+                autoLogin: true,
+                protocolVer: 3,
+                extraData: null,
+                cmd: 502,
+                now: new Date().getTime() // 注意不要在此行增加逗号
+            }),
+            success: function (data) {
+                console.info(data);
+                if (data != null) {
+                    $("#qrcodeUUID").html(data.uuid);
+                    $("#randomId").val(data.uuid);
+                    var qrImg=data.data.retdata;
+                    console.info(qrImg);
+                    if (qrImg != null&&qrImg!='') {
+                        $("#qrImg").attr('src',qrImg);
+                    }
+                }
+            },
+            dataType: "JSON"
         });
     }
 
     function getQrCodeStatus(){
-        $.post("http://localhost/wx/wxoperation/login_status?account=asd&softwareId=666&autoLogin=true&extraData=null&randomId="+$("#randomId").val(),function (data) {
-            if (data != null&&data.code==0) {
-                var qrImg=data.status.state.ImgBuf;
-                console.info(qrImg);
-                if (qrImg != null&&qrImg!='') {
-                    qrImg = 'data:image/png;base64,' + qrImg;
-                    $("#qrImg").attr('src',qrImg);
-                    clearInterval(ind);
+        $.ajax({
+            type: 'POST',
+            contentType:"application/json;charset=utf-8",
+            url: "http://localhost/wx/wxoperation/login_status",
+            data:JSON.stringify({
+                randomId: $("#randomId").val(),
+                account: "asd",
+                softwareId: "666",
+                autoLogin: true,
+                extraData: null,
+                protocolVer: 3,
+                cmd: 6666,
+                now: new Date().getTime() // 注意不要在此行增加逗号
+            }),
+            success: function (data) {
+                if (data != null&&data.code==0) {
+                    var qrImg=data.status.state.ImgBuf;
+                    console.info(qrImg);
+                    if (qrImg != null&&qrImg!='') {
+                        qrImg = 'data:image/png;base64,' + qrImg;
+                        $("#qrImg").attr('src',qrImg);
+                        clearInterval(ind);
+                    }
                 }
-            }
+            },
+            dataType: "JSON"
         });
     }
 
-    function getLoginStatus(){
-        $.post("http://localhost/wx/wxoperation/getLoginStatus?randomId="+$("#randomId").val(),function (data) {
+    function getReadReady(){
+        $.ajax({
+            type: 'POST',
+            contentType:"application/json;charset=utf-8",
+            url: "http://localhost/wx/wxoperation/getReadReady",
+            data:JSON.stringify({
+                randomId: $("#randomId").val(),
+                account: "asd",
+                softwareId: "666",
+                autoLogin: true,
+                extraData: null,
+                protocolVer: 3,
+                reqUrl: "https://mp.weixin.qq.com/s/Xt97D7XZa2KMXHZmDmB-5Q",
+                scene: "7",
+                username: "yindongli2018",
+                cmd: 777,
+                now: new Date().getTime() // 注意不要在此行增加逗号
+            }),
+            success: function (data) {
+                if (data != null&&data.code==0) {
+                    var qrImg=data.status.state.ImgBuf;
+                    console.info(qrImg);
+                    if (qrImg != null&&qrImg!='') {
+                        qrImg = 'data:image/png;base64,' + qrImg;
+                        $("#qrImg").attr('src',qrImg);
+                        clearInterval(ind);
+                    }
+                }
+            },
+            dataType: "JSON"
+        });
+        $.post("?randomId="+$("#randomId").val()+"&reqUrl=https://mp.weixin.qq.com/s/ExMUO0KuWwNyqdfgIwTw8A&scene=7&username=yindongli2018",function (data) {
             if (data != null&&data.code==0) {
                 console.info(data);
             }
         });
     }
 
-    function getReadReady(){
-        $.post("http://localhost/wx/wxoperation/getReadReady?randomId="+$("#randomId").val()+"&reqUrl=https://mp.weixin.qq.com/s/ExMUO0KuWwNyqdfgIwTw8A&scene=7&username=yindongli2018",function (data) {
+    function getLoginStatus(){
+        $.post("http://localhost/wx/wxoperation/getLoginStatus?randomId="+$("#randomId").val(),function (data) {
             if (data != null&&data.code==0) {
                 console.info(data);
             }
