@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +47,8 @@ public class SettleAccountsJobServiceImpl implements SettleAccountsJobService {
     @Transactional
     @Override
     public int run(TaskinfoDO taskinfoDO) {
+        Date now = new Date();
+        logger.info("------------>>> 执行结算任务 <<<------------cc" + now);
         int num = 0;
         try {
             // 获取结算规则
@@ -61,7 +64,15 @@ public class SettleAccountsJobServiceImpl implements SettleAccountsJobService {
                     BigDecimal frontAccount = new BigDecimal("0.00");
                     AccountDO accountDO = null;
                     int j = 0;
-                    BigDecimal secondmoney = settleAccountModels.get(i).getPrice().multiply(secondratio).setScale(2);
+                    BigDecimal price = new BigDecimal(settleAccountModels.get(i).getPrice());
+
+                    BigDecimal secondmoney = new BigDecimal(0);
+                    try {
+                        secondmoney = price.multiply(secondratio).setScale(2);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                     // 二级用户结算
                     while (j < 3) {
                         accountDO = accountDao.getByUid(settleAccountModels.get(i).getUid());
@@ -88,7 +99,12 @@ public class SettleAccountsJobServiceImpl implements SettleAccountsJobService {
                         AccountDO accountDO1 = null;
                         BigDecimal frontAccount1 = new BigDecimal("0.00");
                         int m = 0;
-                        BigDecimal topmoney = settleAccountModels.get(i).getPrice().multiply(topratio).setScale(2);
+                        BigDecimal topmoney = new BigDecimal(0);
+                        try {
+                            topmoney = price.multiply(topratio).setScale(2);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         while (m < 3) {
                             accountDO1 = accountDao.getByUid(settleAccountModels.get(i).getParentid());
                             frontAccount1 = accountDO1.getUsemoney();

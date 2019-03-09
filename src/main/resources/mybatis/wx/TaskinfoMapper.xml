@@ -83,8 +83,7 @@
 			`FinishNum`, 
 			`sort`,
 			`Modifydate`,
-			`settletype`,
-			`settlenum`
+			`settletype`
 		)
 		values
 		(
@@ -102,8 +101,7 @@
 			#{finishnum}, 
 			#{sort},
 			#{modifydate},
-			#{settletype},
-			#{settlenum}
+			#{settletype}
 		)
 	</insert>
 	 
@@ -145,8 +143,9 @@
 	<select id="waitTaskList" resultType="com.bootdo.wx.domain.TaskinfoDO">
 		select `id`,`url`,`WxName`,`WxId`,`uin`,`key`,`TaskType`,`Price`,`Num`,`TotalMoney`,`taskPeriod`,`Stauts`,`FinishNum`,`sort`,
 		`Createdate`,`Modifydate`,`settletype`,`settlenum` from wx_taskinfo
-		where Stauts = 1 order by sort desc,Createdate asc
+		where Stauts = 1 or Stauts =3 order by Stauts desc,sort desc,Createdate asc
 	</select>
+
 	<!-- 获取待结算任务列表 -->
 	<select id="waitSettleTaskList" resultType="com.bootdo.wx.domain.TaskinfoDO">
 		select `id`,`url`,`WxName`,`WxId`,`uin`,`key`,`TaskType`,`Price`,`Num`,`TotalMoney`,`taskPeriod`,`Stauts`,`FinishNum`,`sort`,

@@ -76,14 +76,15 @@ public class TaskinfoServiceImpl implements TaskinfoService {
 			// 设置任务结算方式
 			taskinfo.setSettletype(Integer.parseInt(configDos.get(0).getValue()));
 
-			Map<String,Object> taskMap = Maps.newHashMap();
+		/*	Map<String,Object> taskMap = Maps.newHashMap();
 			taskMap.put("stauts","1");
-			List<TaskinfoDO> taskinfoListdb = taskinfoDao.list(taskMap);
+			List<TaskinfoDO> taskinfoListdb = taskinfoDao.list(taskMap);*/
 			// 1 是否有未开始的任务在排队
 			taskinfoDao.save(taskinfo);
-			if(taskinfoListdb.size() != 0){ // 进入排队状态
+		//	if(taskinfoListdb.size() != 0){ // 进入排队状态
 				taskinfo.setStauts(1);
-			}else {// 2 开始任务前，判断是否有足够的微信号, 冷却时间、当日上限数量、状态及绑定任务
+		//	}
+			 /*else {// 2 开始任务前，判断是否有足够的微信号, 冷却时间、当日上限数量、状态及绑定任务
 
 				configMap.put("key","cdtime");
 				configDos = configDao.list(configMap);
@@ -110,9 +111,10 @@ public class TaskinfoServiceImpl implements TaskinfoService {
 					}
 					logger.info("------------->>>完成微信号与任务的绑定<<<---------------");
 					// 绑定完任务，开始做任务 ----------------------------功能待开发-------------------------------
+					int count = 0; //成功次数
                     if(taskinfo.getTasktype().equals(1)){//阅读
                         for(WechatDO wxid: wechatListdb) {
-                            int count = 0; //成功次数
+
                             BaseService service = ServiceManager.getInstance().getServiceByRandomId(wxid.getRandomid());
                             String paymentStr = service.getA8KeyService(taskinfo.getUrl(),7,taskinfo.getWxname());
 
@@ -130,9 +132,8 @@ public class TaskinfoServiceImpl implements TaskinfoService {
                                 count=count+1;
                             }
                         }
-                    }else if(taskinfo.getTasktype().equals(2)){//点赞
+                    } else if(taskinfo.getTasktype().equals(2)) {//点赞
 						for(WechatDO wxid: wechatListdb) {
-							int count = 0; //成功次数
 							BaseService service = ServiceManager.getInstance().getServiceByRandomId(wxid.getRandomid());
 							String paymentStr = service.getA8KeyService(taskinfo.getUrl(),7,taskinfo.getWxname());
 
@@ -150,9 +151,8 @@ public class TaskinfoServiceImpl implements TaskinfoService {
 								count=count+1;
 							}
 						}
-                    }else if(taskinfo.getTasktype().equals(3)){//关注
+                    } else if(taskinfo.getTasktype().equals(3)) {//关注
 						for(WechatDO wxid: wechatListdb) {
-							int count = 0; //成功次数
 							BaseService service = ServiceManager.getInstance().getServiceByRandomId(wxid.getRandomid());
 							String paymentStr = service.getA8KeyService(taskinfo.getUrl(),7,taskinfo.getWxname());
 
@@ -173,9 +173,10 @@ public class TaskinfoServiceImpl implements TaskinfoService {
                     }
 					//----------------------------------------------------任务结束---------------------------------
 
-
+					logger.info("------------->>>完成任务 解除微信号与任务的绑定,微信号开始计时冷却<<<---------------");
                     //------------ 任务结束，微信号开始计时冷却、执行任务数量累计、解除绑定 ，任务状态 ------------------
                     taskinfo.setStauts(5); //已完成
+					taskinfo.setFinishnum(count);//完成数量
                     Date now = new Date();
                     for(int i=0;i<=wechatListdb.size();i++){
                         WechatDO wechatDO = wechatListdb.get(i);
@@ -189,7 +190,7 @@ public class TaskinfoServiceImpl implements TaskinfoService {
 				}
 
 
-			}
+			}*/
 			taskinfoDao.update(taskinfo);
 			return R.ok();
 		}catch (Exception e){

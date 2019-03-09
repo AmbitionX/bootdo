@@ -86,8 +86,7 @@ public class WxLongUtil {
     }
 
     public void getQrcode(CallBack callBack) {
-        HashMap<String, Object> loginData = new HashMap<String, Object>();
-        loginData.put("ProtocolVer", 5);
+
         longServerRequest(502, null, callBack);
     }
 
@@ -741,7 +740,12 @@ public class WxLongUtil {
         longServerRequest(212, params, call);
     }
 
-    public void longServerRequest(int code, HashMap<String, Object> params, CallBack call) {
+    public void longServerRequest(int code, HashMap<String, Object> paramss, CallBack call) {
+        HashMap<String, Object> params = paramss;
+        if (params == null){
+            params = new HashMap<String, Object>();
+            params.put("ProtocolVer", 1);
+        }
         try {
             UtilMsg msg = new UtilMsg();
             msg.Token = Settings.getSet().machineCode;
@@ -933,7 +937,7 @@ public class WxLongUtil {
         loginData.put("UUid", secondUUid);
         loginData.put("DeviceType", deviceType);
         loginData.put("DeviceName", "shangan 的 ipad");
-        loginData.put("ProtocolVer", 5);
+        loginData.put("ProtocolVer", 1);
 
         UtilMsg msg = new UtilMsg();
         msg.Token = Settings.getSet().machineCode;
