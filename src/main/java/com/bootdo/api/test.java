@@ -161,9 +161,9 @@ public class test {
 //
 //
 //
-//        System.out.println("获取用户62数据："+qdPos.WXGenerateWxDat(x,ret2));
-//        String licecse62 = ret2.getValue().getString(0, "UTF-8");
-//        System.out.println("获取用户62数据："+licecse62);
+        System.out.println("获取用户62数据："+qdPos.WXGenerateWxDat(x,ret2));
+        String licecse62 = ret2.getValue().getString(0, "UTF-8");
+        System.out.println("获取用户62数据："+licecse62);
 //
 //        System.out.println("获取用户信息："+qdPos.WXGetContact(x, "s13686605193", ret3));
 //        String tokenLicecse1 = ret3.getValue().getString(0, "UTF-8");
