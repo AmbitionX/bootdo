@@ -1,22 +1,25 @@
 package com.bootdo.wx.controller;
 
-import com.bootdo.common.redis.shiro.RedisManager;
 import com.bootdo.common.utils.R;
 import com.bootdo.common.utils.ShiroUtils;
-import com.wx.httpHandler.HttpResult;
-import com.wx.service.BaseService;
-import com.wx.service.ServiceManager;
+import com.wx.demo.frameWork.protocol.CommonApi;
+import com.wx.demo.frameWork.protocol.ServiceManagerDemo;
+import com.wx.demo.frameWork.protocol.WechatServiceGrpc;
+import com.wx.demo.service.BaseService;
+import com.wx.demo.service.ServiceManager;
+import com.wx.demo.wechatapi.model.ModelReturn;
+import com.wx.demo.wechatapi.model.WechatApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 /**
@@ -33,6 +36,7 @@ public class WxOperationController {
 
     @Autowired
     private static Logger logger = LoggerFactory.getLogger(WxOperationController.class);
+    private CommonApi commonApi = CommonApi.getInstance();
 /*    @Autowired
     private RedisManager redisManager;
     */
@@ -42,25 +46,15 @@ public class WxOperationController {
      */
     @ResponseBody
     @PostMapping(value = "/login_qrcode")
-    public R getLoginQrcode(HttpServletRequest request,String account,String randomId,String softwareId,
-                            Boolean autoLogin,String extraData) {
+    public R getLoginQrcode(HttpServletRequest request,@RequestBody WechatApi getLoginQrcode) {
         logger.info("###### 开始获取户登录二维码 ######");
         long startTime = System.currentTimeMillis();
         String logPrefix = "[获取用登录二维码]";
         boolean isNew;
-        randomId= UUID.randomUUID().toString();
-        BaseService service = ServiceManager.getInstance().getServiceByRandomId(randomId);
-        if (service == null) {
-            isNew = true;
-            BaseService baseService = ServiceManager.getInstance().createService(randomId, softwareId, autoLogin, extraData);
-            baseService.setSoftwareId(softwareId);
-            baseService.setNew(isNew);
-            baseService.setAccount(ShiroUtils.getUserId().toString());
-            return R.ok().put("uuid",randomId);
-        }
-        long endTime = System.currentTimeMillis();
-        logger.info("{}randomId:{}, 耗时：{} ms", logPrefix, randomId, endTime - startTime);
-        return R.ok().put("uuid",randomId);
+
+        ModelReturn modelReturn = commonApi.execute(getLoginQrcode);
+
+        return R.ok().put("data",modelReturn).put("uuid",getLoginQrcode.getRandomId());
     }
 
     /**
@@ -68,14 +62,11 @@ public class WxOperationController {
      */
     @ResponseBody
     @RequestMapping(value = "/login_status")
-    public R getLoginState(HttpServletRequest request,String randomId) {
+    public R getLoginState(HttpServletRequest request,@RequestBody WechatApi getLoginQrcode) {
         logger.info("###### 获取用户登录状态 ######");
         String logPrefix = "[获取用登录状态]";
-        BaseService service = ServiceManager.getInstance().getServiceByRandomId(randomId);
-        if (service == null) {
-            return R.error(1002, "null");
-        }
-        return R.ok().put("status",service);
+        ModelReturn modelReturn = commonApi.execute(getLoginQrcode);
+        return R.ok().put("status",modelReturn.getRetdata());
     }
 
     /**
@@ -83,18 +74,18 @@ public class WxOperationController {
      */
     @ResponseBody
     @RequestMapping(value = "/getReadReady")
-    public R getReadReady(HttpServletRequest request,String randomId,String reqUrl,int scene,String username) {
+    public R getReadReady(HttpServletRequest request,@RequestBody WechatApi getLoginQrcode) {
         logger.info("###### 获取用户登录状态 ######");
         String logPrefix = "[获取用登录状态]";
-        BaseService service = ServiceManager.getInstance().getServiceByRandomId(randomId);
-        if (service == null) {
-            return R.error(1002, "用户对应的线程不存在");
-        }
-        String paymentStr = service.getA8KeyService(reqUrl,scene,username);
-        if (StringUtils.isEmpty(paymentStr)) {
-            return R.error(1003, "获取阅读需要信息失败");
-        }
-        return R.ok().put("data",paymentStr);
+        ModelReturn modelReturn = commonApi.execute(getLoginQrcode);
+//        if (service == null) {
+//            return R.error(1002, "用户对应的线程不存在");
+//        }
+//        String paymentStr = service.getReadA8KeyAndRead(reqUrl,scene,username);
+//        if (StringUtils.isEmpty(paymentStr)) {
+//            return R.error(1003, "获取阅读需要信息失败");
+//        }
+        return R.ok().put("data",modelReturn);
     }
 
     /**
@@ -105,7 +96,7 @@ public class WxOperationController {
     public R contactOperateService(HttpServletRequest request,String randomId) {
         logger.info("###### 获取用户登录状态 ######");
         String logPrefix = "[获取用登录状态]";
-        BaseService service = ServiceManager.getInstance().getServiceByRandomId(randomId);
+        WechatServiceGrpc service = ServiceManagerDemo.getInstance().getServiceByRandomId(randomId);
         if (service == null) {
             return R.error(1002, "用户对应的线程不存在");
         }
@@ -115,7 +106,7 @@ public class WxOperationController {
             String content = "";
             int type = 1;
             int Scene = 3;
-            service.contactOperateService(encrypUserName, ticket, content, type, Scene);
+//            service.contactOperateService(encrypUserName, ticket, content, type, Scene);
         } catch (Exception e) {
             e.printStackTrace();
             return R.error();
@@ -132,7 +123,7 @@ public class WxOperationController {
         logger.info("###### 获取用户登录状态 ######");
         String logPrefix = "[获取用登录状态]";
 
-        BaseService service = ServiceManager.getInstance().getServiceByRandomId(randomId);
+        WechatServiceGrpc service = ServiceManagerDemo.getInstance().getServiceByRandomId(randomId);
         if (service == null) {
             return R.error(-1,"未找到相应数据");
         }
