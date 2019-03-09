@@ -170,6 +170,8 @@ alter table sys_user add  `parentId` int(30) DEFAULT NULL COMMENT '邀请人id';
 alter table sys_user add  `Stauts` int(5) DEFAULT NULL COMMENT '状态 1.启用，2.停用';
 alter table sys_user add  `BillType` int(5) DEFAULT NULL COMMENT '计费方式 1.按天,2.按任务量';
 
+alter TABLE use_wechat add COLUMN parentId int(11) DEFAULT NULL COMMENT '父级用户id(邀请人id)';
+
 
 
 

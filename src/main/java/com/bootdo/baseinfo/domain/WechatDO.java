@@ -19,6 +19,8 @@ public class WechatDO implements Serializable {
 	private Integer id;
 	//用户id
 	private Long uid;
+	//父级用户id(邀请人id)
+	private Long parentid;
 	//微信号
 	private String wechat;
 	//微信密码
@@ -67,6 +69,14 @@ public class WechatDO implements Serializable {
 	private String username;
 	//loginedUser.UserExt
 	private String userext;
+
+	public Long getParentid() {
+		return parentid;
+	}
+
+	public void setParentid(Long parentid) {
+		this.parentid = parentid;
+	}
 
 	/**
 	 * 设置：
