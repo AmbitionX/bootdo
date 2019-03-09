@@ -11,8 +11,6 @@ import com.bootdo.wx.dao.TaskinfoDao;
 import com.bootdo.wx.domain.TaskdetailDO;
 import com.bootdo.wx.domain.TaskinfoDO;
 import com.google.common.collect.Maps;
-import com.wx.service.BaseService;
-import com.wx.service.ServiceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

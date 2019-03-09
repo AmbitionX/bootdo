@@ -15,7 +15,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
@@ -61,13 +63,16 @@ import static com.wx.demo.tools.WechatUtil.getMd5;
 @MapperScan("com.bootdo.*.dao")
 @ConditionalOnClass(server.class)
 @EnableAspectJAutoProxy(proxyTargetClass = true)
-public class server {
+public class server extends SpringBootServletInitializer {
     private static org.slf4j.Logger logger= LoggerFactory.getLogger(server.class);
     private static int serverport;
     private static String serverip;
     private static String hostAddress;
     private static String serverhost;
     private static String serverid;
+
+    public static ConfigurableApplicationContext ac;
+
     //private static ExecutorService executorServiceS = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 4);
     //org.apache.commons.lang3.concurrent.BasicThreadFactory
     private static  ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(5,
@@ -83,9 +88,15 @@ public class server {
             });
         }
     }
+
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder){
+        return builder.sources(server.class);
+    }
+
     public static void main(String[] args) throws SSLException, UnknownHostException {
-        ConfigurableApplicationContext application=SpringApplication.run(server.class, args);
-        Environment env = application.getEnvironment();
+        ac=SpringApplication.run(server.class, args);
+        Environment env = ac.getEnvironment();
         serverport = Integer.parseInt(env.getProperty("server.port"));
         hostAddress = InetAddress.getLocalHost().getHostAddress();
         WechatUtil.init();
