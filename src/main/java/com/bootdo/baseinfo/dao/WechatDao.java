@@ -29,4 +29,15 @@ public interface WechatDao {
 	int remove(Integer id);
 	
 	int batchRemove(Integer[] ids);
+
+	List<WechatDO> wechatforJob(Map<String,Object> map);
+
+	int batchUpdate(Map<String,Object> map);
+
+	int relieveAllForTaskId(String taskid);
+
+	int updateForWechatId(WechatDO wechat);
+
+	int relieveStatus(WechatDO wechat);
+
 }

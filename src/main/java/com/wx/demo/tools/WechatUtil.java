@@ -49,7 +49,7 @@ public class WechatUtil {
     public static String mysqlUrl = "jdbc:mysql://127.0.0.1/ceshi?zeroDateTimeBehavior=convertToNull";
     public static String mysqlUserName = "root";
     public static String mysqlPwd = "";
-    public static String Redisip = "127.0.0.1";
+    public static String Redisip = "192.168.1.105";
     public static int RedisDB = 4;
     public static int RedisPort = 6379;
     public static String RedisAuth = "";
@@ -102,7 +102,8 @@ public class WechatUtil {
 
     public static String getRealIp() {
         String url = "http://myip.fireflysoft.net/";
-        ServerIp = HttpUtil.sendPost(url,  null);
+      //  ServerIp = HttpUtil.sendPost(url,  null);
+        ServerIp = "127.0.0.1";
         return ServerIp;
     }
     private static void loadProps() {

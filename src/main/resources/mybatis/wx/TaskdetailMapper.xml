@@ -3,7 +3,7 @@
 
 <mapper namespace="com.bootdo.wx.dao.TaskdetailDao">
 
-	<resultMap id="querySettleAccountDetail"   type="java.util.HashMap">
+	<resultMap id="querySettleAccountDetail"   type="com.bootdo.wx.domain.SettleAccountModel">
 		<result column="Uid" property="uid"/>
 		<result column="parentId" property="parentid" />
 		<result column="Price" property="price" />

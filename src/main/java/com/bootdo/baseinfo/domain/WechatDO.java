@@ -19,6 +19,8 @@ public class WechatDO implements Serializable {
 	private Integer id;
 	//用户id
 	private Long uid;
+	//父级用户id(邀请人id)
+	private Long parentid;
 	//微信号
 	private String wechat;
 	//微信密码
@@ -44,19 +46,19 @@ public class WechatDO implements Serializable {
 	//服务id
 	private String randomid;
 	//loginedUser
-	private byte[] sessionkey;
+	private String sessionkey;
 	//loginedUser.deviceid
 	private String deviceid;
 	//loginedUser.maxsynckey
-	private byte[] maxsynckey;
+	private String maxsynckey;
 	//loginedUser.uin
 	private String uin;
 	//loginedUser.AutoAuthKey
-	private byte[] autoauthkey;
+	private String autoauthkey;
 	//loginedUser.Cookies
-	private byte[] cookies;
+	private String cookies;
 	//loginedUser.CurrentsyncKey
-	private byte[] currentsynckey;
+	private String currentsynckey;
 	//loginedUser.DeviceName
 	private String devicename;
 	//loginedUser.DeviceType
@@ -67,6 +69,14 @@ public class WechatDO implements Serializable {
 	private String username;
 	//loginedUser.UserExt
 	private String userext;
+
+	public Long getParentid() {
+		return parentid;
+	}
+
+	public void setParentid(Long parentid) {
+		this.parentid = parentid;
+	}
 
 	/**
 	 * 设置：
@@ -250,13 +260,6 @@ public class WechatDO implements Serializable {
 	}*/
 
 
-	public byte[] getSessionkey() {
-		return sessionkey;
-	}
-
-	public void setSessionkey(byte[] sessionkey) {
-		this.sessionkey = sessionkey;
-	}
 
 	/**
 	 * 设置：loginedUser.deviceid
@@ -283,13 +286,6 @@ public class WechatDO implements Serializable {
 		return maxsynckey;
 	}*/
 
-	public byte[] getMaxsynckey() {
-		return maxsynckey;
-	}
-
-	public void setMaxsynckey(byte[] maxsynckey) {
-		this.maxsynckey = maxsynckey;
-	}
 
 	/**
 	 * 设置：loginedUser.uin
@@ -340,27 +336,43 @@ public class WechatDO implements Serializable {
 		return currentsynckey;
 	}*/
 
-	public byte[] getAutoauthkey() {
+	public String getSessionkey() {
+		return sessionkey;
+	}
+
+	public void setSessionkey(String sessionkey) {
+		this.sessionkey = sessionkey;
+	}
+
+	public String getMaxsynckey() {
+		return maxsynckey;
+	}
+
+	public void setMaxsynckey(String maxsynckey) {
+		this.maxsynckey = maxsynckey;
+	}
+
+	public String getAutoauthkey() {
 		return autoauthkey;
 	}
 
-	public void setAutoauthkey(byte[] autoauthkey) {
+	public void setAutoauthkey(String autoauthkey) {
 		this.autoauthkey = autoauthkey;
 	}
 
-	public byte[] getCookies() {
+	public String getCookies() {
 		return cookies;
 	}
 
-	public void setCookies(byte[] cookies) {
+	public void setCookies(String cookies) {
 		this.cookies = cookies;
 	}
 
-	public byte[] getCurrentsynckey() {
+	public String getCurrentsynckey() {
 		return currentsynckey;
 	}
 
-	public void setCurrentsynckey(byte[] currentsynckey) {
+	public void setCurrentsynckey(String currentsynckey) {
 		this.currentsynckey = currentsynckey;
 	}
 

@@ -11,7 +11,7 @@ public class SettleAccountModel implements Serializable {
     //父级用户id(邀请人id)
     private Long parentid;
     //任务单价
-    private BigDecimal price;
+    private String price;
     // 二级用户账户
     private Integer uaccountid;
     // 一级用户账户
@@ -33,11 +33,11 @@ public class SettleAccountModel implements Serializable {
         this.parentid = parentid;
     }
 
-    public BigDecimal getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 
