@@ -51,5 +51,10 @@ public class WechatServiceImpl implements WechatService {
 	public int batchRemove(Integer[] ids){
 		return wechatDao.batchRemove(ids);
 	}
-	
+
+	@Override
+	public int updateForWechatId(WechatDO wechat) {
+		return wechatDao.updateForWechatId(wechat);
+	}
+
 }

@@ -36,4 +36,8 @@ public interface WechatDao {
 
 	int relieveAllForTaskId(String taskid);
 
+	int updateForWechatId(WechatDO wechat);
+
+	int relieveStatus(WechatDO wechat);
+
 }

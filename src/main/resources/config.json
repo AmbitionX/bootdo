@@ -1,8 +1,8 @@
 {
   "server_port": 10010,
-  "redis_host": "47.98.132.55",
+  "redis_host": "192.168.1.105",
   "redis_port": 6379,
-  "redis_auth": "a123465",
+  "redis_auth": "",
   "redis_db":4,
   "server_ip": "127.0.0.1",
   "app_id": "v1_xukeoscar_CodeVip",

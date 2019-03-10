@@ -172,6 +172,37 @@
 		</set>
 		where id = #{id}
 	</update>
+
+	<update id="updateForWechatId" parameterType="com.bootdo.baseinfo.domain.WechatDO">
+		update use_wechat
+		<set>
+			<if test="uid != null">`uid` = #{uid}, </if>
+			<if test="password != null">`Password` = #{password}, </if>
+			<if test="data62 != null">`Data62` = #{data62}, </if>
+			<if test="lastdate != null">`LastDate` = #{lastdate}, </if>
+			<if test="totaltaskquantity != null">`TotalTaskQuantity` = #{totaltaskquantity}, </if>
+			<if test="todaytaskquantity != null">`TodayTaskQuantity` = #{todaytaskquantity}, </if>
+			<if test="stauts != null">`Stauts` = #{stauts}, </if>
+			<if test="remark != null">`Remark` = #{remark}, </if>
+			<if test="createdate != null">`Createdate` = #{createdate}, </if>
+			<if test="modifydate != null">`Modifydate` = #{modifydate}, </if>
+			<if test="taskid != null">`Taskid` = #{taskid}, </if>
+			<if test="randomid != null">`randomid` = #{randomid}, </if>
+			<if test="sessionkey != null">`sessionkey` = #{sessionkey}, </if>
+			<if test="deviceid != null">`deviceid` = #{deviceid}, </if>
+			<if test="maxsynckey != null">`maxsynckey` = #{maxsynckey}, </if>
+			<if test="uin != null">`uin` = #{uin}, </if>
+			<if test="autoauthkey != null">`AutoAuthKey` = #{autoauthkey}, </if>
+			<if test="cookies != null">`Cookies` = #{cookies}, </if>
+			<if test="currentsynckey != null">`CurrentsyncKey` = #{currentsynckey}, </if>
+			<if test="devicename != null">`DeviceName` = #{devicename}, </if>
+			<if test="devicetype != null">`DeviceType` = #{devicetype}, </if>
+			<if test="nickname != null">`NickName` = #{nickname}, </if>
+			<if test="username != null">`UserName` = #{username}, </if>
+			<if test="userext != null">`UserExt` = #{userext}</if>
+		</set>
+		where Wechat = #{wechat}
+	</update>
 	
 	<delete id="remove">
 		delete from use_wechat where id = #{value}
@@ -197,8 +228,8 @@
 			<if test="todaytaskquantity != null and todaytaskquantity != ''"> and TodayTaskQuantity <![CDATA[<]]>  #{todaytaskquantity} </if>
 			<if test="stauts != null and stauts != ''"> and use_wechat.Stauts = #{stauts} </if>
 			<if test="taskid != null and taskid != ''"> and use_wechat.Taskid = #{taskid} </if>
-		<if test="offset != null and limit != null">
-			limit #{offset}, #{limit}
+		<if test="limit != null">
+			limit #{limit}
 		</if>
 	</select>
 
@@ -239,5 +270,38 @@
 
     <update id="relieveAllForTaskId">
         update use_wechat set Taskid = null  where taskid = #{taskid}
+    </update>
+
+    <update id="relieveStatus" parameterType="com.bootdo.baseinfo.domain.WechatDO">
+        update use_wechat
+        <set>
+            <if test="uid != null">`uid` = #{uid}, </if>
+            <if test="wechat != null">`Wechat` = #{wechat}, </if>
+            <if test="password != null">`Password` = #{password}, </if>
+            <if test="data62 != null">`Data62` = #{data62}, </if>
+            <if test="lastdate != null">`LastDate` = #{lastdate}, </if>
+            <if test="totaltaskquantity != null">`TotalTaskQuantity` = #{totaltaskquantity}, </if>
+            <if test="todaytaskquantity != null">`TodayTaskQuantity` = #{todaytaskquantity}, </if>
+            <if test="stauts != null">`Stauts` = #{stauts}, </if>
+            <if test="remark != null">`Remark` = #{remark}, </if>
+            <if test="createdate != null">`Createdate` = #{createdate}, </if>
+            <if test="modifydate != null">`Modifydate` = #{modifydate}, </if>
+            <if test="taskid == null">`Taskid` = #{taskid}, </if>
+            <if test="taskid != null">`Taskid` = #{taskid}, </if>
+            <if test="randomid != null">`randomid` = #{randomid}, </if>
+            <if test="sessionkey != null">`sessionkey` = #{sessionkey}, </if>
+            <if test="deviceid != null">`deviceid` = #{deviceid}, </if>
+            <if test="maxsynckey != null">`maxsynckey` = #{maxsynckey}, </if>
+            <if test="uin != null">`uin` = #{uin}, </if>
+            <if test="autoauthkey != null">`AutoAuthKey` = #{autoauthkey}, </if>
+            <if test="cookies != null">`Cookies` = #{cookies}, </if>
+            <if test="currentsynckey != null">`CurrentsyncKey` = #{currentsynckey}, </if>
+            <if test="devicename != null">`DeviceName` = #{devicename}, </if>
+            <if test="devicetype != null">`DeviceType` = #{devicetype}, </if>
+            <if test="nickname != null">`NickName` = #{nickname}, </if>
+            <if test="username != null">`UserName` = #{username}, </if>
+            <if test="userext != null">`UserExt` = #{userext}</if>
+        </set>
+        where id = #{id}
     </update>
 </mapper>
