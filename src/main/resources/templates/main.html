@@ -40,8 +40,12 @@
             <li><input type="button" id="getLoginStatus" name="getLoginStatus" onclick="getLoginStatus()" value="获取登录状态"/> </li>
             <li><input type="button" id="getReadReady" name="getReadReady" onclick="getReadReady()" value="获取阅读准备数据"/> </li>
             <li><input type="button" id="contactOperateService" name="contactOperateService" onclick="contactOperateService()" value="关注公众号"/> </li>
-            <li>平台使用用户绑定的微信号做任务，完成任务微信号获得佣金直接汇总到用户平台账户上.</li>
-            <li>用户发起佣金提现，提现金额将在3个工作日内到账,用户获得现金收益.</li>
+            <li>
+                <input type="button" id="upload62" name="upload62" onclick="upload62()" value="上传62TXT"/>
+                <input type="hidden" id="62DataUrl" name="62DataUrl"/>
+                <input type="button" id="解析62数据" name="upload62" onclick="parse62()" value="解析62数据"/>
+                <br/>选择文件:<input type="file" id="file1" />
+            </li>
         </ul>
     </div>
 </div>
@@ -53,7 +57,9 @@
     var ind = "";
     var randomIds='${randomIds}';
 
-    handleRandomIds();
+    $(function(){
+        handleRandomIds();
+    })
 
     function handleRandomIds() {
         $("#existRandomIds").empty();
@@ -63,6 +69,68 @@
 
     }
 
+    function parse62(){
+        var parUrl=$("#62DataUrl").val();
+        if (parUrl != null && parUrl != undefined) {
+            $.ajax({
+                type: 'POST',
+                url: "http://localhost/wx/wxoperation/parse62Data",
+                data:{url: parUrl},
+                success: function (data) {
+                    console.info(data);
+                    if (data != null) {
+                        $("#qrcodeUUID").html(data.uuid);
+                        $("#randomId").val(data.uuid);
+                        var qrImg=data.data.retdata;
+                        console.info(qrImg);
+                        if (qrImg != null&&qrImg!='') {
+                            $("#qrImg").attr('src',qrImg);
+                        }
+                    }
+                },
+                dataType: "JSON"
+            });
+        }else {
+            alert(0)
+        }
+    }
+
+    function upload62(){
+        var formData = new FormData();
+        var fi=document.getElementById("file1").files[0];
+        if (fi!=null){
+            formData.append("myfile", fi);
+            $.ajax({
+                url: "/wx/wxoperation/upload62",
+                type: "POST",
+                data: formData,
+                /**
+                 *必须false才会自动加上正确的Content-Type
+                 */
+                contentType: false,
+                /**
+                 * 必须false才会避开jQuery对 formdata 的默认处理
+                 * XMLHttpRequest会对 formdata 进行正确的处理
+                 */
+                processData: false,
+                success: function (data) {
+                    if (data != "") {
+                        alert("上传成功！");
+                        $("#62DataUrl").val(data);
+                        document.getElementById("file1").files[0] = "";
+                    }else{
+                        alert(data.msg);
+                        document.getElementById("file1").files[0] = "";
+                    }
+
+                },
+                error: function () {
+                    alert("上传失败！");
+                    document.getElementById("file1").files[0] = "";
+                }
+            });
+        }
+    }
 
     function getQrCode(){
         $.ajax({
@@ -156,7 +224,15 @@
             },
             dataType: "JSON"
         });
-        $.post("?randomId="+$("#randomId").val()+"&reqUrl=https://mp.weixin.qq.com/s/ExMUO0KuWwNyqdfgIwTw8A&scene=7&username=yindongli2018",function (data) {
+        // $.post("?randomId="+$("#randomId").val()+"&reqUrl=https://mp.weixin.qq.com/s/ExMUO0KuWwNyqdfgIwTw8A&scene=7&username=yindongli2018",function (data) {
+        //     if (data != null&&data.code==0) {
+        //         console.info(data);
+        //     }
+        // });
+    }
+
+    function getUpload62(){
+        $.post("http://localhost/wx/wxoperation/getLoginStatus?randomId="+$("#randomId").val(),function (data) {
             if (data != null&&data.code==0) {
                 console.info(data);
             }

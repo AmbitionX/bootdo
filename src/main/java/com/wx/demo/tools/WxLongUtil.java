@@ -113,7 +113,6 @@ public class WxLongUtil {
         }
         UtilMsg  loginedRes =    login2(Username,Password,wxdat);
         if (loginedRes.baseMsg.Ret == 0) {
-            loginedUser =loginedRes.baseMsg.user;
             shortServer = loginedRes.baseMsg.ShortHost;
             longServer = loginedRes.baseMsg.LongHost;
             if (back != null) {

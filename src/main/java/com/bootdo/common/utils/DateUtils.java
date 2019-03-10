@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -30,6 +31,17 @@ public class DateUtils {
             return df.format(date);
         }
         return null;
+    }
+
+    /**
+     * 获得当前日期
+     *
+     * @return
+     */
+    public static Date getNow() {
+        Calendar cal = Calendar.getInstance();
+        Date currDate = cal.getTime();
+        return currDate;
     }
 
     /**
