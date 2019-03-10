@@ -79,10 +79,8 @@
 			`Num`, 
 			`TotalMoney`, 
 			`taskPeriod`, 
-			`Stauts`, 
-			`FinishNum`, 
+			`Stauts`,
 			`sort`,
-			`Modifydate`,
 			`settletype`
 		)
 		values
@@ -97,10 +95,8 @@
 			#{num}, 
 			#{totalmoney}, 
 			#{taskperiod}, 
-			#{stauts}, 
-			#{finishnum}, 
+			#{stauts},
 			#{sort},
-			#{modifydate},
 			#{settletype}
 		)
 	</insert>

@@ -63,26 +63,23 @@ public class SettleAccountsJobServiceImpl implements SettleAccountsJobService {
                 for (int i = 0; i < settleAccountModels.size(); i++) {
                     BigDecimal frontAccount = new BigDecimal("0.00");
                     AccountDO accountDO = null;
-                    int j = 0;
                     BigDecimal price = new BigDecimal(settleAccountModels.get(i).getPrice());
 
                     BigDecimal secondmoney = new BigDecimal(0);
                     try {
-                        secondmoney = price.multiply(secondratio).setScale(2);
+                       // secondmoney = price.multiply(secondratio).setScale(2);
+                        secondmoney = price.multiply(secondratio);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
 
                     // 二级用户结算
-                    while (j < 3) {
-                        accountDO = accountDao.getByUid(settleAccountModels.get(i).getUid());
-                        frontAccount = accountDO.getUsemoney();
-                        accountDO.setUsemoney(accountDO.getUsemoney().add(secondmoney));
-                        accountDO.setTotalgainmoney(accountDO.getTotalgainmoney().add(secondmoney));
-                        num = accountDao.update(accountDO);
-                        if (num > 0) { break; }
-                        j++;
-                    }
+                    accountDO = accountDao.getByUid(settleAccountModels.get(i).getUid());
+                    frontAccount = accountDO.getUsemoney();
+                    accountDO.setUsemoney(accountDO.getUsemoney().add(secondmoney));
+                    accountDO.setTotalgainmoney(accountDO.getTotalgainmoney().add(secondmoney));
+                    num = accountDao.update(accountDO);
+
                     if (num > 0) {
                         // 账户资金变动记录
                         AccountdetailDO accountdetailDO = new AccountdetailDO();
@@ -93,7 +90,9 @@ public class SettleAccountsJobServiceImpl implements SettleAccountsJobService {
                         accountdetailDO.setBackaccount(accountDO.getUsemoney());
                         accountdetailDO.setDealmoney(secondmoney);
                         num = accountdetailDao.save(accountdetailDO);
-                    } else {  return 0; }
+                    } else {  // 结算
+                        return 0;
+                    }
                     // 一级用户结算
                     if (settleAccountModels.get(i).getParentid() != null && !"".equals(settleAccountModels.get(i).getParentid())) {
                         AccountDO accountDO1 = null;
@@ -101,7 +100,8 @@ public class SettleAccountsJobServiceImpl implements SettleAccountsJobService {
                         int m = 0;
                         BigDecimal topmoney = new BigDecimal(0);
                         try {
-                            topmoney = price.multiply(topratio).setScale(2);
+                          //  topmoney = price.multiply(topratio).setScale(2);
+                            topmoney = price.multiply(topratio);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

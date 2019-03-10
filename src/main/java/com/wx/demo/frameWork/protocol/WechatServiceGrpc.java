@@ -3,10 +3,13 @@ package com.wx.demo.frameWork.protocol;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bootdo.baseinfo.domain.WechatDO;
+import com.bootdo.common.utils.SpringContextHolder;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.wx.demo.bean.RedisBean;
 import com.wx.demo.bean.WxLongCallback;
 import com.wx.demo.frameWork.client.grpcClient.IpadApplication;
 import com.wx.demo.frameWork.proto.BaseMsg;
@@ -25,6 +28,9 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.util.Base64Utils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -37,6 +43,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
 
+import static com.wx.demo.httpHandler.HttpResult.getMd5;
+@Component
 public class WechatServiceGrpc implements WechatService {
     private static final Logger logger = LoggerFactory.getLogger(WechatServiceGrpc.class);
     protected ScheduledExecutorService heartBeatExe = Executors.newSingleThreadScheduledExecutor();
@@ -68,6 +76,9 @@ public class WechatServiceGrpc implements WechatService {
     private byte[] uuid;
     private WechatSocket wechatSocket;
     private int isLogin;
+    private String secondUUid = UUID.randomUUID().toString().toUpperCase();
+
+    com.bootdo.baseinfo.service.WechatService wechatService = SpringContextHolder.getBean(com.bootdo.baseinfo.service.WechatService.class);
 
     public boolean isDead() {
         return dead;
@@ -707,6 +718,8 @@ public class WechatServiceGrpc implements WechatService {
         httpParam.put("content", content);
         HttpService.httpRequest(path, httpParam);
 
+       /* syncToRedis();   // 先不更新db，看看数据有效时长
+        syncToMysql();*/
         logger.info(dateFormat.format(new Date())+"-autoLoginSuccess-randomid:"+ randomid);
     }
 
@@ -738,7 +751,89 @@ public class WechatServiceGrpc implements WechatService {
         logger.info(dateFormat.format(new Date())+"-autoLoginFail-ret:"+ret+"-randomid:"+ randomid);
     }
 
+    public void syncToRedis() {
+      //  WechatApi redisBean = wechatApi;
+       // RedisUtils.set(loginedUser.getUserame(),randomid);
+        RedisUtils.hset((Constant.redisk_key_loinged_user + WechatUtil.ServerId).getBytes(), wechatApi.getRandomId().getBytes(), WechatApi.serialise(wechatApi));
+    }
+
+    public void syncToMysql(){
+        //微信数据写入到db
+        Map<String,Object> param = Maps.newHashMap();
+        param.put("username",loginedUser.getUserame());
+        param.put("stauts",1);
+        List<WechatDO> wechats = wechatService.list(param);
+        if (wechats.size()<1) { // 新增
+            WechatDO wechatDO = new WechatDO();
+            wechatDO.setRandomid(this.randomid);
+            wechatDO.setSessionkey(String.valueOf(loginedUser.getSessionKey()));
+            wechatDO.setDeviceid(loginedUser.getDeviceId());
+            wechatDO.setUid(Long.valueOf(this.account));
+            wechatDO.setStauts(1);//启用
+            wechatDO.setUin(String.valueOf(loginedUser.getUin()));
+            wechatDO.setAutoauthkey(String.valueOf(loginedUser.getAutoAuthKey()));
+            wechatDO.setCookies(String.valueOf(loginedUser.getCookies()));
+            wechatDO.setCurrentsynckey(String.valueOf(loginedUser.getCurrentsyncKey()));
+            wechatDO.setDevicename(String.valueOf(loginedUser.getDeviceName()));
+            wechatDO.setDevicetype(String.valueOf(loginedUser.getDeviceType()));
+            wechatDO.setNickname(String.valueOf(loginedUser.getNickname()));
+
+            byte[] bytes = loginedUser.toByteArray();
+        //    String user = new String(bytes,StandardCharsets.ISO_8859_1);
+            wechatDO.setUsername(Base64Utils.encodeToString(bytes));
+
+          /*  try {
+                User user1 = User.parseFrom(bytes);
+                System.out.println("1");
+            } catch (InvalidProtocolBufferException e) {
+                e.printStackTrace();
+            }*/
+/*            try {
+                byte[] b2 = Base64Utils.decodeFromString(wechatDO.getUsername());
+                User user2 = User.parseFrom(b2);
+                System.out.println("2");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                User user3 = User.parseFrom(user.getBytes());
+                System.out.println("3");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }*/
+
+            wechatDO.setUserext(String.valueOf(loginedUser.getUserExt()));
+            wechatService.save(wechatDO);
+        }else { // 更新
+            WechatDO wechatDO = wechats.get(0);
+            wechatDO.setRandomid(this.randomid);
+            wechatDO.setSessionkey(String.valueOf(loginedUser.getSessionKey()));
+            wechatDO.setDeviceid(loginedUser.getDeviceId());
+
+            if(wechatDO.getStauts()!=1) {
+                wechatDO.setUid(Long.valueOf(this.account));
+            }
+            wechatDO.setStauts(1);//启用
+            wechatDO.setUin(String.valueOf(loginedUser.getUin()));
+            wechatDO.setAutoauthkey(String.valueOf(loginedUser.getAutoAuthKey()));
+            wechatDO.setCookies(String.valueOf(loginedUser.getCookies()));
+            wechatDO.setCurrentsynckey(String.valueOf(loginedUser.getCurrentsyncKey()));
+            wechatDO.setDevicename(String.valueOf(loginedUser.getDeviceName()));
+            wechatDO.setDevicetype(String.valueOf(loginedUser.getDeviceType()));
+            wechatDO.setNickname(String.valueOf(loginedUser.getNickname()));
+
+            byte[] bytes = loginedUser.toByteArray();
+            String user = new String(bytes,StandardCharsets.ISO_8859_1);
+            wechatDO.setUsername(user);
+
+            wechatDO.setUserext(String.valueOf(loginedUser.getUserExt()));
+
+            wechatService.update(wechatDO);
+        }
+    }
+
     private void loginSuccess(WechatMsg wechatMsg) {
+
         isLogin = 1;
         String data = new String(wechatMsg.getBaseMsg().getPlayloadextend().toByteArray(),StandardCharsets.UTF_8);
         Map map = new Gson().fromJson(data,Map.class);
@@ -752,6 +847,11 @@ public class WechatServiceGrpc implements WechatService {
         wechatApi.setWxDat(loginedUser.getDeviceId());
         byte[] bytes = wechatMsg.getBaseMsg().toByteArray();
         wechatApi.setGrpcBaseMsg(bytes);
+        wechatApi.setRandomId(randomid);
+        wechatApi.setSoftwareId(softwareId);
+        wechatApi.setAutoLogin(autoLogin);
+        wechatApi.setAccount(account);
+        wechatApi.setProtocolVer(protocolVer);
 
 //        try {
 //            User a=User.parseFrom(retBytes);
@@ -786,6 +886,8 @@ public class WechatServiceGrpc implements WechatService {
         param.put("randomid", String.valueOf(randomid));
         HttpService.httpRequest(path, param);
 
+        syncToRedis();
+        syncToMysql();
         logger.info(dateFormat.format(new Date())+"-loginSuccess-randomid:"+ randomid);
     }
 
@@ -815,6 +917,7 @@ public class WechatServiceGrpc implements WechatService {
 
     @Override
     public void autoLogin() {
+
         if (loginedUser == null) {
             return;
         }
@@ -2045,6 +2148,12 @@ public class WechatServiceGrpc implements WechatService {
     protected void exit() {
         logger.info("------------用户" + wechatApi.getUserName() + "离线---------------");
         RedisUtils.hrem((Constant.redisk_key_loinged_user + WechatUtil.ServerId).getBytes(), randomid.getBytes());
+
+        WechatDO wechatDO = new WechatDO();
+        wechatDO.setWechat(wechatApi.getUsername());
+        wechatDO.setStauts(2);
+        wechatService.update(wechatDO);
+
         wechatSocket.close();
         heartBeatExe.shutdown();
         isAlifeCheckSevice.shutdown();

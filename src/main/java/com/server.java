@@ -84,7 +84,8 @@ public class server extends SpringBootServletInitializer {
             WechatApi bean = WechatApi.unserizlize(loginedUsers.get(key));
             executorService.submit(() -> {
                 bean.cmd(702);
-                WechatServiceGrpc service = ServiceManagerDemo.getInstance().loginQrCode(bean);
+                WechatServiceGrpc service = ServiceManagerDemo.getInstance().createGrpcService(bean);
+                service.autoLogin();
             });
         }
     }

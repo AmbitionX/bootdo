@@ -11,6 +11,7 @@ import com.bootdo.wx.dao.TaskinfoDao;
 import com.bootdo.wx.domain.TaskdetailDO;
 import com.bootdo.wx.domain.TaskinfoDO;
 import com.google.common.collect.Maps;
+import com.wx.demo.tools.RedisUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,9 @@ public class TaskJobServiceImpl implements TaskJobService {
     @Autowired
     private TaskdetailDao taskdetailDao;
 
+
+    private final String prefix_task = "wx_task";
+
   //  @Transactional
     @Override
     public void run() {
@@ -45,8 +49,14 @@ public class TaskJobServiceImpl implements TaskJobService {
         List<TaskinfoDO> taskinfoDOS = taskinfoDao.waitTaskList();
         if (taskinfoDOS.size() > 0) {
             for (int i = 0; i < taskinfoDOS.size(); i++) {
-
                 TaskinfoDO taskinfo = taskinfoDOS.get(i);
+                //判断是否有锁
+                if(RedisUtils.exists(prefix_task+taskinfo.getId())){
+                    continue;
+                }
+                // 加分布式锁
+                RedisUtils.set(prefix_task+taskinfo.getId(),taskinfo.getId().toString());
+
                 int count = taskinfo.getFinishnum(); //成功次数
                 try {
                     // 提取任务微信号，判断是否有足够的微信号, 冷却时间、当日上限数量、状态及绑定任务
@@ -198,7 +208,7 @@ public class TaskJobServiceImpl implements TaskJobService {
             wechatDO.setTotaltaskquantity(wechatDO.getTotaltaskquantity() + 1); //更新累计执行任务数量
             wechatDO.setTodaytaskquantity(wechatDO.getTodaytaskquantity() + 1); //更新当日累计执行任务数量
         }
-        wechatDao.update(wechatDO);
+        wechatDao.relieveStatus(wechatDO);
     }
 
     public void relieveAllForTaskId(String taskid){

@@ -51,7 +51,7 @@ public class WxOperationController {
         long startTime = System.currentTimeMillis();
         String logPrefix = "[获取用登录二维码]";
         boolean isNew;
-
+        getLoginQrcode.setAccount(String.valueOf(ShiroUtils.getUserId()));
         ModelReturn modelReturn = commonApi.execute(getLoginQrcode);
 
         return R.ok().put("data",modelReturn).put("uuid",getLoginQrcode.getRandomId());

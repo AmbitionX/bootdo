@@ -24,8 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotNull;
-import java.io.ByteArrayInputStream;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.util.Objects;
 
 /***
@@ -38,7 +37,7 @@ import java.util.Objects;
 @RestController
 @RequestMapping(value = "/wxapi")
 @ApiModel(description = "微信数据参数")
-public class WechatApi {
+public class WechatApi implements Serializable{
   Logger logger= LoggerFactory.getLogger(WechatApi.class);
   @JsonProperty("result")
   private Boolean result = null;
@@ -719,6 +718,21 @@ public class WechatApi {
       Object obj = oii.readObject();
       return (WechatApi) obj;
     } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public static byte[] serialise(Object object) {
+    ObjectOutputStream obi = null;
+    ByteArrayOutputStream bai = null;
+    try {
+      bai = new ByteArrayOutputStream();
+      obi = new ObjectOutputStream(bai);
+      obi.writeObject(object);
+      byte[] byt = bai.toByteArray();
+      return byt;
+    } catch (IOException e) {
       e.printStackTrace();
     }
     return null;
