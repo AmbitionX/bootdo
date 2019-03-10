@@ -40,8 +40,13 @@ public class CommonApi extends BaseController {
 
                 modelReturn = service.getState();
             }
-            if (cmd== 2222){
+            if (cmd == 702){
                 service = grpvcserver.loginQrCode(wechatApi);
+
+                modelReturn = service.getState();
+            }
+            if (cmd== 2222){
+                service = grpvcserver.wx62Login(wechatApi);
                 modelReturn = service.getState();
             }
         }else {

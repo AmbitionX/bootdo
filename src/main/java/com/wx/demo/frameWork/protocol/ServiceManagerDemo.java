@@ -59,6 +59,15 @@ public class ServiceManagerDemo {
         return service;
     }
 
+    public WechatServiceGrpc wx62Login(WechatApi wechatApi) {
+        WechatServiceGrpc service= getServiceByRandomId(wechatApi.getRandomId());
+        if (service == null) {
+            service = createGrpcService(wechatApi);
+        }
+        service.login(wechatApi.getUserName(),wechatApi.getUserPassWord(),wechatApi.getWxDat());
+        return service;
+    }
+
     public WechatServiceGrpc createGrpcService(WechatApi wechatApi) {
         WechatServiceGrpc service;
             if (wechatApi.getSoftwareId().equals("666")) {
