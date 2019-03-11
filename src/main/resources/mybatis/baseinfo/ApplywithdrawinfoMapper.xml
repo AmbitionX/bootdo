@@ -59,9 +59,7 @@
 			`PayType`, 
 			`Account`, 
 			`Stauts`, 
-			`Remark`, 
-			`Createdate`, 
-			`Modifydate`
+			`Remark`
 		)
 		values
 		(
@@ -71,9 +69,7 @@
 			#{paytype}, 
 			#{account}, 
 			#{stauts}, 
-			#{remark}, 
-			#{createdate}, 
-			#{modifydate}
+			#{remark}
 		)
 	</insert>
 	 
@@ -86,9 +82,7 @@
 			<if test="paytype != null">`PayType` = #{paytype}, </if>
 			<if test="account != null">`Account` = #{account}, </if>
 			<if test="stauts != null">`Stauts` = #{stauts}, </if>
-			<if test="remark != null">`Remark` = #{remark}, </if>
-			<if test="createdate != null">`Createdate` = #{createdate}, </if>
-			<if test="modifydate != null">`Modifydate` = #{modifydate}</if>
+			<if test="remark != null">`Remark` = #{remark} </if>
 		</set>
 		where id = #{id}
 	</update>

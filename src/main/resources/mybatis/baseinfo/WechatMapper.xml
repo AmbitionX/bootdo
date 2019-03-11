@@ -89,13 +89,9 @@
 			`Wechat`, 
 			`Password`, 
 			`Data62`, 
-			`LastDate`, 
-			`TotalTaskQuantity`, 
-			`TodayTaskQuantity`, 
+			`LastDate`,
 			`Stauts`, 
-			`Remark`, 
-			`Createdate`, 
-			`Modifydate`, 
+			`Remark`,
 			`Taskid`, 
 			`randomid`, 
 			`sessionkey`, 
@@ -117,13 +113,9 @@
 			#{wechat}, 
 			#{password}, 
 			#{data62}, 
-			#{lastdate}, 
-			#{totaltaskquantity}, 
-			#{todaytaskquantity}, 
+			#{lastdate},
 			#{stauts}, 
-			#{remark}, 
-			#{createdate}, 
-			#{modifydate}, 
+			#{remark},
 			#{taskid}, 
 			#{randomid}, 
 			#{sessionkey}, 
@@ -153,8 +145,6 @@
 			<if test="todaytaskquantity != null">`TodayTaskQuantity` = #{todaytaskquantity}, </if>
 			<if test="stauts != null">`Stauts` = #{stauts}, </if>
 			<if test="remark != null">`Remark` = #{remark}, </if>
-			<if test="createdate != null">`Createdate` = #{createdate}, </if>
-			<if test="modifydate != null">`Modifydate` = #{modifydate}, </if>
 			<if test="taskid != null">`Taskid` = #{taskid}, </if>
 			<if test="randomid != null">`randomid` = #{randomid}, </if>
 			<if test="sessionkey != null">`sessionkey` = #{sessionkey}, </if>
@@ -184,8 +174,6 @@
 			<if test="todaytaskquantity != null">`TodayTaskQuantity` = #{todaytaskquantity}, </if>
 			<if test="stauts != null">`Stauts` = #{stauts}, </if>
 			<if test="remark != null">`Remark` = #{remark}, </if>
-			<if test="createdate != null">`Createdate` = #{createdate}, </if>
-			<if test="modifydate != null">`Modifydate` = #{modifydate}, </if>
 			<if test="taskid != null">`Taskid` = #{taskid}, </if>
 			<if test="randomid != null">`randomid` = #{randomid}, </if>
 			<if test="sessionkey != null">`sessionkey` = #{sessionkey}, </if>
@@ -245,8 +233,6 @@
 			<if test="todaytaskquantity != null">`TodayTaskQuantity` = #{todaytaskquantity}, </if>
 			<if test="stauts != null">`Stauts` = #{stauts}, </if>
 			<if test="remark != null">`Remark` = #{remark}, </if>
-			<if test="createdate != null">`Createdate` = #{createdate}, </if>
-			<if test="modifydate != null">`Modifydate` = #{modifydate}, </if>
 			<if test="taskid != null">`Taskid` = #{taskid}, </if>
 			<if test="randomid != null">`randomid` = #{randomid}, </if>
 			<if test="sessionkey != null">`sessionkey` = #{sessionkey}, </if>
@@ -284,8 +270,6 @@
             <if test="todaytaskquantity != null">`TodayTaskQuantity` = #{todaytaskquantity}, </if>
             <if test="stauts != null">`Stauts` = #{stauts}, </if>
             <if test="remark != null">`Remark` = #{remark}, </if>
-            <if test="createdate != null">`Createdate` = #{createdate}, </if>
-            <if test="modifydate != null">`Modifydate` = #{modifydate}, </if>
             <if test="taskid == null">`Taskid` = #{taskid}, </if>
             <if test="taskid != null">`Taskid` = #{taskid}, </if>
             <if test="randomid != null">`randomid` = #{randomid}, </if>
