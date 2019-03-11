@@ -993,7 +993,6 @@ public class WechatServiceGrpc implements WechatService {
 
     @Override
     public void checkQrcode() {
-        String qrCode = modelReturn.getRetdata();
 
 
 
@@ -1051,6 +1050,7 @@ public class WechatServiceGrpc implements WechatService {
                 }
             }
         }).start();
+        String qrCode = modelReturn.getRetdata();
     }
 
     @Override
@@ -1121,7 +1121,9 @@ public class WechatServiceGrpc implements WechatService {
 
                 logger.info("-----------------pylds-------------"+wechatMsg.getBaseMsg().getPayloads().toStringUtf8());
 
+                modelReturn.code(wechatMsg.getBaseMsg().getRet()).msg(wechatMsg.getBaseMsg().getPayloads().toStringUtf8());
                 if (wechatMsg.getBaseMsg().getRet() == 0) {
+                    modelReturn.msg("62data login success");
                     loginSuccess(wechatMsg);
                     initContact();
                 } else if (wechatMsg.getBaseMsg().getRet() == -301) {//重定向
@@ -1141,6 +1143,7 @@ public class WechatServiceGrpc implements WechatService {
                         }
                     }).start();
                 } else {//登录失败
+                    modelReturn.msg("62data login success");
                     loginFail(wechatMsg.getBaseMsg().getRet());
                 }
             }
