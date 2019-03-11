@@ -856,7 +856,7 @@ public class WechatServiceGrpc implements WechatService {
         wechatApi.setAutoLogin(autoLogin);
         wechatApi.setAccount(account);
         wechatApi.setProtocolVer(protocolVer);
-
+        wechatApi.setWxId(loginedUser.getUserame());
 //        try {
 //            User a=User.parseFrom(retBytes);
 //            ExtraData extraData=new ExtraData();
@@ -2153,13 +2153,13 @@ public class WechatServiceGrpc implements WechatService {
     }
 
     protected void exit() {
-        logger.info("------------用户" + wechatApi.getUserName() + "离线---------------");
+        logger.info("------------用户" + wechatApi.getWxId() + "离线---------------");
         RedisUtils.hrem((Constant.redisk_key_loinged_user + WechatUtil.ServerId).getBytes(), randomid.getBytes());
 
         WechatDO wechatDO = new WechatDO();
-        wechatDO.setWechat(wechatApi.getUsername());
+        wechatDO.setWechat(wechatApi.getWxId());
         wechatDO.setStauts(2);
-        wechatService.update(wechatDO);
+        wechatService.updateForWechatId(wechatDO);
 
         wechatSocket.close();
         heartBeatExe.shutdown();
