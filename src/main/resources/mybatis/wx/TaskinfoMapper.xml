@@ -117,7 +117,6 @@
 			<if test="stauts != null">`Stauts` = #{stauts}, </if>
 			<if test="finishnum != null">`FinishNum` = #{finishnum}, </if>
 			<if test="sort != null">`sort` = #{sort}, </if>
-			<if test="modifydate != null">`Modifydate` = #{modifydate}, </if>
 			<if test="settletype != null ">`settletype` = #{settletype}, </if>
 			<if test="settlenum != null ">`settlenum` = #{settlenum} </if>
 		</set>
