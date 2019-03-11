@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.xml.crypto.Data;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -173,6 +174,8 @@ public class TaskJobServiceImpl implements TaskJobService {
                             taskinfo.setStauts(3); // 未完成
                         }
                         taskinfoDao.update(taskinfo);
+                        // 释放任务锁
+                        RedisUtils.del(prefix_task+taskinfo.getId());
                     } else {
                         logger.info("--------->>>任务url{}" + taskinfo.getUrl() + "没有足够的资源进行操作,稍后系统进行重.cc" + now);
                         break;
@@ -188,7 +191,8 @@ public class TaskJobServiceImpl implements TaskJobService {
                     }
                     //释放微信号
                     relieveAllForTaskId(taskinfo.getId().toString());
-
+                    // 释放任务锁
+                    RedisUtils.del(prefix_task+taskinfo.getId());
                     e.printStackTrace();
                     logger.error("com.bootdo.common.task.TaskJob->exception!message:{},cause:{},detail{}", e.getMessage(), e.getCause(), e.toString());
                     //   TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
@@ -204,14 +208,29 @@ public class TaskJobServiceImpl implements TaskJobService {
         Date now = new Date();
         wechatDO.setTaskid(null);  //解除任务绑定
         if(flag) {
+            if(isToday(wechatDO.getLastdate())){// 如果最后一次执行任务不是当天，释放当日执行任务数量
+                wechatDO.setTodaytaskquantity(1); //更新当日累计执行任务数量
+            }else {
+                wechatDO.setTodaytaskquantity(wechatDO.getTodaytaskquantity() + 1); //更新当日累计执行任务数量
+            }
             wechatDO.setLastdate(now);  //更新最后一次执行任务时间
             wechatDO.setTotaltaskquantity(wechatDO.getTotaltaskquantity() + 1); //更新累计执行任务数量
-            wechatDO.setTodaytaskquantity(wechatDO.getTodaytaskquantity() + 1); //更新当日累计执行任务数量
+
         }
         wechatDao.relieveStatus(wechatDO);
     }
 
     public void relieveAllForTaskId(String taskid){
         wechatDao.relieveAllForTaskId(taskid);
+    }
+
+    private static boolean isToday(Date date){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String param = sdf.format(date);//参数时间
+        String now = sdf.format(new Date());//当前时间
+        if(param.equals(now)){
+            return true;
+        }
+        return false;
     }
 }

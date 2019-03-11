@@ -91,7 +91,7 @@ public class SettleAccountsJobServiceImpl implements SettleAccountsJobService {
                         accountdetailDO.setDealmoney(secondmoney);
                         num = accountdetailDao.save(accountdetailDO);
                     } else {  // 结算
-                        return 0;
+                        throw new Exception("写入账户资金变动记录失败！");
                     }
                     // 一级用户结算
                     if (settleAccountModels.get(i).getParentid() != null && !"".equals(settleAccountModels.get(i).getParentid())) {
@@ -105,24 +105,20 @@ public class SettleAccountsJobServiceImpl implements SettleAccountsJobService {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        while (m < 3) {
-                            accountDO1 = accountDao.getByUid(settleAccountModels.get(i).getParentid());
-                            frontAccount1 = accountDO1.getUsemoney();
-                            accountDO1.setUsemoney(accountDO1.getUsemoney().add(topmoney));
-                            accountDO1.setTotalgainmoney(accountDO1.getTotalgainmoney().add(topmoney));
-                            num = accountDao.update(accountDO1);
-                            if (num > 0) {  break; }
-                            m++;
-                        }
+                        accountDO1 = accountDao.getByUid(settleAccountModels.get(i).getParentid());
+                        frontAccount1 = accountDO1.getUsemoney();
+                        accountDO1.setUsemoney(accountDO1.getUsemoney().add(topmoney));
+                        accountDO1.setTotalgainmoney(accountDO1.getTotalgainmoney().add(topmoney));
+                        num = accountDao.update(accountDO1);
                         if (num > 0) {
                             // 账户资金变动记录
                             AccountdetailDO accountdetailDO = new AccountdetailDO();
-                            accountdetailDO.setAid(settleAccountModels.get(i).getUaccountid());
+                            accountdetailDO.setAid(settleAccountModels.get(i).getParentuaccountid());
                             accountdetailDO.setOperatetype(1);
                             accountdetailDO.setIsincome(1);
-                            accountdetailDO.setFrontaccount(frontAccount);
-                            accountdetailDO.setBackaccount(accountDO.getUsemoney());
-                            accountdetailDO.setDealmoney(secondmoney);
+                            accountdetailDO.setFrontaccount(frontAccount1);
+                            accountdetailDO.setBackaccount(accountDO1.getUsemoney());
+                            accountdetailDO.setDealmoney(topmoney);
                             num = accountdetailDao.save(accountdetailDO);
                         } else { throw new Exception("一级用户结算失败"); }
                     }
