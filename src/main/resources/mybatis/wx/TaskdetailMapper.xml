@@ -70,9 +70,7 @@
 			`Price`, 
 			`TaskType`, 
 			`Stauts`, 
-			`Remark`, 
-			`Createdate`, 
-			`Modifydate`
+			`Remark`
 		)
 		values
 		(
@@ -83,9 +81,7 @@
 			#{price}, 
 			#{tasktype}, 
 			#{stauts}, 
-			#{remark}, 
-			#{createdate}, 
-			#{modifydate}
+			#{remark}
 		)
 	</insert>
 	 
@@ -99,9 +95,7 @@
 			<if test="price != null">`Price` = #{price}, </if>
 			<if test="tasktype != null">`TaskType` = #{tasktype}, </if>
 			<if test="stauts != null">`Stauts` = #{stauts}, </if>
-			<if test="remark != null">`Remark` = #{remark}, </if>
-			<if test="createdate != null">`Createdate` = #{createdate}, </if>
-			<if test="modifydate != null">`Modifydate` = #{modifydate}</if>
+			<if test="remark != null">`Remark` = #{remark} </if>
 		</set>
 		where id = #{id}
 	</update>

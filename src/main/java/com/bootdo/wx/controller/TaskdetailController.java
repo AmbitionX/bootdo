@@ -3,6 +3,7 @@ package com.bootdo.wx.controller;
 import java.util.List;
 import java.util.Map;
 
+import com.bootdo.common.utils.ShiroUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -46,6 +47,9 @@ public class TaskdetailController {
 	@RequiresPermissions("wx:taskdetail:taskdetail")
 	public PageUtils list(@RequestParam Map<String, Object> params){
 		//查询列表数据
+		if(ShiroUtils.getUser().getDeptId()==16) {  // 注册用户加查询条件
+			params.put("uid", ShiroUtils.getUserId());
+		}
         Query query = new Query(params);
 		List<TaskdetailDO> taskdetailList = taskdetailService.list(query);
 		int total = taskdetailService.count(query);

@@ -55,9 +55,7 @@
 			`TotalGainMoney`, 
 			`TotalWithdrawMoney`, 
 			`ApplyWithdrawMoney`, 
-			`UseMoney`, 
-			`Createdate`, 
-			`Modifydate`
+			`UseMoney`
 		)
 		values
 		(
@@ -65,9 +63,7 @@
 			#{totalgainmoney}, 
 			#{totalwithdrawmoney}, 
 			#{applywithdrawmoney}, 
-			#{usemoney}, 
-			#{createdate}, 
-			#{modifydate}
+			#{usemoney}
 		)
 	</insert>
 	 
@@ -79,8 +75,6 @@
 			<if test="totalwithdrawmoney != null">`TotalWithdrawMoney` = #{totalwithdrawmoney}, </if>
 			<if test="applywithdrawmoney != null">`ApplyWithdrawMoney` = #{applywithdrawmoney}, </if>
 			<if test="usemoney != null">`UseMoney` = #{usemoney}, </if>
-			<if test="createdate != null">`Createdate` = #{createdate}, </if>
-			<if test="modifydate != null">`Modifydate` = #{modifydate}, </if>
 			<if test="version != null">`version` = #{version}+1</if>
 		</set>
 		where id = #{id} and version = #{version}
