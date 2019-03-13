@@ -1,5 +1,6 @@
 package com.wx.demo.frameWork.protocol;
 
+import com.bootdo.common.enums.EnumWxCmdType;
 import com.wx.demo.common.RetEnum;
 import com.wx.demo.ctrl.BaseController;
 import com.wx.demo.util.MyLog;
@@ -45,7 +46,7 @@ public class CommonApi extends BaseController {
 
                 modelReturn = service.getState();
             }
-            if (cmd== 2222){
+            if (cmd== EnumWxCmdType.NUM_TYPE_2222.getCode()){
                 service = grpvcserver.wx62Login(wechatApi);
                 modelReturn = service.getState();
             }

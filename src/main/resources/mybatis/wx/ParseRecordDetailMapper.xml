@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.wx.dao.ParseRecordDetailDao">
+
+	<select id="get" resultType="com.bootdo.wx.domain.ParseRecordDetailDO">
+		select `id`,`parseCode`,`username`,`password`,`wxdata`,`state`,`ctime`,`utime` from wx_parse_record_detail where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.bootdo.wx.domain.ParseRecordDetailDO">
+		select `id`,`parseCode`,`username`,`password`,`wxdata`,`state`,`ctime`,`utime` from wx_parse_record_detail
+        <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="parseCode != null and parseCode != ''"> and parseCode = #{parseCode} </if>
+		  		  <if test="username != null and username != ''"> and username = #{username} </if>
+		  		  <if test="password != null and password != ''"> and password = #{password} </if>
+		  		  <if test="wxdata != null and wxdata != ''"> and wxdata = #{wxdata} </if>
+		  		  <if test="state != null and state != ''"> and state = #{state} </if>
+		  		  <if test="ctime != null and ctime != ''"> and ctime = #{ctime} </if>
+		  		  <if test="utime != null and utime != ''"> and utime = #{utime} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from wx_parse_record_detail
+		 <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="parseCode != null and parseCode != ''"> and parseCode = #{parseCode} </if>
+		  		  <if test="username != null and username != ''"> and username = #{username} </if>
+		  		  <if test="password != null and password != ''"> and password = #{password} </if>
+		  		  <if test="wxdata != null and wxdata != ''"> and wxdata = #{wxdata} </if>
+		  		  <if test="state != null and state != ''"> and state = #{state} </if>
+		  		  <if test="ctime != null and ctime != ''"> and ctime = #{ctime} </if>
+		  		  <if test="utime != null and utime != ''"> and utime = #{utime} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.bootdo.wx.domain.ParseRecordDetailDO" useGeneratedKeys="true" keyProperty="id">
+		insert into wx_parse_record_detail
+		(
+			`parseCode`, 
+			`username`, 
+			`password`, 
+			`wxdata`, 
+			`state`, 
+			`ctime`, 
+			`utime`
+		)
+		values
+		(
+			#{parseCode},
+			#{username}, 
+			#{password}, 
+			#{wxdata}, 
+			#{state}, 
+			#{ctime}, 
+			#{utime}
+		)
+	</insert>
+
+	<select id="listIsAllFinished" resultType="java.util.Map">
+		<if test="parseCode != null and parseCode != ''">
+			select CASE when count(1)>0 and  count(1)=(select count(1) from wx_parse_record_detail
+			where parseCode=#{parseCode}) then 'true' ELSE 'false' END as ret from wx_parse_record_detail
+			where parseCode=#{parseCode}
+			and state!=1
+		</if>
+	</select>
+	 
+	<update id="update" parameterType="com.bootdo.wx.domain.ParseRecordDetailDO">
+		update wx_parse_record_detail 
+		<set>
+			<if test="parseCode != null">`parseCode` = #{parseCode}, </if>
+			<if test="username != null">`username` = #{username}, </if>
+			<if test="password != null">`password` = #{password}, </if>
+			<if test="wxdata != null">`wxdata` = #{wxdata}, </if>
+			<if test="state != null">`state` = #{state}, </if>
+			<if test="ctime != null">`ctime` = #{ctime}, </if>
+			<if test="utime != null">`utime` = #{utime}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from wx_parse_record_detail where id = #{value}
+	</delete>
+
+	<delete id="removeByCode">
+		delete from wx_parse_record_detail where parsecode = #{parsecode}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from wx_parse_record_detail where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

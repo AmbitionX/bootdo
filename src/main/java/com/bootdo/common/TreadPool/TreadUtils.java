@@ -12,14 +12,14 @@ import java.util.Map;
  */
 public class TreadUtils {
 	
-	public static boolean login62DataXl(List<String> wxdatas){
+	public static boolean login62DataXl(List<String> wxdatas,String parseCode){
         boolean bo = false;
 		if (wxdatas == null || wxdatas.size() == 0) {
 			return false;
 		}
 		try{
 			//回调新浪
-	        Runnable r = new CallBackTread(wxdatas);
+	        Runnable r = new CallBackTread(wxdatas,parseCode);
 	        ThreadPoolExecutorManage.getInstance().putTread(r);
 			bo = true;
 		}catch(Exception e){

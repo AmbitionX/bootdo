@@ -37,6 +37,6 @@ public class TaskJob implements Job {
 
     @Override
     public void execute(JobExecutionContext arg0) throws JobExecutionException {
-        taskJobService.run();
+//        taskJobService.run();
 }
 }

@@ -126,6 +126,18 @@ public class WechatApi implements Serializable{
   @JsonProperty("grpcPayLoads")
   private byte[] grpcPayLoads = null;
 
+  //内部业务字段
+  @JsonProperty("insideBusi")
+  private String insideBusi = null;
+
+  public String getInsideBusi() {
+    return insideBusi;
+  }
+
+  public void setInsideBusi(String insideBusi) {
+    this.insideBusi = insideBusi;
+  }
+
   public String getReqUrl() {
     return reqUrl;
   }

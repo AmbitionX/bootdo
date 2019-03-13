@@ -102,69 +102,6 @@ public class WxOperationController {
     }
 
     /**
-     * 上传62数据文件-txt
-     *
-     * @return
-     */
-    @SuppressWarnings("finally")
-    @RequestMapping(value = "/upload62", method = RequestMethod.POST)
-    @ResponseBody
-    public String uploadPhoto(HttpServletRequest request, MultipartFile myfile) {
-        String result = "";
-        if (myfile!=null && myfile.getSize() > 0) {
-            try {
-                //String realPath = request.getSession().getServletContext().getRealPath("");
-//                PropertiesUtils propertiesUtils = new PropertiesUtils();
-//                String realPath = propertiesUtils.getConfig("", "commonFiles");
-                result = FileUtils.uploadFile(myfile, "62data", "");
-            } catch (Exception e) {
-                logger.error("上传62数据失败:" + e.getMessage());
-            }
-        }
-        return result;
-    }
-
-    /**
-     * 解析并处理62数据文件-txt
-     *
-     * @return
-     */
-    @SuppressWarnings("finally")
-    @RequestMapping(value = "/parse62Data", method = RequestMethod.POST)
-    @ResponseBody
-    public R parse62Data(HttpServletRequest request, String url) {
-        R ret=new R();
-        try {
-            if (!StringUtils.isEmpty(url)) {
-                byte[] b=FileUtils.downloadFile_NoRootPath(url);
-                if (b.length != 0) {
-                    String data62 = new String(b, Constant.DEFAULT_DECODE);
-                    BufferedReader rdr = new BufferedReader(new StringReader(data62));
-                    List<String> lines = new ArrayList<String>();
-                    try {
-                        for (String line = rdr.readLine(); line != null; line = rdr.readLine()) {
-                            lines.add(line);
-                        }
-                        rdr.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    if (lines.size()>0) {
-                        ret=operationService.batch62DataBusi(lines);
-                    }
-                }
-            }
-            //String realPath = request.getSession().getServletContext().getRealPath("");
-//                PropertiesUtils propertiesUtils = new PropertiesUtils();
-//                String realPath = propertiesUtils.getConfig("", "commonFiles");
-        } catch (Exception e) {
-            logger.error("解析62数据失败:" + e.getMessage());
-            return R.error();
-        }
-        return ret;
-    }
-
-    /**
      *
      */
     @ResponseBody
