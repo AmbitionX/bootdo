@@ -15,5 +15,4 @@ import java.util.Map;
  */
 public interface WxOperationService {
 	
-	R batch62DataBusi(List<String> wx62Data);
 }

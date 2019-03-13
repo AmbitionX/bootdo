@@ -19,7 +19,9 @@ public interface WechatDao {
 	WechatDO get(Integer id);
 	
 	List<WechatDO> list(Map<String,Object> map);
-	
+
+	List<WechatDO> listByRecently(Map<String,Object> map);
+
 	int count(Map<String,Object> map);
 	
 	int save(WechatDO wechat);

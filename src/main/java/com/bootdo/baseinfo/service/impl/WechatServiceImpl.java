@@ -26,7 +26,12 @@ public class WechatServiceImpl implements WechatService {
 	public List<WechatDO> list(Map<String, Object> map){
 		return wechatDao.list(map);
 	}
-	
+
+	@Override
+	public List<WechatDO> listByRecently(Map<String, Object> map) {
+		return wechatDao.listByRecently(map);
+	}
+
 	@Override
 	public int count(Map<String, Object> map){
 		return wechatDao.count(map);

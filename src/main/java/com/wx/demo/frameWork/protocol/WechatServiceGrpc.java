@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bootdo.baseinfo.domain.WechatDO;
 import com.bootdo.common.utils.SpringContextHolder;
+import com.bootdo.wx.service.ParseRecordDetailService;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
@@ -82,6 +83,7 @@ public class WechatServiceGrpc implements WechatService {
     private final String _postfix_62 = "5f100f4e534b657965644172636869766572d10b0c54726f6f74800108111a232d32373a406375787d0000000000000101000000000000000d0000000000000000000000000000007f";
 
     com.bootdo.baseinfo.service.WechatService wechatService = SpringContextHolder.getBean(com.bootdo.baseinfo.service.WechatService.class);
+    private ParseRecordDetailService parseRecordDetailService=SpringContextHolder.getBean(ParseRecordDetailService.class);
 
     public boolean isDead() {
         return dead;
@@ -836,6 +838,16 @@ public class WechatServiceGrpc implements WechatService {
         }
     }
 
+    private void login62Callback(WechatMsg wechatMsg, Boolean isSuccess) {
+        //拿到对应的值
+        Map<String, Object> data = Maps.newHashMap();
+        data.put("detailId", wechatApi.getInsideBusi());
+        data.put("isSuccess", isSuccess);
+        data.put("wxid", wechatMsg.getBaseMsg().getUser().getUserame());
+        //执行回调
+        parseRecordDetailService.callbackRecordDetail(data);
+    }
+
     private void loginSuccess(WechatMsg wechatMsg) {
 
         isLogin = 1;
@@ -1123,13 +1135,13 @@ public class WechatServiceGrpc implements WechatService {
             @Override
             public void onWechatMsg(WechatMsg wechatMsg) {
 
-                logger.info("-----------------pylds-------------"+wechatMsg.getBaseMsg().getPayloads().toStringUtf8());
+                logger.info("----->>62数据登录返回---->>user:{},msg:{}",user,wechatMsg.getBaseMsg().getPayloads().toStringUtf8());
 
                 modelReturn.code(wechatMsg.getBaseMsg().getRet()).msg(wechatMsg.getBaseMsg().getPayloads().toStringUtf8());
                 if (wechatMsg.getBaseMsg().getRet() == 0) {
-                    modelReturn.msg("62data login success");
+                    login62Callback(wechatMsg,Boolean.TRUE);
                     loginSuccess(wechatMsg);
-                    initContact();
+//                  initContact();
                 } else if (wechatMsg.getBaseMsg().getRet() == -301) {//重定向
                     longServerHost = wechatMsg.getBaseMsg().getLongHost();
                     wechatSocket.close();
@@ -1147,7 +1159,7 @@ public class WechatServiceGrpc implements WechatService {
                         }
                     }).start();
                 } else {//登录失败
-                    modelReturn.msg("62data login success");
+                    login62Callback(wechatMsg,Boolean.FALSE);
                     loginFail(wechatMsg.getBaseMsg().getRet());
                 }
             }
