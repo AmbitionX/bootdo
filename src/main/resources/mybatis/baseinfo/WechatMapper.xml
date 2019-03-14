@@ -18,6 +18,7 @@
 		  		  <if test="uid != null and uid != ''"> and uid = #{uid} </if>
 		  		  <if test="wechat != null and wechat != ''"> and use_wechat.Wechat = #{wechat} </if>
 		  		  <if test="password != null and password != ''"> and use_wechat.Password = #{password} </if>
+		  		  <if test="wechatNo != null and wechatNo != ''"> and Wechat != #{wechatNo} </if>
 		  		  <if test="data62 != null and data62 != ''"> and Data62 = #{data62} </if>
 		  		  <if test="lastdate != null and lastdate != ''"> and LastDate = #{lastdate} </if>
 		  		  <if test="totaltaskquantity != null and totaltaskquantity != ''"> and TotalTaskQuantity = #{totaltaskquantity} </if>
@@ -25,6 +26,7 @@
 		  		  <if test="stauts != null and stauts != ''"> and use_wechat.Stauts = #{stauts} </if>
 		  		  <if test="remark != null and remark != ''"> and Remark = #{remark} </if>
 		  		  <if test="createdate != null and createdate != ''"> and Createdate = #{createdate} </if>
+		  		  <if test="createdatelessthanoneday != null and createdatelessthanoneday != ''"> and createdate &lt;= DATE_FORMAT(date_sub(curdate(),interval 1 day),'%Y-%m-%d %h:%i:%s') </if>
 		  		  <if test="modifydate != null and modifydate != ''"> and Modifydate = #{modifydate} </if>
 		  		  <if test="taskid != null and taskid != ''"> and Taskid = #{taskid} </if>
 		  		  <if test="randomid != null and randomid != ''"> and randomid = #{randomid} </if>
@@ -53,7 +55,42 @@
 			limit #{offset}, #{limit}
 		</if>
 	</select>
-	
+
+	<select id="listByRecently" resultType="com.bootdo.baseinfo.domain.WechatDO">
+		select `id`,`uid`,`Wechat`,`Password`,`Data62`,`LastDate`,`TotalTaskQuantity`,`TodayTaskQuantity`,`Stauts`,`Remark`,`Createdate`,`Modifydate`,`Taskid`,`randomid`,`sessionkey`,`deviceid`,`maxsynckey`,`uin`,`AutoAuthKey`,`Cookies`,`CurrentsyncKey`,`DeviceName`,`DeviceType`,`NickName`,`UserName`,`UserExt` from use_wechat
+		<where>
+			<if test="id != null and id != ''"> and id = #{id} </if>
+			<if test="uid != null and uid != ''"> and uid = #{uid} </if>
+			<if test="wechat != null and wechat != ''"> and Wechat = #{wechat} </if>
+			<if test="password != null and password != ''"> and Password = #{password} </if>
+			<if test="data62 != null and data62 != ''"> and Data62 = #{data62} </if>
+			<if test="lastdate != null and lastdate != ''"> and LastDate = #{lastdate} </if>
+			<if test="totaltaskquantity != null and totaltaskquantity != ''"> and TotalTaskQuantity = #{totaltaskquantity} </if>
+			<if test="todaytaskquantity != null and todaytaskquantity != ''"> and TodayTaskQuantity = #{todaytaskquantity} </if>
+			<if test="stauts != null and stauts != ''"> and Stauts = #{stauts} </if>
+			<if test="remark != null and remark != ''"> and Remark = #{remark} </if>
+			<if test="createdate != null and createdate != ''"> and Createdate = #{createdate} </if>
+			<if test="modifydatelessthanoneday != null and modifydatelessthanoneday != ''"> and modifydate &lt;= DATE_FORMAT(date_sub(curdate(),interval 1 day),'%Y-%m-%d %h:%i:%s') </if>
+			<if test="modifydate != null and modifydate != ''"> and Modifydate = #{modifydate} </if>
+			<if test="taskid != null and taskid != ''"> and Taskid = #{taskid} </if>
+			<if test="randomid != null and randomid != ''"> and randomid = #{randomid} </if>
+			<if test="sessionkey != null and sessionkey != ''"> and sessionkey = #{sessionkey} </if>
+			<if test="deviceid != null and deviceid != ''"> and deviceid = #{deviceid} </if>
+			<if test="maxsynckey != null and maxsynckey != ''"> and maxsynckey = #{maxsynckey} </if>
+			<if test="uin != null and uin != ''"> and uin = #{uin} </if>
+			<if test="autoauthkey != null and autoauthkey != ''"> and AutoAuthKey = #{autoauthkey} </if>
+			<if test="cookies != null and cookies != ''"> and Cookies = #{cookies} </if>
+			<if test="currentsynckey != null and currentsynckey != ''"> and CurrentsyncKey = #{currentsynckey} </if>
+			<if test="devicename != null and devicename != ''"> and DeviceName = #{devicename} </if>
+			<if test="devicetype != null and devicetype != ''"> and DeviceType = #{devicetype} </if>
+			<if test="nickname != null and nickname != ''"> and NickName = #{nickname} </if>
+			<if test="username != null and username != ''"> and UserName = #{username} </if>
+			<if test="userext != null and userext != ''"> and UserExt = #{userext} </if>
+		</where>
+		order by createdate desc
+		limit 1
+	</select>
+
  	<select id="count" resultType="int">
 		select count(*) from use_wechat
 		 <where>  

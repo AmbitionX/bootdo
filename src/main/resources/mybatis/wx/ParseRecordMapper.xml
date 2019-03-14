@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.wx.dao.ParseRecordDao">
+
+	<select id="get" resultType="com.bootdo.wx.domain.ParseRecordDO">
+		select `id`,`userId`,`parseCode`,`fileUrl`,`parseDate`,`parseState`,`finishDate` from wx_parse_record where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.bootdo.wx.domain.ParseRecordDO">
+		select `id`,`userId`,`fileUrl`,`parseCode`,`parseDate`,`parseState`,`finishDate` from wx_parse_record
+        <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="userid != null and userid != ''"> and userId = #{userid} </if>
+		  		  <if test="parsecode != null and parsecode != ''"> and parsecode = #{parsecode} </if>
+		  		  <if test="fileurl != null and fileurl != ''"> and fileUrl = #{fileurl} </if>
+		  		  <if test="parsedate != null and parsedate != ''"> and parseDate = #{parsedate} </if>
+		  		  <if test="parsestate != null and parsestate != ''"> and parseState = #{parsestate} </if>
+		  		  <if test="finishdate != null and finishdate != ''"> and finishDate = #{finishdate} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from wx_parse_record
+		 <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="userid != null and userid != ''"> and userId = #{userid} </if>
+		  		  <if test="fileurl != null and fileurl != ''"> and fileUrl = #{fileurl} </if>
+		  		  <if test="parsecode != null and parsecode != ''"> and parsecode = #{parsecode} </if>
+		  		  <if test="parsedate != null and parsedate != ''"> and parseDate = #{parsedate} </if>
+		  		  <if test="parsestate != null and parsestate != ''"> and parseState = #{parsestate} </if>
+		  		  <if test="finishdate != null and finishdate != ''"> and finishDate = #{finishdate} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.bootdo.wx.domain.ParseRecordDO" useGeneratedKeys="true" keyProperty="id">
+		insert into wx_parse_record
+		(
+			`userId`,
+			`parseCode`,
+			`fileUrl`, 
+			`parseDate`, 
+			`parseState`, 
+			`finishDate`
+		)
+		values
+		(
+			#{userid}, 
+			#{parsecode},
+			#{fileurl},
+			#{parsedate}, 
+			#{parsestate}, 
+			#{finishdate}
+		)
+	</insert>
+
+	<update id="update" parameterType="com.bootdo.wx.domain.ParseRecordDO">
+		update wx_parse_record
+		<set>
+			<if test="userid != null">`userId` = #{userid}, </if>
+			<if test="parsecode != null">`parsecode` = #{parsecode}, </if>
+			<if test="fileurl != null">`fileUrl` = #{fileurl}, </if>
+			<if test="parsedate != null">`parseDate` = #{parsedate}, </if>
+			<if test="parsestate != null">`parseState` = #{parsestate}, </if>
+			<if test="finishdate != null">`finishDate` = #{finishdate}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<update id="updateByCode" parameterType="com.bootdo.wx.domain.ParseRecordDO">
+		update wx_parse_record
+		<set>
+			<if test="userid != null">`userId` = #{userid}, </if>
+			<if test="fileurl != null">`fileUrl` = #{fileurl}, </if>
+			<if test="parsedate != null">`parseDate` = #{parsedate}, </if>
+			<if test="parsestate != null">`parseState` = #{parsestate}, </if>
+			<if test="finishdate != null">`finishDate` = #{finishdate}</if>
+		</set>
+		where parsecode = #{parsecode}
+	</update>
+
+	<delete id="remove">
+		delete from wx_parse_record where id = #{value}
+	</delete>
+
+	<delete id="removeByCode">
+		delete from wx_parse_record where parsecode = #{parsecode}
+	</delete>
+
+	<delete id="batchRemove">
+		delete from wx_parse_record where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

@@ -1,5 +1,6 @@
 package com.wx.demo.frameWork.protocol;
 
+import com.bootdo.common.enums.EnumWxCmdType;
 import com.wx.demo.common.RetEnum;
 import com.wx.demo.ctrl.BaseController;
 import com.wx.demo.util.MyLog;

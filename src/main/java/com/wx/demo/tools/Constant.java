@@ -9,4 +9,5 @@ public interface Constant {
     public static final boolean autoLogin=true;
     public static final Integer protocolVer=3;
     public static final String scene="7";
+    public static final int DEFAULT_PROTOCOLVER=3;
 }
