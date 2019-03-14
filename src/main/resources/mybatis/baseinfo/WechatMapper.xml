@@ -18,7 +18,7 @@
 		  		  <if test="uid != null and uid != ''"> and uid = #{uid} </if>
 		  		  <if test="wechat != null and wechat != ''"> and use_wechat.Wechat = #{wechat} </if>
 		  		  <if test="password != null and password != ''"> and use_wechat.Password = #{password} </if>
-		  		  <if test="wechatNo != null and wechatNo != ''"> and Wechat != #{wechatNo} </if>
+		  		  <if test="wechatNo != null and wechatNo != ''"> and use_wechat.Wechat != #{wechatNo} </if>
 		  		  <if test="data62 != null and data62 != ''"> and Data62 = #{data62} </if>
 		  		  <if test="lastdate != null and lastdate != ''"> and LastDate = #{lastdate} </if>
 		  		  <if test="totaltaskquantity != null and totaltaskquantity != ''"> and TotalTaskQuantity = #{totaltaskquantity} </if>
