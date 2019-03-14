@@ -69,6 +69,16 @@ public class WechatDO implements Serializable {
 	private String username;
 	//loginedUser.UserExt
 	private String userext;
+	//平台用户名
+	private String uname;
+
+	public String getUname() {
+		return uname;
+	}
+
+	public void setUname(String uname) {
+		this.uname = uname;
+	}
 
 	public Long getParentid() {
 		return parentid;
