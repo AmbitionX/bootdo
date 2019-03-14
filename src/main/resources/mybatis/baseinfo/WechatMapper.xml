@@ -8,17 +8,21 @@
 	</select>
 
 	<select id="list" resultType="com.bootdo.baseinfo.domain.WechatDO">
-		select `id`,`uid`,`Wechat`,`Password`,`Data62`,`LastDate`,`TotalTaskQuantity`,`TodayTaskQuantity`,`Stauts`,`Remark`,`Createdate`,`Modifydate`,`Taskid`,`randomid`,`sessionkey`,`deviceid`,`maxsynckey`,`uin`,`AutoAuthKey`,`Cookies`,`CurrentsyncKey`,`DeviceName`,`DeviceType`,`NickName`,`UserName`,`UserExt` from use_wechat
+		select use_wechat.`id`,`uid`,t2.username,use_wechat.`Wechat`,use_wechat.`Password`,`Data62`,`LastDate`,
+		`TotalTaskQuantity`,`TodayTaskQuantity`,use_wechat.`Stauts`,`Remark`,`Createdate`,`Modifydate`,`Taskid`,
+		`randomid`,`sessionkey`,`deviceid`,`maxsynckey`,`uin`,`AutoAuthKey`,`Cookies`,`CurrentsyncKey`,
+		`DeviceName`,`DeviceType`,`NickName`,use_wechat.`UserName` user,`UserExt`
+		from use_wechat left join sys_user t2 on use_wechat.uid=t2.user_id
         <where>  
-		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="id != null and id != ''"> and use_wechat.id = #{id} </if>
 		  		  <if test="uid != null and uid != ''"> and uid = #{uid} </if>
-		  		  <if test="wechat != null and wechat != ''"> and Wechat = #{wechat} </if>
-		  		  <if test="password != null and password != ''"> and Password = #{password} </if>
+		  		  <if test="wechat != null and wechat != ''"> and use_wechat.Wechat = #{wechat} </if>
+		  		  <if test="password != null and password != ''"> and use_wechat.Password = #{password} </if>
 		  		  <if test="data62 != null and data62 != ''"> and Data62 = #{data62} </if>
 		  		  <if test="lastdate != null and lastdate != ''"> and LastDate = #{lastdate} </if>
 		  		  <if test="totaltaskquantity != null and totaltaskquantity != ''"> and TotalTaskQuantity = #{totaltaskquantity} </if>
 		  		  <if test="todaytaskquantity != null and todaytaskquantity != ''"> and TodayTaskQuantity = #{todaytaskquantity} </if>
-		  		  <if test="stauts != null and stauts != ''"> and Stauts = #{stauts} </if>
+		  		  <if test="stauts != null and stauts != ''"> and use_wechat.Stauts = #{stauts} </if>
 		  		  <if test="remark != null and remark != ''"> and Remark = #{remark} </if>
 		  		  <if test="createdate != null and createdate != ''"> and Createdate = #{createdate} </if>
 		  		  <if test="modifydate != null and modifydate != ''"> and Modifydate = #{modifydate} </if>
@@ -34,7 +38,7 @@
 		  		  <if test="devicename != null and devicename != ''"> and DeviceName = #{devicename} </if>
 		  		  <if test="devicetype != null and devicetype != ''"> and DeviceType = #{devicetype} </if>
 		  		  <if test="nickname != null and nickname != ''"> and NickName = #{nickname} </if>
-		  		  <if test="username != null and username != ''"> and UserName = #{username} </if>
+		  		  <if test="username != null and username != ''"> and use_wechat.UserName = #{username} </if>
 		  		  <if test="userext != null and userext != ''"> and UserExt = #{userext} </if>
 		  		</where>
         <choose>

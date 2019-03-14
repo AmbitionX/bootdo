@@ -7,6 +7,7 @@ import com.bootdo.baseinfo.domain.AccountdetailDO;
 import com.bootdo.common.aspect.LogAspect;
 import com.bootdo.common.exception.BDException;
 import com.bootdo.common.utils.R;
+import com.bootdo.common.utils.ShiroUtils;
 import com.bootdo.system.dao.UserDao;
 import com.bootdo.util.MessagesCode;
 import com.bootdo.util.MsgUtil;
@@ -58,7 +59,7 @@ public class ApplywithdrawinfoServiceImpl implements ApplywithdrawinfoService {
 		//用户申请提现，  申请提现 = 申请提现 + 操作的申请提现金额
 		try {
 			// 用户账户查询
-			AccountDO accountDO = accountDao.getByUid(applywithdrawinfo.getUid());
+			AccountDO accountDO = accountDao.getByUid(ShiroUtils.getUserId());
 			if(applywithdrawinfo.getApplymoney().compareTo(BigDecimal.ZERO) !=1){
 				return R.error(1,MsgUtil.getMsg(MessagesCode.ERROR_CODE_1002));
 			}
@@ -69,6 +70,7 @@ public class ApplywithdrawinfoServiceImpl implements ApplywithdrawinfoService {
 		//	accountDO.setUsemoney(accountDO.getUsemoney().subtract(applywithdrawinfo.getApplymoney()));
 			accountDao.update(accountDO);
 			applywithdrawinfo.setStauts(1);
+			applywithdrawinfo.setUid(ShiroUtils.getUserId());
 			applywithdrawinfoDao.save(applywithdrawinfo);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -94,10 +96,10 @@ public class ApplywithdrawinfoServiceImpl implements ApplywithdrawinfoService {
             paramDO.setStauts(applywithdrawinfo.getStauts());
             paramDO.setRemark(applywithdrawinfo.getRemark());
 			// 用户账户查询
-			AccountDO accountDO = accountDao.getByUid(applywithdrawinfo.getUid());
+			AccountDO accountDO = accountDao.getByUid(applywithdrawinfodb.getUid());
 			BigDecimal changeBefore = accountDO.getUsemoney();
 			//查询申请
-			applywithdrawinfodb = applywithdrawinfoDao.get(applywithdrawinfo.getId());
+			//applywithdrawinfodb = applywithdrawinfoDao.get(applywithdrawinfo.getId());
 			// 同意并支付
 			if(applywithdrawinfo.getStauts().toString().equals("2")){
 				accountDO.setApplywithdrawmoney(accountDO.getApplywithdrawmoney().subtract(applywithdrawinfodb.getApplymoney()));

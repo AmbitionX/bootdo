@@ -46,6 +46,8 @@
                 <input type="button" id="解析62数据" name="upload62" onclick="parse62()" value="解析62数据"/>
                 <br/>选择文件:<input type="file" id="file1" />
             </li>
+
+            <li><input type="button" id="addUser" name="addUser" onclick="addUser()" value="new关注公众号"/> </li>
         </ul>
     </div>
 </div>
@@ -252,6 +254,40 @@
             if (data != null&&data.code==0) {
                 console.info(data);
             }
+        });
+    }
+
+    function addUser(){
+        $.ajax({
+            type: 'POST',
+            contentType:"application/json;charset=utf-8",
+            url: "http://localhost/wx/wxoperation/addUser",
+            data:JSON.stringify({
+                randomId: $("#randomId").val(),
+                account: "asd",
+                softwareId: "666",
+                autoLogin: true,
+                extraData: null,
+                protocolVer: 3,
+                reqUrl: "https://mp.weixin.qq.com/s/O4cvFKd0cCwnTybRZAGm6g",
+                scene: "3",
+                username: "yindongli2018",
+                gzwxId:"caozhi163",
+                cmd: 999,
+                now: new Date().getTime() // 注意不要在此行增加逗号
+            }),
+            success: function (data) {
+                if (data != null&&data.code==0) {
+                    var qrImg=data.status.state.ImgBuf;
+                    console.info(qrImg);
+                    if (qrImg != null&&qrImg!='') {
+                        qrImg = 'data:image/png;base64,' + qrImg;
+                        $("#qrImg").attr('src',qrImg);
+                        clearInterval(ind);
+                    }
+                }
+            },
+            dataType: "JSON"
         });
     }
 </script>

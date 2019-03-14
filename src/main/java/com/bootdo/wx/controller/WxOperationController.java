@@ -170,8 +170,8 @@ public class WxOperationController {
     @ResponseBody
     @RequestMapping(value = "/contactOperateService")
     public R contactOperateService(HttpServletRequest request,String randomId) {
-        logger.info("###### 获取用户登录状态 ######");
-        String logPrefix = "[获取用登录状态]";
+        logger.info("###### 关注公众号 ######");
+        String logPrefix = "[关注公众号]";
         WechatServiceGrpc service = ServiceManagerDemo.getInstance().getServiceByRandomId(randomId);
         if (service == null) {
             return R.error(1002, "用户对应的线程不存在");
@@ -187,6 +187,15 @@ public class WxOperationController {
             e.printStackTrace();
             return R.error();
         }
+        return R.ok();
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/addUser")
+    public R addUser(HttpServletRequest request,@RequestBody WechatApi wechatApi) {
+        logger.info("###### 关注公众号 ######");
+        ModelReturn modelReturn = commonApi.execute(wechatApi);
+
         return R.ok();
     }
 

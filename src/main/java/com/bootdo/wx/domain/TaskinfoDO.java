@@ -36,7 +36,7 @@ public class TaskinfoDO implements Serializable {
 	private Integer num;
 	//任务总金额
 	private BigDecimal totalmoney;
-	//任务周期 单位(分钟)
+	//任务间隔 单位(毫秒)
 	private Integer taskperiod;
 	//状态 1.未开始，3.未完成，5已完成
 	private Integer stauts;
@@ -187,7 +187,7 @@ public class TaskinfoDO implements Serializable {
 		this.taskperiod = taskperiod;
 	}
 	/**
-	 * 获取：任务周期 单位(分钟)
+	 * 获取：任务间隔 单位(毫秒)
 	 */
 	public Integer getTaskperiod() {
 		return taskperiod;

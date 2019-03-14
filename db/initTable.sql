@@ -96,7 +96,7 @@ CREATE TABLE `Wx_taskInfo` (
   `Price` decimal(18,2) NOT NULL COMMENT '任务单价',
   `Num` int(11) NOT NULL COMMENT '操作数量',
   `TotalMoney` decimal(18,2) NOT NULL COMMENT '任务总金额',
-  `taskPeriod` int(11) DEFAULT 0 COMMENT '任务周期 单位(分钟)',
+  `taskPeriod` int(11) DEFAULT 0 COMMENT '任务间隔 单位(毫秒)',
    `Stauts` int(5) NOT NULL COMMENT '状态 1.未开始，3.未完成，5已完成',
    `FinishNum` int(11) DEFAULT 0 COMMENT '已完成数量',
    `sort` int(5) DEFAULT 0 COMMENT '优先级别',

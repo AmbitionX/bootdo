@@ -52,8 +52,8 @@ function load() {
 									title : '' 
 								},
 																{
-									field : 'uid', 
-									title : '用户id' 
+									field : 'username',
+									title : '用户名'
 								},
 																{
 									field : 'wechat', 
@@ -63,10 +63,11 @@ function load() {
 									field : 'password', 
 									title : '微信密码' 
 								},
-																{
+									/*						{
 									field : 'data62', 
-									title : '62数据' 
-								},
+									title : '62数据',
+                                    width:80
+								},*/
 																{
 									field : 'lastdate', 
 									title : '最近一次做任务时间' 
@@ -81,7 +82,11 @@ function load() {
 								},
 																{
 									field : 'stauts', 
-									title : '状态 1.启用,2.停用,3.占用' 
+									title : '状态',
+                                    formatter: function (value) {
+                                        var sta = value==1?"启用":value==2?"停用":"占用";
+                                        return sta;
+                                    }
 								},
 																{
 									field : 'remark', 

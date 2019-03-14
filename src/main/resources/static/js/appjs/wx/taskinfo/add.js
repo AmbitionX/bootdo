@@ -66,7 +66,7 @@ function validateRule() {
                 required : icon + "请输入操作数量"
             },
             taskperiod : {
-                required : icon + "请输入任务周期"
+                required : icon + "请输入任务间隔"
             }
 		}
 	})

@@ -11,14 +11,21 @@ import com.bootdo.wx.dao.TaskinfoDao;
 import com.bootdo.wx.domain.TaskdetailDO;
 import com.bootdo.wx.domain.TaskinfoDO;
 import com.google.common.collect.Maps;
+import com.wx.demo.frameWork.protocol.CommonApi;
+import com.wx.demo.tools.Constant;
 import com.wx.demo.tools.RedisUtils;
+import com.wx.demo.wechatapi.model.ModelReturn;
+import com.wx.demo.wechatapi.model.WechatApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.xml.crypto.Data;
+import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -36,6 +43,8 @@ public class TaskJobServiceImpl implements TaskJobService {
     private WechatDao wechatDao;
     @Autowired
     private TaskdetailDao taskdetailDao;
+
+    private CommonApi commonApi = CommonApi.getInstance();
 
 
     private final String prefix_task = "wx_task";
@@ -101,13 +110,21 @@ public class TaskJobServiceImpl implements TaskJobService {
 
                         logger.info("------------->>>完成微信号与任务的绑定<<<---------------cc" + now);
                         // 绑定完任务，开始做任务 ----------------------------功能待开发-------------------------------
-
+                        WechatApi wechatApi = new WechatApi();
                         if (taskinfo.getTasktype().equals(1)) {//阅读
                             for (WechatDO wxid : wechatListdb) {
+                                wechatApi.setRandomId(wxid.getRandomid());
+                                wechatApi.setAccount(wxid.getUid().toString());
+                                wechatApi.setSoftwareId(Constant.softwareId);
+                                wechatApi.setAutoLogin(Constant.autoLogin);
+                                wechatApi.setProtocolVer(Constant.protocolVer);
+                                wechatApi.setReqUrl(taskinfo.getUrl());
+                                wechatApi.setScene(Constant.scene);
+                                wechatApi.setUserName(taskinfo.getWxname());
+                                wechatApi.setCmd(777);
 
-                                /*BaseService service = ServiceManager.getInstance().getServiceByRandomId(wxid.getRandomid());
-                                String paymentStr = service.getA8KeyService(taskinfo.getUrl(), 7, taskinfo.getWxname());
-*/
+                                ModelReturn modelReturn = commonApi.execute(wechatApi);
+
                                 TaskdetailDO taskdetailDO = new TaskdetailDO();
                                 taskdetailDO.setTaskid(taskinfo.getId());
                                 taskdetailDO.setUid(wxid.getUid());
@@ -123,12 +140,14 @@ public class TaskJobServiceImpl implements TaskJobService {
                                 if (true) {//记录成功次数
                                     count = count + 1;
                                 }
+                                Thread.sleep(taskinfo.getTaskperiod());
                             }
                         } else if (taskinfo.getTasktype().equals(2)) {//点赞
                             for (WechatDO wxid : wechatListdb) {
                               /*  BaseService service = ServiceManager.getInstance().getServiceByRandomId(wxid.getRandomid());
                                 String paymentStr = service.getA8KeyService(taskinfo.getUrl(), 7, taskinfo.getWxname());
 */
+
                                 TaskdetailDO taskdetailDO = new TaskdetailDO();
                                 taskdetailDO.setTaskid(taskinfo.getId());
                                 taskdetailDO.setUid(wxid.getUid());
@@ -143,12 +162,25 @@ public class TaskJobServiceImpl implements TaskJobService {
                                 if (true) {//记录成功次数
                                     count = count + 1;
                                 }
+                                Thread.sleep(taskinfo.getTaskperiod());
                             }
                         } else if (taskinfo.getTasktype().equals(3)) {//关注
                             for (WechatDO wxid : wechatListdb) {
                              /*   BaseService service = ServiceManager.getInstance().getServiceByRandomId(wxid.getRandomid());
                                 String paymentStr = service.getA8KeyService(taskinfo.getUrl(), 7, taskinfo.getWxname());
 */
+                                wechatApi.setRandomId(wxid.getRandomid());
+                                wechatApi.setAccount(wxid.getUid().toString());
+                                wechatApi.setSoftwareId(Constant.softwareId);
+                                wechatApi.setAutoLogin(Constant.autoLogin);
+                                wechatApi.setProtocolVer(Constant.protocolVer);
+                                wechatApi.setReqUrl(taskinfo.getUrl());
+                                wechatApi.setScene(Constant.scene);
+                                wechatApi.setUserName(taskinfo.getWxname());
+                                wechatApi.setCmd(999);
+
+                                ModelReturn modelReturn = commonApi.execute(wechatApi);
+
                                 TaskdetailDO taskdetailDO = new TaskdetailDO();
                                 taskdetailDO.setTaskid(taskinfo.getId());
                                 taskdetailDO.setUid(wxid.getUid());
@@ -160,9 +192,11 @@ public class TaskJobServiceImpl implements TaskJobService {
                                 taskdetailDao.save(taskdetailDO);
                                 //释放微信号，根据执行成功失败传参
                                 relieveStatus(wxid, true);
-                                if (true) {//记录成功次数
+
+                                if (modelReturn!=null && modelReturn.getCode()==0) {//记录成功次数
                                     count = count + 1;
                                 }
+                                Thread.sleep(taskinfo.getTaskperiod());
                             }
                         }
                         //----------------------------------------------------任务结束----------------------------------
@@ -232,5 +266,21 @@ public class TaskJobServiceImpl implements TaskJobService {
             return true;
         }
         return false;
+    }
+
+    public static void main(String[] args) {
+        Instant t1 = Instant.now();
+        System.out.println("t1 ----》 "+t1);
+   /*     try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
+        Instant t2 = Instant.now();
+        System.out.println("t2 ----》 "+t2);
+
+        System.out.println("以秒计的时间差：" + Duration.between(t1, t2).getSeconds());
+
+
     }
 }

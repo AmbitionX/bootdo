@@ -81,6 +81,7 @@ public class ServiceManagerDemo {
 
 
 
+
     public WechatServiceGrpc getServiceByRandomId(String randomId) {
         return serviceMap.get(randomId);
     }

@@ -764,7 +764,7 @@ public class WechatServiceGrpc implements WechatService {
         //微信数据写入到db
         Map<String,Object> param = Maps.newHashMap();
         param.put("wechat",loginedUser.getUserame());
-        param.put("stauts",1);
+      //  param.put("stauts",1);
         List<WechatDO> wechats = wechatService.list(param);
         if (wechats.size()<1) { // 新增
             WechatDO wechatDO = new WechatDO();
@@ -782,57 +782,77 @@ public class WechatServiceGrpc implements WechatService {
             wechatDO.setNickname(loginedUser.getNickname().toStringUtf8());
             wechatDO.setWechat(loginedUser.getUserame());
             byte[] bytes = loginedUser.toByteArray();
-        //    String user = new String(bytes,StandardCharsets.ISO_8859_1);
             wechatDO.setUsername(Base64Utils.encodeToString(bytes));
             String data62 = _prefix_62+WechatUtil.strTo16(loginedUser.getDeviceId())+_postfix_62;
             wechatDO.setData62(data62);
-          /*  try {
-                User user1 = User.parseFrom(bytes);
-                System.out.println("1");
-            } catch (InvalidProtocolBufferException e) {
-                e.printStackTrace();
-            }*/
-/*            try {
-                byte[] b2 = Base64Utils.decodeFromString(wechatDO.getUsername());
-                User user2 = User.parseFrom(b2);
-                System.out.println("2");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            try {
-                User user3 = User.parseFrom(user.getBytes());
-                System.out.println("3");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }*/
 
             wechatDO.setUserext(String.valueOf(loginedUser.getUserExt()));
             wechatService.save(wechatDO);
-        }else { // 更新
-            WechatDO wechatDO = wechats.get(0);
-            wechatDO.setRandomid(this.randomid);
-            wechatDO.setSessionkey(String.valueOf(loginedUser.getSessionKey()));
-            wechatDO.setDeviceid(loginedUser.getDeviceId());
-
-            if(wechatDO.getStauts()!=1) {
-                wechatDO.setUid(Long.valueOf(this.account));
+        }else { // 更新 或者 新增
+            WechatDO wechatDO=null;
+            WechatDO wechatDO2=null;
+            for(WechatDO wechatDOTemp1:wechats){ // 账户下有没有这个微信号
+                if(Long.toString(wechatDOTemp1.getUid())==this.account)
+                    wechatDO=wechatDOTemp1;
+                break;
             }
-            wechatDO.setStauts(1);//启用
-            wechatDO.setUin(String.valueOf(loginedUser.getUin()));
-            wechatDO.setAutoauthkey(String.valueOf(loginedUser.getAutoAuthKey()));
-            wechatDO.setCookies(String.valueOf(loginedUser.getCookies()));
-            wechatDO.setCurrentsynckey(String.valueOf(loginedUser.getCurrentsyncKey()));
-            wechatDO.setDevicename(String.valueOf(loginedUser.getDeviceName()));
-            wechatDO.setDevicetype(String.valueOf(loginedUser.getDeviceType()));
-            wechatDO.setNickname(String.valueOf(loginedUser.getNickname()));
+            if(wechatApi.getCmd()==2222) {// 62数据需要判断
+                for (WechatDO wechatDOTemp2 : wechats) {// 更新时间最近的一条数据
+                    if (wechatDO2 == null) {
+                        wechatDO2 = wechatDOTemp2;
+                    } else {
+                        if (wechatDO2.getModifydate().compareTo(wechatDOTemp2.getModifydate()) < 0)
+                            wechatDO2 = wechatDOTemp2;
+                    }
+                }
+                Date now = new Date();
+                long a = (now.getTime() - wechatDO2.getModifydate().getTime()) / (60 * 60 * 1000) % 24;
+                if (a < 1) { // 如果更新时间最近的一条数据更新时间不到1小时，则认为该账号被挤下线，归属最后更新的那个账户
+                    wechatDO = wechatDO2;
+                }
+            }
 
-            byte[] bytes = loginedUser.toByteArray();
-            //    String user = new String(bytes,StandardCharsets.ISO_8859_1);
-            wechatDO.setUsername(Base64Utils.encodeToString(bytes));
+            if(wechatDO!=null) { //更新
+                wechatDO.setRandomid(this.randomid);
+                wechatDO.setSessionkey(String.valueOf(loginedUser.getSessionKey()));
+                wechatDO.setDeviceid(loginedUser.getDeviceId());
+                if(wechatApi.getCmd()!=2222) {
+                    wechatDO.setUid(Long.valueOf(this.account));
+                }
+                wechatDO.setStauts(1);//启用
+                wechatDO.setUin(String.valueOf(loginedUser.getUin()));
+                wechatDO.setAutoauthkey(String.valueOf(loginedUser.getAutoAuthKey()));
+                wechatDO.setCookies(String.valueOf(loginedUser.getCookies()));
+                wechatDO.setCurrentsynckey(String.valueOf(loginedUser.getCurrentsyncKey()));
+                wechatDO.setDevicename(String.valueOf(loginedUser.getDeviceName()));
+                wechatDO.setDevicetype(String.valueOf(loginedUser.getDeviceType()));
+                wechatDO.setNickname(String.valueOf(loginedUser.getNickname()));
+                byte[] bytes = loginedUser.toByteArray();
+                wechatDO.setUsername(Base64Utils.encodeToString(bytes));
+                wechatDO.setUserext(String.valueOf(loginedUser.getUserExt()));
 
-            wechatDO.setUserext(String.valueOf(loginedUser.getUserExt()));
-
-            wechatService.update(wechatDO);
+                wechatService.update(wechatDO);
+            }else {
+                wechatDO.setRandomid(this.randomid);
+                wechatDO.setSessionkey(String.valueOf(loginedUser.getSessionKey()));
+                wechatDO.setDeviceid(loginedUser.getDeviceId());
+                wechatDO.setUid(Long.valueOf(this.account));
+                wechatDO.setStauts(1);//启用
+                wechatDO.setUin(String.valueOf(loginedUser.getUin()));
+                wechatDO.setAutoauthkey(loginedUser.getAutoAuthKey().toStringUtf8());
+                wechatDO.setCookies(loginedUser.getCookies().toStringUtf8());
+                wechatDO.setCurrentsynckey(loginedUser.getCurrentsyncKey().toStringUtf8());
+                wechatDO.setDevicename(loginedUser.getDeviceName());
+                wechatDO.setDevicetype(loginedUser.getDeviceType());
+                wechatDO.setNickname(loginedUser.getNickname().toStringUtf8());
+                wechatDO.setWechat(loginedUser.getUserame());
+                byte[] bytes = loginedUser.toByteArray();
+                wechatDO.setUsername(Base64Utils.encodeToString(bytes));
+                String data62 = _prefix_62+WechatUtil.strTo16(loginedUser.getDeviceId())+_postfix_62;
+                wechatDO.setData62(data62);
+                wechatDO.setUserext(String.valueOf(loginedUser.getUserExt()));
+                wechatService.save(wechatDO);
+            }
         }
     }
 
@@ -997,10 +1017,6 @@ public class WechatServiceGrpc implements WechatService {
 
     @Override
     public void checkQrcode() {
-
-
-
-
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -1520,6 +1536,35 @@ public class WechatServiceGrpc implements WechatService {
         resultMap.put("userName",wxID);
         resultMap.put("status","0");
         resultMap.put("remaker","已发送验证");
+        return resultMap;
+    }
+
+    @Override
+    public Map<String, String> contactOperate(String encrypUserName, String ticket, String content, int type, int Scene) {
+        //1关注公众号2打招呼 主动添加好友3通过好友请求
+        Map<String, String> resultMap = new HashMap<>();
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("Encryptusername", encrypUserName);//v1_
+        params.put("Ticket", ticket);//v2_
+        params.put("Type", type);//1关注公众号2打招呼 主动添加好友3通过好友请求
+        params.put("Content", content);//打招呼内容
+        params.put("Sence", Scene);//1来源QQ2来源邮箱3来源微信号14群聊15手机号18附近的人25漂流瓶29摇一摇30二维码
+        WechatMsg wechatMsg = addUserRequest(137, params);
+        if (wechatMsg == null) {
+            resultMap.put("remaker","操作失败");
+            resultMap.put("status","1");
+            return resultMap;
+        }
+
+        if (wechatMsg.getBaseMsg().getRet() != 0) {
+            String result = new String(wechatMsg.getBaseMsg().getPayloads().toByteArray(),StandardCharsets.UTF_8);
+            resultMap.put("status","1");
+            resultMap.put("remaker",result);
+            return resultMap;
+        }
+        resultMap.put("userName",encrypUserName);
+        resultMap.put("status","0");
+        resultMap.put("remaker","成功");
         return resultMap;
     }
 

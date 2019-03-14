@@ -122,6 +122,8 @@ public interface WechatService {
      */
     Map<String, String>  addUser(String username, int type, String helloContent, int at);
 
+    Map<String, String> contactOperate(String encrypUserName, String ticket, String content, int type, int Scene);
+
 
     /**
      * 发送普通消息
