@@ -7,6 +7,7 @@ import com.wx.demo.util.MyLog;
 import com.wx.demo.wechatapi.model.ModelReturn;
 import com.wx.demo.wechatapi.model.WechatApi;
 
+import java.util.Map;
 import java.util.UUID;
 
 public class CommonApi extends BaseController {
@@ -41,20 +42,15 @@ public class CommonApi extends BaseController {
 
                 modelReturn = service.getState();
             }
-            if (cmd == 702){
-                service = grpvcserver.loginQrCode(wechatApi);
-
-                modelReturn = service.getState();
-            }
-            if (cmd== EnumWxCmdType.NUM_TYPE_2222.getCode()){
+            if (cmd== 2222){
                 service = grpvcserver.wx62Login(wechatApi);
                 modelReturn = service.getState();
             }
         }else {
-            if (cmd == 6666){
+            if (cmd == 6666){// 获取状态
                 modelReturn = service.getState();
             }
-            if (cmd == 777){
+            if (cmd == 777){// 阅读
 
                 String retStr = service.getReadA8KeyAndRead(wechatApi.getReqUrl(),Integer.parseInt(wechatApi.getScene()),wechatApi.getUsername());
                 if (!"".equalsIgnoreCase(retStr)) {
@@ -63,6 +59,13 @@ public class CommonApi extends BaseController {
             }
             if (cmd == 888) {
 
+            }
+            if (cmd == 999){ // 关注
+                Map<String, String> map = service.contactOperate(wechatApi.getGzwxId(),null,null,1,3);
+                if(map!=null){
+                    modelReturn.code(Integer.parseInt(map.get("status")));
+                    modelReturn.msg(map.get("remaker"));
+                }
             }
         }
         return modelReturn;

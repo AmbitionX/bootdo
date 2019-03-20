@@ -1,3 +1,4 @@
+/*
 package com;
 
 import org.mybatis.spring.annotation.MapperScan;
@@ -44,3 +45,4 @@ public class BootdoApplication extends SpringBootServletInitializer {
 //                "|_______/  '.__.'  '.__.' \\__/|______.'  '.__.'  ");
 //    }
 }
+*/

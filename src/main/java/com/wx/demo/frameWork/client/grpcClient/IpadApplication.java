@@ -96,10 +96,12 @@ public class IpadApplication {
                                 cis=0;
                                 ii = 1;
                             }
-                            String hostStr=serverList[ii].split(":")[0];
-                            String portStr=serverList[ii].split(":")[1];
-                            client.create(hostStr, Integer.parseInt(portStr));
-                            releaseClient(client);
+                            if(serverList.length > ii) {
+                                String hostStr = serverList[ii].split(":")[0];
+                                String portStr = serverList[ii].split(":")[1];
+                                client.create(hostStr, Integer.parseInt(portStr));
+                                releaseClient(client);
+                            }
                         }
 
                     }

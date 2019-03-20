@@ -89,7 +89,7 @@ function load() {
 								},
 																{
 									field : 'taskperiod', 
-									title : '任务周期(分钟)'
+									title : '任务间隔(毫秒)'
 								},
 																{
 									field : 'stauts', 
