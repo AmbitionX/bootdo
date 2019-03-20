@@ -835,6 +835,7 @@ public class WechatServiceGrpc implements WechatService {
 
                 wechatService.update(wechatDO);
             }else {
+                wechatDO = new WechatDO();
                 wechatDO.setRandomid(this.randomid);
                 wechatDO.setSessionkey(String.valueOf(loginedUser.getSessionKey()));
                 wechatDO.setDeviceid(loginedUser.getDeviceId());

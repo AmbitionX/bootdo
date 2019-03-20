@@ -14,11 +14,11 @@ public class Settings {
         public String machineCode = "v3_651fc2c44e3a0aced535fa2e5f16dfc6";
         public String localIp = "120.36.248.152";
         public String driverClass = "com.mysql.jdbc.Driver";
-        public String mysqlUrl = "jdbc:mysql://127.0.0.1/ceshi?zeroDateTimeBehavior=convertToNull";
-        public String mysqlUserName = "root";
-        public String mysqlPwd = "";
+        public String mysqlUrl = "jdbc:mysql://101.132.110.15/bootdo?zeroDateTimeBehavior=convertToNull";
+        public String mysqlUserName = "wx";
+        public String mysqlPwd = "wx123456";
         public String server_ip = "127.0.0.1";
-        public String redis_host = "127.0.0.1";
+        public String redis_host = "101.132.110.15";
         public String grpc_host = "grpc.wxipad.com:12580";
         public String redis_auth = "Chen861212";
         public String bindname = "微咖";
