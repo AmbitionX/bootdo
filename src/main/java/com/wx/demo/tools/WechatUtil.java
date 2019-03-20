@@ -32,9 +32,9 @@ public class WechatUtil {
     public static int AppPort = 12580;
     public static String AppIp = "grpc.wxipad.com";
     public static String AppHost = AppIp+":" + AppPort;
-    public static String AppId = "v1_xukeoscar_CodeVip";
-    public static String AppKey = "v2_7b3d44d2ce848751f2f9d27993d93471";
-    public static String AppTocken = "v3_651fc2c44e3a0aced535fa2e5f16dfc6";
+    public static String AppId = "v1_804188876_CodeVip";
+    public static String AppKey = "v2_1b76be021d21114b6d59bd7edd7c55dc";
+    public static String AppTocken = "v3_8799ed22a680b70e6dbe0596b1a82bdc";
     public static int ApiPort = 12580;
     public static String APiIp = "111.231.104.181";
     public static String ApiHost = APiIp+":" + ApiPort;
