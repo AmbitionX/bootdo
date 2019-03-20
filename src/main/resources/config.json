@@ -1,6 +1,6 @@
 {
   "server_port": 10010,
-  "redis_host": "192.168.1.105",
+  "redis_host": "101.132.110.15",
   "redis_port": 6379,
   "redis_auth": "",
   "redis_db":4,
