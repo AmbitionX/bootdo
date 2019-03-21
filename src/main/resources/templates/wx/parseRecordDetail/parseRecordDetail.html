@@ -8,15 +8,6 @@
 			<div class="ibox">
 				<div class="ibox-body">
 					<div class="fixed-table-toolbar">
-						<div class="columns pull-left">
-							<button shiro:hasPermission="wx:parseRecordDetail:add" type="button" class="btn  btn-primary" onclick="add()">
-								<i class="fa fa-plus" aria-hidden="true"></i>添加
-							</button>
-							<button shiro:hasPermission="wx:parseRecordDetail:batchRemove" type="button" class="btn  btn-danger"
-								onclick="batchRemove()">
-								<i class="fa fa-trash" aria-hidden="true"></i>删除
-							</button>
-						</div>
 						<div class="columns pull-right">
 							<button class="btn btn-success" onclick="reLoad()">查询</button>
 						</div>
@@ -25,6 +16,7 @@
 								placeholder="">
 						</div>
 					</div>
+					<input id="parseCode" name="parseCode" th:value="${parseRecord.parsecode}" class="form-control" type="hidden">
 					<table id="exampleTable" data-mobile-responsive="true">
 					</table>
 				</div>
@@ -37,21 +29,6 @@
 				var s_edit_h = 'hidden';
 				var s_remove_h = 'hidden';
 				var s_resetPwd_h = 'hidden';
-			</script>
-		</div>
-		<div shiro:hasPermission="wx:parseRecordDetail:edit">
-			<script type="text/javascript">
-				s_edit_h = '';
-			</script>
-		</div>
-		<div shiro:hasPermission="wx:parseRecordDetail:remove">
-			<script type="text/javascript">
-				var s_remove_h = '';
-			</script>
-		</div>
-		<div shiro:hasPermission="wx:parseRecordDetail:resetPwd">
-			<script type="text/javascript">
-				var s_resetPwd_h = '';
 			</script>
 		</div>
 	</div>

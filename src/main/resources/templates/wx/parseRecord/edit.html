@@ -8,44 +8,9 @@
 			<div class="col-sm-12">
 				<div class="ibox float-e-margins">
 					<div class="ibox-content">
-						<form class="form-horizontal m-t" id="signupForm">
-						<input id="id" name="id" th:value="${parseRecord.id}"  type="hidden">
-							<div class="form-group">	
-								<label class="col-sm-3 control-label">用户id：</label>
-								<div class="col-sm-8">
-									<input id="userid" name="userid" th:value="${parseRecord.userid}" class="form-control" type="text">
-								</div>
-							</div>
-														<div class="form-group">	
-								<label class="col-sm-3 control-label">62数据文件地址：</label>
-								<div class="col-sm-8">
-									<input id="fileurl" name="fileurl" th:value="${parseRecord.fileurl}" class="form-control" type="text">
-								</div>
-							</div>
-														<div class="form-group">	
-								<label class="col-sm-3 control-label">解析时间：</label>
-								<div class="col-sm-8">
-									<input id="parsedate" name="parsedate" th:value="${parseRecord.parsedate}" class="form-control" type="text">
-								</div>
-							</div>
-														<div class="form-group">	
-								<label class="col-sm-3 control-label">解析状态【1：解析中；2：解析完成】：</label>
-								<div class="col-sm-8">
-									<input id="parsestate" name="parsestate" th:value="${parseRecord.parsestate}" class="form-control" type="text">
-								</div>
-							</div>
-														<div class="form-group">	
-								<label class="col-sm-3 control-label">解析记录完成时间：</label>
-								<div class="col-sm-8">
-									<input id="finishdate" name="finishdate" th:value="${parseRecord.finishdate}" class="form-control" type="text">
-								</div>
-							</div>
-																					<div class="form-group">
-								<div class="col-sm-8 col-sm-offset-3">
-									<button type="submit" class="btn btn-primary">提交</button>
-								</div>
-							</div>
-						</form>
+						<input id="parseCode" name="parseCode" th:value="${parseRecord.parsecode}" class="form-control" type="hidden">
+						<table id="parseRecordTable" data-mobile-responsive="true">
+						</table>
 					</div>
 				</div>
 			</div>

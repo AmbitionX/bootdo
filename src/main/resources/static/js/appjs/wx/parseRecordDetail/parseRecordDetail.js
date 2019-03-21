@@ -32,7 +32,8 @@ function load() {
 							return {
 								//说明：传入后台的参数包括offset开始索引，limit步长，sort排序列，order：desc或者,以及所有列的键值对
 								limit: params.limit,
-								offset:params.offset
+								offset:params.offset,
+								parseCode:$("#parseCode").val()
 					           // name:$('#searchName').val(),
 					           // username:$('#searchName').val()
 							};
@@ -49,27 +50,38 @@ function load() {
 								},
 																{
 									field : 'id', 
-									title : '解析记录明细主键' 
+									title : '主键'
 								},
 																{
-									field : 'parseid', 
-									title : '解析任务外键id' 
+									field : 'parseCode',
+									title : '任务code'
 								},
 																{
 									field : 'username', 
 									title : '62数据账号' 
-								},
-																{
-									field : 'password', 
-									title : '62数据密码' 
-								},
-																{
-									field : 'wxdata', 
-									title : '62数据内容' 
+								// },
+								// 								{
+								// 	field : 'password',
+								// 	title : '62数据密码'
+								// },
+								// 								{
+								// 	field : 'wxdata',
+								// 	title : '62数据内容'
 								},
 																{
 									field : 'state', 
-									title : '解析明细状态【1：执行中；2：执行成功；3：执行失败；4：平台已经存在】' 
+									title : '解析明细状态',
+									formatter : function(value, row, index) {
+										if (row.state == '1'){
+											return '执行中';
+										}else if (row.state == '2'){
+											return '执行成功';
+										}else if (row.state == '3'){
+											return '执行失败';
+										}else if (row.state == '4'){
+											return '平台已经存在';
+										}
+									}
 								},
 																{
 									field : 'ctime', 
@@ -78,23 +90,6 @@ function load() {
 																{
 									field : 'utime', 
 									title : '修改时间' 
-								},
-																{
-									title : '操作',
-									field : 'id',
-									align : 'center',
-									formatter : function(value, row, index) {
-										var e = '<a class="btn btn-primary btn-sm '+s_edit_h+'" href="#" mce_href="#" title="编辑" onclick="edit(\''
-												+ row.id
-												+ '\')"><i class="fa fa-edit"></i></a> ';
-										var d = '<a class="btn btn-warning btn-sm '+s_remove_h+'" href="#" title="删除"  mce_href="#" onclick="remove(\''
-												+ row.id
-												+ '\')"><i class="fa fa-remove"></i></a> ';
-										var f = '<a class="btn btn-success btn-sm" href="#" title="备用"  mce_href="#" onclick="resetPwd(\''
-												+ row.id
-												+ '\')"><i class="fa fa-key"></i></a> ';
-										return e + d ;
-									}
 								} ]
 					});
 }
