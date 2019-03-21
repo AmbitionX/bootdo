@@ -40,7 +40,13 @@ public class TaskinfoController {
 	String Taskinfo(){
 	    return "wx/taskinfo/taskinfo";
 	}
-	
+
+	@GetMapping("/testPage")
+	@RequiresPermissions("wx:taskinfo:testPage")
+	String testPage(){
+		return "wx/taskinfo/test";
+	}
+
 	@ResponseBody
 	@GetMapping("/list")
 	@RequiresPermissions("wx:taskinfo:taskinfo")

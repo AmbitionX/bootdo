@@ -100,10 +100,10 @@ function load() {
 									field : 'modifydate', 
 									title : '修改时间' 
 								},
-																{
+									/*							{
 									field : 'taskid', 
 									title : '任务id' 
-								},
+								},*/
 																{
 									title : '操作',
 									field : 'id',

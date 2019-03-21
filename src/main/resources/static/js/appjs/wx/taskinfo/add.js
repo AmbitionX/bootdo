@@ -47,10 +47,10 @@ function validateRule() {
             },
             num : {
                 required : true
-            },
+            }/*,
             taskperiod : {
                 required : true
-            }
+            }*/
 		},
 		messages : {
             url : {
@@ -64,10 +64,10 @@ function validateRule() {
             },
             num : {
                 required : icon + "请输入操作数量"
-            },
+            }/*,
             taskperiod : {
                 required : icon + "请输入任务间隔"
-            }
+            }*/
 		}
 	})
 }

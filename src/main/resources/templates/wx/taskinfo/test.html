@@ -14,21 +14,17 @@
     <div style="padding: 10px 0 20px 10px;">
         <h3>&nbsp;&nbsp;&nbsp;项目介绍</h3>
         <ul>
-            <li>用户注册平台账户后，通过扫描二维码或导入数据的方式将微信号绑定到自己账户下面.</li>
+  <!--          <li>用户注册平台账户后，通过扫描二维码或导入数据的方式将微信号绑定到自己账户下面.</li>
             <li>平台使用用户绑定的微信号做任务，完成任务微信号获得佣金直接汇总到用户平台账户上.</li>
-            <li>用户发起佣金提现，提现金额将在3个工作日内到账,用户获得现金收益.</li>
+            <li>用户发起佣金提现，提现金额将在3个工作日内到账,用户获得现金收益.</li>-->
 
-        <p></p>
-            <li><b>1.点击下面【获取二维码】</b></li>
-            <li><b>2.用微信移动客户端扫描二维码</b></li>
-            <li><b>3.在微信移动客户端上确认授权登陆</b></li>
             <!--<button type="button"-->
-                    <!--class="btn  btn-primary" onclick="getQrCode()">-->
+                    <!--class="btn  btn-primary" onclick="getQRCode()">-->
                 <!--<i class="fa fa-plus" aria-hidden="true"></i>获取二维码-->
             <!--</button>-->
-            <!--<input type="hidden" id="randomId" name="randomId"></input>
-            <div id="qrcodeUUID"></div>-->
-            <img id="qrImg" src="" width="150px" height="150px" alt="" />
+            <input type="hidden" id="randomId" name="randomId"></input>
+            <div id="qrcodeUUID"></div>
+            <img id="qrImg" src="" width="150px" height="150px" alt="微信登录二维码" />
             <div id="existRandomIds">
 
             </div>
@@ -40,7 +36,7 @@
         <h3>&nbsp;&nbsp;&nbsp;WeChat Business Button</h3>
         <ul>
             <li><input type="button" id="getQrCode" name="getQrCode" onclick="getQrCode()" value="获取二维码"/> </li>
-           <!-- <li><input type="button" id="getQrCodeStatus" name="getQrCode" onclick="getQrCodeStatus()" value="获取二维码状态"/> </li>
+            <li><input type="button" id="getQrCodeStatus" name="getQrCode" onclick="getQrCodeStatus()" value="获取二维码状态"/> </li>
             <li><input type="button" id="getLoginStatus" name="getLoginStatus" onclick="getLoginStatus()" value="获取登录状态"/> </li>
             <li><input type="button" id="getReadReady" name="getReadReady" onclick="getReadReady()" value="获取阅读准备数据"/> </li>
             <li><input type="button" id="contactOperateService" name="contactOperateService" onclick="contactOperateService()" value="关注公众号"/> </li>
@@ -51,13 +47,13 @@
                 <br/>选择文件:<input type="file" id="file1" />
             </li>
 
-            <li><input type="button" id="addUser" name="addUser" onclick="addUser()" value="new关注公众号"/> </li>-->
+            <li><input type="button" id="addUser" name="addUser" onclick="addUser()" value="new关注公众号"/> </li>
         </ul>
     </div>
 </div>
 </body>
-<script src="js/jquery.min.js"></script>
-<script src="js/openTab.js"></script>
+<script src="../../js/jquery.min.js"></script>
+<script src="../../js/openTab.js"></script>
 <script th:inline="javascript"> var ctx = [[@{/}]] ; </script>
 <script type="text/javascript">
     var ind = "";
@@ -144,7 +140,7 @@
             contentType:"application/json;charset=utf-8",
             url: "http://localhost/wx/wxoperation/login_qrcode",
             data:JSON.stringify({
-              /*  randomId: "asdf54wq6qwe65r4651aasdgas",*/
+                randomId: "asdf54wq6qwe65r4651aasdgaaas",
                 account: "asd",
                 softwareId: "666",
                 autoLogin: true,
