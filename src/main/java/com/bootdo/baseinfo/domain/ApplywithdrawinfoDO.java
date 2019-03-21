@@ -36,6 +36,16 @@ public class ApplywithdrawinfoDO implements Serializable {
 	private Date createdate;
 	//修改时间
 	private Date modifydate;
+	// 用户名
+	private String username;
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
 	/**
 	 * 设置：

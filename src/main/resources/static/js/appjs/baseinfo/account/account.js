@@ -52,8 +52,8 @@ function load() {
 									title : '' 
 								},
 																{
-									field : 'uid', 
-									title : '用户id' 
+									field : 'username',
+									title : '用户'
 								},
 																{
 									field : 'totalgainmoney', 
@@ -65,7 +65,7 @@ function load() {
 								},
 																{
 									field : 'applywithdrawmoney', 
-									title : '申请提现金额合计（申请未到账的金额合计）' 
+									title : '申请提现金额合计（未到账）'
 								},
 																{
 									field : 'usemoney', 
@@ -77,7 +77,7 @@ function load() {
 								},
 																{
 									field : 'modifydate', 
-									title : '修改时间' 
+									title : '更新时间'
 								},
 																{
 									title : '操作',

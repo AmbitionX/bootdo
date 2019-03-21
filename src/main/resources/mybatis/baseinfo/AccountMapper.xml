@@ -8,7 +8,9 @@
 	</select>
 
 	<select id="list" resultType="com.bootdo.baseinfo.domain.AccountDO">
-		select `id`,`Uid`,`TotalGainMoney`,`TotalWithdrawMoney`,`ApplyWithdrawMoney`,`UseMoney`,`Createdate`,`Modifydate`,`version` from use_account
+		select `id`,`Uid`,`TotalGainMoney`,`TotalWithdrawMoney`,`ApplyWithdrawMoney`,`UseMoney`,
+		`Createdate`,`Modifydate`,`version`,t2.username
+		from use_account t1 left join sys_user t2 on t1.Uid=t2.user_id
         <where>  
 		  		  <if test="id != null and id != ''"> and id = #{id} </if>
 		  		  <if test="uid != null and uid != ''"> and Uid = #{uid} </if>
