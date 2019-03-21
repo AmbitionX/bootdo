@@ -1,34 +1,20 @@
 package com.bootdo.wx.controller;
 
-import com.bootdo.common.utils.FileUtils;
-import com.bootdo.common.utils.HxFileUtils;
 import com.bootdo.common.utils.R;
 import com.bootdo.common.utils.ShiroUtils;
 import com.bootdo.wx.service.impl.WxOperationServiceImpl;
 import com.wx.demo.frameWork.protocol.CommonApi;
 import com.wx.demo.frameWork.protocol.ServiceManagerDemo;
 import com.wx.demo.frameWork.protocol.WechatServiceGrpc;
-import com.wx.demo.service.BaseService;
-import com.wx.demo.service.ServiceManager;
-import com.wx.demo.tools.Constant;
-import com.wx.demo.tools.StringUtil;
 import com.wx.demo.wechatapi.model.ModelReturn;
 import com.wx.demo.wechatapi.model.WechatApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -64,6 +50,8 @@ public class WxOperationController {
         long startTime = System.currentTimeMillis();
         String logPrefix = "[获取用登录二维码]";
         boolean isNew;
+        String randomId = UUID.randomUUID().toString();
+        getLoginQrcode.setRandomId(randomId);
         getLoginQrcode.setAccount(String.valueOf(ShiroUtils.getUserId()));
         ModelReturn modelReturn = commonApi.execute(getLoginQrcode);
 

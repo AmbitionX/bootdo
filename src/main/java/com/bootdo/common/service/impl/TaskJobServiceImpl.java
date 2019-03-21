@@ -211,7 +211,7 @@ public class TaskJobServiceImpl implements TaskJobService {
                         // 释放任务锁
                         RedisUtils.del(prefix_task+taskinfo.getId());
                     } else {
-                        logger.info("--------->>>任务url{}" + taskinfo.getUrl() + "没有足够的资源进行操作,稍后系统进行重.cc" + now);
+                        logger.info("--------->>>任务url{}" + taskinfo.getUrl() + "没有足够的资源进行操作,稍后系统进行重试.cc" + now);
                         break;
                     }
                 } catch (Exception e) {

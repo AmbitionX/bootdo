@@ -62,7 +62,7 @@ function load() {
 																{
 									field : 'wxid', 
 									title : '公众号id' 
-								},
+								},/*
 																{
 									field : 'uin', 
 									title : 'uin'
@@ -70,14 +70,18 @@ function load() {
 																{
 									field : 'key', 
 									title : 'key'
-								},
+								},*/
 																{
 									field : 'tasktype', 
-									title : '任务类型'
+									title : '任务类型',
+									formatter: function (value) {
+											var sta = value==1?"阅读":value==2?"点赞":value==3?"关注":"未知类型";
+											return sta;
+										}
 								},
 																{
 									field : 'price', 
-									title : '任务单价' 
+									title : '任务单价'
 								},
 																{
 									field : 'num', 
@@ -93,7 +97,12 @@ function load() {
 								},
 																{
 									field : 'stauts', 
-									title : '状态'
+									title : '任务状态',
+									formatter: function (value) {
+											var sta = value==1?"未开始":value==3?"未完成":value==5?"已完成":value==7?"已结算":"未知错误";
+											return sta;
+										}
+
 								},
 																{
 									field : 'finishnum', 

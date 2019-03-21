@@ -34,6 +34,16 @@ public class AccountDO implements Serializable {
 	private Date modifydate;
 	// 版本号
 	private Integer version;
+	// 用户名
+	private String username;
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
 	/**
 	 * 设置：
