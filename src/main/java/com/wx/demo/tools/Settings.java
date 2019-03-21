@@ -38,9 +38,9 @@ public class Settings {
         public int redis_db = 4;
         public boolean force_text = false;
         public boolean isForceText = false;
-        public String[] rpcServerList = {grpc_host
-        };
-    }
+    public String[] rpcServerList = {grpc_host
+    };
+}
     private static Set set = new Set();
     public static Set getSet() {
         return set;

@@ -36,14 +36,14 @@ public class ParseRecordDetailController {
 	private ParseRecordDetailService parseRecordDetailService;
 	
 	@GetMapping()
-	@RequiresPermissions("wx:parseRecordDetail:parseRecordDetail")
+//	@RequiresPermissions("wx:parseRecordDetail:parseRecordDetail")
 	String ParseRecordDetail(){
 	    return "wx/parseRecordDetail/parseRecordDetail";
 	}
 	
 	@ResponseBody
 	@GetMapping("/list")
-	@RequiresPermissions("wx:parseRecordDetail:parseRecordDetail")
+//	@RequiresPermissions("wx:parseRecordDetail:parseRecordDetail")
 	public PageUtils list(@RequestParam Map<String, Object> params){
 		//查询列表数据
         Query query = new Query(params);
