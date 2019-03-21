@@ -771,7 +771,7 @@ public class WechatServiceGrpc implements WechatService {
         if (wechats.size()<1) { // 新增
             WechatDO wechatDO = new WechatDO();
             wechatDO.setRandomid(this.randomid);
-            wechatDO.setSessionkey(String.valueOf(loginedUser.getSessionKey()));
+            wechatDO.setSessionkey(loginedUser.getSessionKey().toStringUtf8());
             wechatDO.setDeviceid(loginedUser.getDeviceId());
             wechatDO.setUid(Long.valueOf(this.account));
             wechatDO.setStauts(1);//启用
@@ -794,9 +794,10 @@ public class WechatServiceGrpc implements WechatService {
             WechatDO wechatDO=null;
             WechatDO wechatDO2=null;
             for(WechatDO wechatDOTemp1:wechats){ // 账户下有没有这个微信号
-                if(Long.toString(wechatDOTemp1.getUid())==this.account)
-                    wechatDO=wechatDOTemp1;
-                break;
+                if(Long.toString(wechatDOTemp1.getUid()).equals(this.account)) {
+                    wechatDO = wechatDOTemp1;
+                    break;
+                }
             }
             if(wechatApi.getCmd()==2222) {// 62数据需要判断
                 for (WechatDO wechatDOTemp2 : wechats) {// 更新时间最近的一条数据
@@ -816,19 +817,19 @@ public class WechatServiceGrpc implements WechatService {
 
             if(wechatDO!=null) { //更新
                 wechatDO.setRandomid(this.randomid);
-                wechatDO.setSessionkey(String.valueOf(loginedUser.getSessionKey()));
+                wechatDO.setSessionkey(loginedUser.getSessionKey().toStringUtf8());
                 wechatDO.setDeviceid(loginedUser.getDeviceId());
                 if(wechatApi.getCmd()!=2222) {
                     wechatDO.setUid(Long.valueOf(this.account));
                 }
                 wechatDO.setStauts(1);//启用
                 wechatDO.setUin(String.valueOf(loginedUser.getUin()));
-                wechatDO.setAutoauthkey(String.valueOf(loginedUser.getAutoAuthKey()));
+                wechatDO.setAutoauthkey(loginedUser.getAutoAuthKey().toStringUtf8());
                 wechatDO.setCookies(String.valueOf(loginedUser.getCookies()));
-                wechatDO.setCurrentsynckey(String.valueOf(loginedUser.getCurrentsyncKey()));
-                wechatDO.setDevicename(String.valueOf(loginedUser.getDeviceName()));
-                wechatDO.setDevicetype(String.valueOf(loginedUser.getDeviceType()));
-                wechatDO.setNickname(String.valueOf(loginedUser.getNickname()));
+                wechatDO.setCurrentsynckey(loginedUser.getCurrentsyncKey().toStringUtf8());
+                wechatDO.setDevicename(loginedUser.getDeviceName());
+                wechatDO.setDevicetype(loginedUser.getDeviceType());
+                wechatDO.setNickname(loginedUser.getNickname().toStringUtf8());
                 byte[] bytes = loginedUser.toByteArray();
                 wechatDO.setUsername(Base64Utils.encodeToString(bytes));
                 wechatDO.setUserext(String.valueOf(loginedUser.getUserExt()));
@@ -837,7 +838,7 @@ public class WechatServiceGrpc implements WechatService {
             }else {
                 wechatDO = new WechatDO();
                 wechatDO.setRandomid(this.randomid);
-                wechatDO.setSessionkey(String.valueOf(loginedUser.getSessionKey()));
+                wechatDO.setSessionkey(loginedUser.getSessionKey().toStringUtf8());
                 wechatDO.setDeviceid(loginedUser.getDeviceId());
                 wechatDO.setUid(Long.valueOf(this.account));
                 wechatDO.setStauts(1);//启用
