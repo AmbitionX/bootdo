@@ -72,11 +72,10 @@ public class ParseRecordController {
 	}
 
 	@GetMapping("/edit/{id}")
-	@RequiresPermissions("wx:parseRecord:edit")
 	String edit(@PathVariable("id") Long id,Model model){
 		ParseRecordDO parseRecord = parseRecordService.get(id);
 		model.addAttribute("parseRecord", parseRecord);
-	    return "wx/parseRecord/edit";
+	    return "wx/parseRecordDetail/parseRecordDetail";
 	}
 	
 	/**
@@ -123,9 +122,17 @@ public class ParseRecordController {
 	@SuppressWarnings("finally")
 	@RequestMapping(value = "/parse62Data", method = RequestMethod.POST)
 	@ResponseBody
-	public R parse62Data(HttpServletRequest request, String url) {
+	public R parse62Data(HttpServletRequest request, MultipartFile myfile) {
 		R ret=new R();
 		try {
+			String url = "";
+			if (myfile!=null && myfile.getSize() > 0) {
+				try {
+					url = FileUtils.uploadFile(myfile, "62data", "");
+				} catch (Exception e) {
+					logger.error("上传62数据失败:" + e.getMessage());
+				}
+			}
 			if (!StringUtils.isEmpty(url)) {
 				byte[] b=FileUtils.downloadFile_NoRootPath(url);
 				if (b.length != 0) {
