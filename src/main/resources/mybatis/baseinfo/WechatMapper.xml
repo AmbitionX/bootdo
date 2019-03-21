@@ -228,7 +228,7 @@
 			<if test="username != null">`UserName` = #{username}, </if>
 			<if test="userext != null">`UserExt` = #{userext}</if>
 		</set>
-		where Wechat = #{wechat}
+		where randomid = #{randomid}
 	</update>
 	
 	<delete id="remove">
@@ -253,8 +253,8 @@
 		</if>
 			<if test="lastdate != null and lastdate != ''"> and LastDate <![CDATA[<]]> #{lastdate} </if>
 			<if test="todaytaskquantity != null and todaytaskquantity != ''"> and TodayTaskQuantity <![CDATA[<]]>  #{todaytaskquantity} </if>
-			<if test="stauts != null and stauts != ''"> and use_wechat.Stauts = #{stauts} </if>
-			<if test="taskid != null and taskid != ''"> and use_wechat.Taskid = #{taskid} </if>
+			<if test="stauts != null and stauts != ''"> and t.Stauts = #{stauts} </if>
+			<if test="taskid != null and taskid != ''"> and t.Taskid = #{taskid} </if>
 		<if test="limit != null">
 			limit #{limit}
 		</if>
