@@ -2216,7 +2216,7 @@ public class WechatServiceGrpc implements WechatService {
         RedisUtils.hrem((Constant.redisk_key_loinged_user + WechatUtil.ServerId).getBytes(), randomid.getBytes());
 
         WechatDO wechatDO = new WechatDO();
-        wechatDO.setWechat(wechatApi.getWxId());
+        wechatDO.setRandomid(this.randomid);
         wechatDO.setStauts(2);
         wechatService.updateForWechatId(wechatDO);
 
