@@ -20,9 +20,18 @@
 						<div class="columns pull-right">
 							<button class="btn btn-success" onclick="reLoad()">查询</button>
 						</div>
-						<div class="columns pull-right col-md-2 nopadding">
+						<!--<div class="columns pull-right col-md-2 nopadding">
 							<input id="searchName" type="text" class="form-control"
 								placeholder="">
+						</div>-->
+						<div class="columns pull-right col-md-2 nopadding">
+							<select id="status" type="text" class="form-control"
+								   placeholder="">
+								<option value="">全部</option>
+								<option value="1">启用</option>
+								<option value="2">停用</option>
+								<option value="3">占用</option>
+							</select>
 						</div>
 					</div>
 					<table id="exampleTable" data-mobile-responsive="true">
