@@ -77,6 +77,16 @@ public class UserDO implements Serializable {
 	//计费方式 1.按天,2.按任务量
 	private Integer billtype;
 
+	private String veriCode;
+
+	public String getVeriCode() {
+		return veriCode;
+	}
+
+	public void setVeriCode(String veriCode) {
+		this.veriCode = veriCode;
+	}
+
 	//角色
 	private List<Long> roleIds;
 

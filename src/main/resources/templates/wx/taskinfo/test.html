@@ -76,7 +76,7 @@
         if (parUrl != null && parUrl != undefined) {
             $.ajax({
                 type: 'POST',
-                url: "http://localhost/wx/wxoperation/parse62Data",
+                url: "/wx/wxoperation/parse62Data",
                 data:{url: parUrl},
                 success: function (data) {
                     console.info(data);
@@ -138,7 +138,7 @@
         $.ajax({
             type: 'POST',
             contentType:"application/json;charset=utf-8",
-            url: "http://localhost/wx/wxoperation/login_qrcode",
+            url: "/wx/wxoperation/login_qrcode",
             data:JSON.stringify({
                 randomId: "asdf54wq6qwe65r4651aasdgaaas",
                 account: "asd",
@@ -169,7 +169,7 @@
         $.ajax({
             type: 'POST',
             contentType:"application/json;charset=utf-8",
-            url: "http://localhost/wx/wxoperation/login_status",
+            url: "/wx/wxoperation/login_status",
             data:JSON.stringify({
                 randomId: $("#randomId").val(),
                 account: "asd",
@@ -199,7 +199,7 @@
         $.ajax({
             type: 'POST',
             contentType:"application/json;charset=utf-8",
-            url: "http://localhost/wx/wxoperation/getReadReady",
+            url: "/wx/wxoperation/getReadReady",
             data:JSON.stringify({
                 randomId: $("#randomId").val(),
                 account: "asd",
@@ -234,7 +234,7 @@
     }
 
     function getUpload62(){
-        $.post("http://localhost/wx/wxoperation/getLoginStatus?randomId="+$("#randomId").val(),function (data) {
+        $.post("/wx/wxoperation/getLoginStatus?randomId="+$("#randomId").val(),function (data) {
             if (data != null&&data.code==0) {
                 console.info(data);
             }
@@ -242,7 +242,7 @@
     }
 
     function getLoginStatus(){
-        $.post("http://localhost/wx/wxoperation/getLoginStatus?randomId="+$("#randomId").val(),function (data) {
+        $.post("/wx/wxoperation/getLoginStatus?randomId="+$("#randomId").val(),function (data) {
             if (data != null&&data.code==0) {
                 console.info(data);
             }
@@ -250,7 +250,7 @@
     }
 
     function contactOperateService(){
-        $.post("http://localhost/wx/wxoperation/contactOperateService?randomId="+$("#randomId").val(),function (data) {
+        $.post("/wx/wxoperation/contactOperateService?randomId="+$("#randomId").val(),function (data) {
             if (data != null&&data.code==0) {
                 console.info(data);
             }
@@ -261,7 +261,7 @@
         $.ajax({
             type: 'POST',
             contentType:"application/json;charset=utf-8",
-            url: "http://localhost/wx/wxoperation/addUser",
+            url: "/wx/wxoperation/addUser",
             data:JSON.stringify({
                 randomId: $("#randomId").val(),
                 account: "asd",
