@@ -8,6 +8,7 @@ import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.log4j.Logger;
 
 import java.io.*;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
@@ -88,15 +89,19 @@ public class WechatUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println(System.getProperty("user.dir"));
+        System.out.println(getCrtFile());
     }
 
     public static String getCrtFile() {
         CrtFile =  getMyProperty() +"\\src\\main\\resources\\ca.crt";
+        CrtFile = CrtFile.replace("/", File.separator);
+        CrtFile = CrtFile.replace("\\", File.separator);
         return CrtFile;
     }
     public static String getConfig() {
         Config = getMyProperty() +"\\src\\main\\resources\\config.json";
+        Config = Config.replace("/", File.separator);
+        Config = Config.replace("\\", File.separator);
         return Config;
     }
 

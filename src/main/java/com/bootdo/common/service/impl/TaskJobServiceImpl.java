@@ -11,6 +11,7 @@ import com.bootdo.wx.dao.TaskinfoDao;
 import com.bootdo.wx.domain.TaskdetailDO;
 import com.bootdo.wx.domain.TaskinfoDO;
 import com.google.common.collect.Maps;
+import com.wx.demo.common.RetEnum;
 import com.wx.demo.frameWork.protocol.CommonApi;
 import com.wx.demo.tools.Constant;
 import com.wx.demo.tools.RedisUtils;
@@ -87,6 +88,7 @@ public class TaskJobServiceImpl implements TaskJobService {
                     wxMap.put("lastdate", sdf.format(nowTime.getTime()));
                     wxMap.put("todaytaskquantity", Integer.parseInt(configDos.get(0).getValue()));
                     wxMap.put("limit", taskinfo.getNum() - taskinfo.getFinishnum());
+                    wxMap.put("stauts",1);
                     //排除已经用过的微信号
                     if (taskinfo.getFinishnum() > 0) {
                         wxMap.put("exclude", taskinfo.getId());
@@ -124,20 +126,23 @@ public class TaskJobServiceImpl implements TaskJobService {
                                 wechatApi.setCmd(777);
 
                                 ModelReturn modelReturn = commonApi.execute(wechatApi);
-
+                                int flag = 1;
+                                if(modelReturn.getCode()!= RetEnum.RET_COMM_SUCCESS.getCode()) {
+                                    flag = 2;
+                                }
                                 TaskdetailDO taskdetailDO = new TaskdetailDO();
                                 taskdetailDO.setTaskid(taskinfo.getId());
                                 taskdetailDO.setUid(wxid.getUid());
                                 taskdetailDO.setWxid(wxid.getId());
                                 taskdetailDO.setPrice(taskinfo.getPrice());
                                 taskdetailDO.setTasktype(taskinfo.getTasktype());
-                                taskdetailDO.setStauts(1); //根据任务执行情况设定
+                                taskdetailDO.setStauts(flag); //根据任务执行情况设定
                                 taskdetailDO.setParentid(wxid.getParentid());
                                 taskdetailDao.save(taskdetailDO);
 
                                 //释放微信号，根据执行成功失败传参
-                                relieveStatus(wxid, true);
-                                if (true) {//记录成功次数
+                                relieveStatus(wxid, flag==1);
+                                if (modelReturn.getCode()== RetEnum.RET_COMM_SUCCESS.getCode()) {//记录成功次数
                                     count = count + 1;
                                 }
                                 Thread.sleep(taskinfo.getTaskperiod());
@@ -208,8 +213,6 @@ public class TaskJobServiceImpl implements TaskJobService {
                             taskinfo.setStauts(3); // 未完成
                         }
                         taskinfoDao.update(taskinfo);
-                        // 释放任务锁
-                        RedisUtils.del(prefix_task+taskinfo.getId());
                     } else {
                         logger.info("--------->>>任务url{}" + taskinfo.getUrl() + "没有足够的资源进行操作,稍后系统进行重试.cc" + now);
                         break;
@@ -225,11 +228,12 @@ public class TaskJobServiceImpl implements TaskJobService {
                     }
                     //释放微信号
                     relieveAllForTaskId(taskinfo.getId().toString());
-                    // 释放任务锁
-                    RedisUtils.del(prefix_task+taskinfo.getId());
                     e.printStackTrace();
                     logger.error("com.bootdo.common.task.TaskJob->exception!message:{},cause:{},detail{}", e.getMessage(), e.getCause(), e.toString());
                     //   TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                }finally {
+                    // 释放任务锁
+                    RedisUtils.del(prefix_task+taskinfo.getId());
                 }
             }
         }
