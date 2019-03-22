@@ -57,7 +57,7 @@ public class WechatServiceGrpc implements WechatService {
     private String version = "6.7.0";
     private String machineCode = WechatUtil.AppTocken;
     private String addMachineCode = WechatUtil.ApiTocken;
-    private int protocolVer = 3;
+    private int protocolVer = Constant.protocolVer;
     private String account;
     private String shortServerHost = "short.weixin.qq.com";
     private String longServerHost = "long.weixin.qq.com";
@@ -1000,7 +1000,7 @@ public class WechatServiceGrpc implements WechatService {
 
     @Override
     public void getLoginQrcode() {
-        protocolVer = 3;
+        protocolVer = Constant.protocolVer;
         String result = shortServerRequest(502,null);
         if (result.length() <= 0) {
             return;
@@ -1136,7 +1136,7 @@ public class WechatServiceGrpc implements WechatService {
 
     @Override
     public void wxdataLogin(String user, String pass, String wxdata) {
-        protocolVer = 3;
+        protocolVer = Constant.protocolVer;
         wechatSocket.connect(longServerHost,80);
         wechatDevideId = wxdata;
 
@@ -2218,6 +2218,7 @@ public class WechatServiceGrpc implements WechatService {
         WechatDO wechatDO = new WechatDO();
         wechatDO.setWechat(wechatApi.getWxId());
         wechatDO.setStauts(2);
+      //  wechatDO.setRemark(wechatApi.getGrpcPayLoads());
         wechatService.updateForWechatId(wechatDO);
 
         wechatSocket.close();

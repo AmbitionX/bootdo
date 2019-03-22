@@ -10,6 +10,7 @@ import com.wx.demo.ctrl.BaseController;
 import com.wx.demo.frameWork.protocol.CommonApi;
 import com.wx.demo.frameWork.protocol.ServiceManagerDemo;
 import com.wx.demo.frameWork.protocol.WechatServiceGrpc;
+import com.wx.demo.tools.Constant;
 import com.wx.demo.wechatapi.model.*;
 import com.wx.demo.util.MyLog;
 import io.swagger.annotations.*;
@@ -80,7 +81,7 @@ public class DistributedApi extends BaseController {
         String account = accountin;
         String softwareId = "666";
         Boolean autoLogin = true;
-        int protocolVer = 5;
+        int protocolVer = Constant.protocolVer;
         String extraData = "";
 //     String randomid, String account, String softwareId, boolean autoLogin, int protocolVer, String extraData
         /**

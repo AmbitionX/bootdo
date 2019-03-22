@@ -1048,7 +1048,7 @@ public class WxLongUtil {
         //cgz 新增
         HashMap<String, Object> params = new HashMap<>();
         // wuzf modi
-        params.put("ProtocolVer", 3);
+        params.put("ProtocolVer", Constant.protocolVer);
         longServerRequest(1002, params, data -> {
             try {
                 String dataStr = new String(data, "utf-8");
