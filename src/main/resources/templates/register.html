@@ -47,6 +47,10 @@
             <div class="form-group">
                 <input type="text" class="form-control" id="invitecode" name="invitecode" placeholder="请输入邀请码" style="color: #333333;">
             </div>
+            <div class="form-group">
+                <img alt="验证码" id="cliVeriCode" onclick="this.src='/defaultKaptcha?type=2&d='+new Date()*1" src="/defaultKaptcha?type=2" />
+                <input type="text" class="form-control" id="veriCode" name="veriCode" placeholder="请输入验证码" style="color: #333333; width: 60%; float: right;">
+            </div>
             <button type="button" id="register" class="btn btn-primary block full-width m-b">注 册</button>
 
             <p class="text-muted text-center"><small>已经有账户了？</small><a href="login.html">点此登录</a>
@@ -100,6 +104,7 @@
                 } else {
                     layer.msg(r.msg);
                 }
+                $("#cliVeriCode").click();
             },
         });
     }
@@ -136,6 +141,9 @@
                     required: true,
                     equalTo: "#password"
                 },
+                veriCode:{
+                    required: true,
+                },
                 invitecode:{
                     remote : {
                         url : "/sys/user/exitInvitecode", // 后台处理程序
@@ -158,6 +166,9 @@
                 password: {
                     required: icon + "请输入您的密码",
                     rangelength: icon + "请输入6-18位长度的密码",
+                },
+                password: {
+                    required: icon + "请输入您的验证码",
                 },
                 repassword:{
                     required: icon + "请再次输入您的密码",

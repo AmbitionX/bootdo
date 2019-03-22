@@ -75,6 +75,7 @@ public class ShiroConfig {
         LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         filterChainDefinitionMap.put("/login","anon");
         filterChainDefinitionMap.put("/register","anon");
+        filterChainDefinitionMap.put("/defaultKaptcha","anon");
         filterChainDefinitionMap.put("/sys/user/exit","anon");
         filterChainDefinitionMap.put("/sys/user/register","anon");
         filterChainDefinitionMap.put("/sys/user/exitInvitecode","anon");

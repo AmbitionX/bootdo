@@ -16,6 +16,8 @@ import com.bootdo.system.vo.UserVO;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +35,7 @@ import java.util.Map;
 @RequestMapping("/sys/user")
 @Controller
 public class UserController extends BaseController {
+	private static Logger logger = LoggerFactory.getLogger(UserController.class);
 	private String prefix="system/user"  ;
 	@Autowired
 	UserService userService;
@@ -106,7 +109,13 @@ public class UserController extends BaseController {
 	@Log("用户注册")
 	@PostMapping("/register")
 	@ResponseBody
-	R register(UserDO user) {
+	R register(HttpServletRequest httpServletRequest,UserDO user) {
+		String rightCode = (String) httpServletRequest.getSession().getAttribute("rightCode");
+		String tryCode = user.getVeriCode();
+		logger.info("rightCode:"+rightCode+" ———— VeriCode:"+tryCode);
+		if (!rightCode.equals(tryCode)) {
+			return R.error("验证码错误");
+		}
 		user.setPassword(MD5Utils.encrypt(user.getUsername(), user.getPassword()));
 		return userService.register(user);
 	}

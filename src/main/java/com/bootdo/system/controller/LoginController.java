@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -87,12 +88,18 @@ public class LoginController extends BaseController {
     @Log("登录")
     @PostMapping("/login")
     @ResponseBody
-    R ajaxLogin(String username, String password) {
+    R ajaxLogin(HttpServletRequest httpServletRequest,String username, String password,String veriCode) {
 
         password = MD5Utils.encrypt(username, password);
         UsernamePasswordToken token = new UsernamePasswordToken(username, password);
         Subject subject = SecurityUtils.getSubject();
         try {
+            String rightCode = (String) httpServletRequest.getSession().getAttribute("loginCode");
+            String tryCode = veriCode;
+            logger.info("loginCode:"+rightCode+" ———— VeriCode:"+tryCode);
+            if (!rightCode.equals(tryCode)) {
+                return R.error("验证码错误");
+            }
             subject.login(token);
             return R.ok();
         } catch (AuthenticationException e) {
