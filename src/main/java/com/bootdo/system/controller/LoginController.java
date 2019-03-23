@@ -75,8 +75,8 @@ public class LoginController extends BaseController {
 
     @GetMapping("/login")
     String login(Model model) {
-        model.addAttribute("username", bootdoConfig.getUsername());
-        model.addAttribute("password", bootdoConfig.getPassword());
+       // model.addAttribute("username", bootdoConfig.getUsername());
+      //  model.addAttribute("password", bootdoConfig.getPassword());
         return "login";
     }
 
