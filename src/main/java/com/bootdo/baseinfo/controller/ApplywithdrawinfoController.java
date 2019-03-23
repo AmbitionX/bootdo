@@ -3,7 +3,7 @@ package com.bootdo.baseinfo.controller;
 import java.util.List;
 import java.util.Map;
 
-import com.bootdo.common.utils.StringUtils;
+import com.bootdo.common.utils.*;
 import com.bootdo.util.MessagesCode;
 import com.bootdo.util.MsgUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -20,9 +20,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bootdo.baseinfo.domain.ApplywithdrawinfoDO;
 import com.bootdo.baseinfo.service.ApplywithdrawinfoService;
-import com.bootdo.common.utils.PageUtils;
-import com.bootdo.common.utils.Query;
-import com.bootdo.common.utils.R;
 
 /**
  * 提现申请
@@ -77,6 +74,8 @@ public class ApplywithdrawinfoController {
 	@PostMapping("/save")
 	@RequiresPermissions("baseinfo:applywithdrawinfo:add")
 	public R save( ApplywithdrawinfoDO applywithdrawinfo){
+		applywithdrawinfo.setUid(ShiroUtils.getUser().getUserId());
+		applywithdrawinfo.setUsername(ShiroUtils.getUser().getUsername());
 		return applywithdrawinfoService.save(applywithdrawinfo);
 	}
 	/**
