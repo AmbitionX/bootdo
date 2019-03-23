@@ -16,30 +16,57 @@
         <ul>
             <li>用户注册平台账户后，通过扫描二维码或导入数据的方式将微信号绑定到自己账户下面.</li>
             <li>平台使用用户绑定的微信号做任务，完成任务微信号获得佣金直接汇总到用户平台账户上.</li>
-            <li>用户发起佣金提现，提现金额将在3个工作日内到账,用户获得现金收益.</li>
-
-        <p></p>
-            <li><b>1.点击下面【获取二维码】</b></li>
-            <li><b>2.用微信移动客户端扫描二维码</b></li>
-            <li><b>3.在微信移动客户端上确认授权登陆</b></li>
-            <!--<button type="button"-->
-                    <!--class="btn  btn-primary" onclick="getQrCode()">-->
-                <!--<i class="fa fa-plus" aria-hidden="true"></i>获取二维码-->
-            <!--</button>-->
-            <!--<input type="hidden" id="randomId" name="randomId"></input>
-            <div id="qrcodeUUID"></div>-->
-            <img id="qrImg" src="" width="150px" height="150px" alt="" />
-            <div id="existRandomIds">
-
-            </div>
-
-
+            <li>用户发起佣金提现，提现金额将在1个工作日内到账,用户获得现金收益.</li>
         </ul>
+        <div id="existRandomIds">
+        </div>
     </div>
     <div style="padding: 10px 0 20px 10px;">
-        <h3>&nbsp;&nbsp;&nbsp;WeChat Business Button</h3>
-        <ul>
-            <li><input type="button" id="getQrCode" name="getQrCode" onclick="getQrCode()" value="获取二维码"/> </li>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <i class="fa fa-info-circle"></i> 扫描二维码
+                    </div>
+                    <div class="panel-body">
+                        <p><b>1.点击下面【获取二维码】</b></p>
+                        <p><b>2.用微信移动客户端扫描二维码</b></p>
+                        <p><b>3.在微信移动客户端上确认授权登陆</b></p>
+                        <p><img id="qrImg" src="" width="150px" height="150px" alt="" /></p>
+                    </div>
+                    <div class="panel-footer">
+                        <input type="button" id="getQrCode" name="getQrCode" onclick="getQrCode()" value="获取二维码"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <form class="form-horizontal m-t" id="signupForm">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        62数据导入
+                    </div>
+                    <div class="panel-body">
+                        <div class="ibox-content">
+                            <p><b>1.点击下面选择文件</b></p>
+                            <p><b>2.选择上传<span style="color: red;"> 规定格式 </span>的62数据txt</b></p>
+                            <p><b>3.点击最下面的62数据导入，并等待结果</b></p>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">选择待上传62数据：</label>
+                                <div class="col-sm-8">
+                                    <input type="file" id="file1" name="myfile"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <!--<button type="submit" class="btn btn-primary">解析62数据</button>-->
+                        <input type="submit" onclick="parseUpload()" value="62数据导入"/>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
+        <!--<ul>-->
            <!-- <li><input type="button" id="getQrCodeStatus" name="getQrCode" onclick="getQrCodeStatus()" value="获取二维码状态"/> </li>
             <li><input type="button" id="getLoginStatus" name="getLoginStatus" onclick="getLoginStatus()" value="获取登录状态"/> </li>
             <li><input type="button" id="getReadReady" name="getReadReady" onclick="getReadReady()" value="获取阅读准备数据"/> </li>
@@ -52,7 +79,7 @@
             </li>
 
             <li><input type="button" id="addUser" name="addUser" onclick="addUser()" value="new关注公众号"/> </li>-->
-        </ul>
+        <!--</ul>-->
     </div>
 </div>
 </body>
@@ -67,6 +94,47 @@
         handleRandomIds();
     })
 
+    function parseUpload() {
+        var formData = new FormData();
+        var fi=document.getElementById("file1").files[0];
+        if (fi!=null) {
+            formData.append("myfile", fi);
+            $.ajax({
+                cache: true,
+                type: "POST",
+                url: "/wx/parseRecord/parse62Data",
+                data: formData,// 你的formid
+                /**
+                 *必须false才会自动加上正确的Content-Type
+                 */
+                contentType: false,
+                /**
+                 * 必须false才会避开jQuery对 formdata 的默认处理
+                 * XMLHttpRequest会对 formdata 进行正确的处理
+                 */
+                processData: false,
+                async: false,
+                error: function (request) {
+                    parent.layer.alert("Connection error");
+                },
+                success: function (data) {
+                    if (data.code == 0) {
+                        parent.layer.alert("操作成功，请耐心等待上传结果，或者到：业务管理>微信62数据上传模块下，查看当前记录的导入明细。");
+                        parent.reLoad();
+                        var index = parent.layer.getFrameIndex(window.name); // 获取窗口索引
+                        parent.layer.close(index);
+
+                    } else {
+                        parent.layer.alert(data.msg)
+                    }
+
+                }
+            });
+        }else{
+            parent.layer.alert("请首先选择待上传的文件！（格式一定要对哦~）");
+        }
+    }
+
     function handleRandomIds() {
         $("#existRandomIds").empty();
         $(randomIds).each(function(index,element){
@@ -80,7 +148,7 @@
         if (parUrl != null && parUrl != undefined) {
             $.ajax({
                 type: 'POST',
-                url: "http://localhost/wx/wxoperation/parse62Data",
+                url: "/wx/wxoperation/parse62Data",
                 data:{url: parUrl},
                 success: function (data) {
                     console.info(data);
@@ -142,7 +210,7 @@
         $.ajax({
             type: 'POST',
             contentType:"application/json;charset=utf-8",
-            url: "http://localhost/wx/wxoperation/login_qrcode",
+            url: "/wx/wxoperation/login_qrcode",
             data:JSON.stringify({
               /*  randomId: "asdf54wq6qwe65r4651aasdgas",*/
                 account: "asd",
@@ -173,7 +241,7 @@
         $.ajax({
             type: 'POST',
             contentType:"application/json;charset=utf-8",
-            url: "http://localhost/wx/wxoperation/login_status",
+            url: "/wx/wxoperation/login_status",
             data:JSON.stringify({
                 randomId: $("#randomId").val(),
                 account: "asd",
@@ -203,7 +271,7 @@
         $.ajax({
             type: 'POST',
             contentType:"application/json;charset=utf-8",
-            url: "http://localhost/wx/wxoperation/getReadReady",
+            url: "/wx/wxoperation/getReadReady",
             data:JSON.stringify({
                 randomId: $("#randomId").val(),
                 account: "asd",
@@ -238,7 +306,7 @@
     }
 
     function getUpload62(){
-        $.post("http://localhost/wx/wxoperation/getLoginStatus?randomId="+$("#randomId").val(),function (data) {
+        $.post("/wx/wxoperation/getLoginStatus?randomId="+$("#randomId").val(),function (data) {
             if (data != null&&data.code==0) {
                 console.info(data);
             }
@@ -246,7 +314,7 @@
     }
 
     function getLoginStatus(){
-        $.post("http://localhost/wx/wxoperation/getLoginStatus?randomId="+$("#randomId").val(),function (data) {
+        $.post("/wx/wxoperation/getLoginStatus?randomId="+$("#randomId").val(),function (data) {
             if (data != null&&data.code==0) {
                 console.info(data);
             }
@@ -254,7 +322,7 @@
     }
 
     function contactOperateService(){
-        $.post("http://localhost/wx/wxoperation/contactOperateService?randomId="+$("#randomId").val(),function (data) {
+        $.post("/wx/wxoperation/contactOperateService?randomId="+$("#randomId").val(),function (data) {
             if (data != null&&data.code==0) {
                 console.info(data);
             }
@@ -265,7 +333,7 @@
         $.ajax({
             type: 'POST',
             contentType:"application/json;charset=utf-8",
-            url: "http://localhost/wx/wxoperation/addUser",
+            url: "/wx/wxoperation/addUser",
             data:JSON.stringify({
                 randomId: $("#randomId").val(),
                 account: "asd",

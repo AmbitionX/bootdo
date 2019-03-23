@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.bootdo.common.utils.FileUtils;
+import com.bootdo.common.utils.*;
 import com.wx.demo.tools.Constant;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
@@ -20,9 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.bootdo.wx.domain.ParseRecordDO;
 import com.bootdo.wx.service.ParseRecordService;
-import com.bootdo.common.utils.PageUtils;
-import com.bootdo.common.utils.Query;
-import com.bootdo.common.utils.R;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,8 +49,13 @@ public class ParseRecordController {
 	@GetMapping("/list")
 	@RequiresPermissions("wx:parseRecord:parseRecord")
 	public PageUtils list(@RequestParam Map<String, Object> params){
+
+		long deptId=ShiroUtils.getUser().getDeptId();
+		if (deptId==16) {//微信注册用户
+			params.put("userid",ShiroUtils.getUserId());
+		}
 		//查询列表数据
-        Query query = new Query(params);
+		Query query = new Query(params);
 		List<ParseRecordDO> parseRecordList = parseRecordService.list(query);
 		int total = parseRecordService.count(query);
 		PageUtils pageUtils = new PageUtils(parseRecordList, total);

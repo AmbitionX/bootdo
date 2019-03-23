@@ -59,6 +59,8 @@
                        th:value="${username}"/>
                 <input type="password" name="password"
                        class="form-control pword m-b" th:value="${password}"/>
+                <img alt="验证码" id="cliVeriCode" onclick="this.src='/defaultKaptcha?type=1&d='+new Date()*1" src="/defaultKaptcha?type=1" />
+                <input type="text" class="form-control" id="veriCode" name="veriCode" placeholder="请输入验证码" style="color: #333333; width: 60%; float: right;">
                 <a id="login" class="btn btn-login btn-block">登录</a>
                 <!--按钮模块-->
                 <div class="outside-login">
@@ -115,6 +117,7 @@
                 } else {
                     layer.msg(r.msg);
                 }
+                $("#cliVeriCode").click();
             },
         });
     }
@@ -134,6 +137,9 @@
                 },
                 password: {
                     required: true
+                },
+                veriCode: {
+                    required: true
                 }
             },
             messages: {
@@ -142,6 +148,9 @@
                 },
                 password: {
                     required: icon + "请输入您的密码",
+                },
+                veriCode: {
+                    required: icon + "请输入您的验证码",
                 }
             }
         })
