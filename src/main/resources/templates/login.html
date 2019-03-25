@@ -56,9 +56,9 @@
                 <h3 class="text-center">用户登录</h3>
                 <p class="m-t-md text-center">欢迎登录BootWx后台管理系统</p>
                 <input type="text" name="username" class="form-control uname"
-                       th:value="${username}"/>
+                       />
                 <input type="password" name="password"
-                       class="form-control pword m-b" th:value="${password}"/>
+                       class="form-control pword m-b"/>
                 <img alt="验证码" id="cliVeriCode" onclick="this.src='/defaultKaptcha?type=1&d='+new Date()*1" src="/defaultKaptcha?type=1" />
                 <input type="text" class="form-control" id="veriCode" name="veriCode" placeholder="请输入验证码" style="color: #333333; width: 60%; float: right;">
                 <a id="login" class="btn btn-login btn-block">登录</a>
