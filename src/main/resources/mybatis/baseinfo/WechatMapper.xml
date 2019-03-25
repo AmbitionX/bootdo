@@ -138,7 +138,7 @@
 			`deviceid`, 
 			`maxsynckey`, 
 			`uin`, 
-		/*	`AutoAuthKey`, */
+			`AutoAuthKey`,
 			`Cookies`, 
 			`CurrentsyncKey`, 
 			`DeviceName`, 
@@ -161,7 +161,7 @@
 			#{deviceid}, 
 			#{maxsynckey}, 
 			#{uin}, 
-		/*	#{autoauthkey}, */
+			#{autoauthkey},
 			#{cookies}, 
 			#{currentsynckey}, 
 			#{devicename}, 
@@ -189,15 +189,16 @@
 		<!--	<if test="sessionkey != null">`sessionkey` = #{sessionkey}, </if>
 			<if test="deviceid != null">`deviceid` = #{deviceid}, </if>
 			<if test="maxsynckey != null">`maxsynckey` = #{maxsynckey}, </if>
-			<if test="uin != null">`uin` = #{uin}, </if>
-			<if test="autoauthkey != null">`AutoAuthKey` = #{autoauthkey}, </if>
-			<if test="cookies != null">`Cookies` = #{cookies}, </if>
-			<if test="currentsynckey != null">`CurrentsyncKey` = #{currentsynckey}, </if>
-			<if test="devicename != null">`DeviceName` = #{devicename}, </if>
-			<if test="devicetype != null">`DeviceType` = #{devicetype}, </if>-->
+			<if test="uin != null">`uin` = #{uin}, </if>-->
+			<!--		<if test="autoauthkey != null">`AutoAuthKey` = #{autoauthkey}, </if>
+                    <if test="cookies != null">`Cookies` = #{cookies}, </if>
+                    <if test="currentsynckey != null">`CurrentsyncKey` = #{currentsynckey}, </if>
+                    <if test="devicename != null">`DeviceName` = #{devicename}, </if>
+                    <if test="devicetype != null">`DeviceType` = #{devicetype}, </if>
+                    <if test="userext != null">`UserExt` = #{userext}, </if>-->
 			<if test="nickname != null">`NickName` = #{nickname}, </if>
-			<if test="username != null">`UserName` = #{username}, </if>
-			<if test="userext != null">`UserExt` = #{userext}</if>
+			<if test="username != null">`UserName` = #{username} </if>
+
 		</set>
 		where id = #{id}
 	</update>
