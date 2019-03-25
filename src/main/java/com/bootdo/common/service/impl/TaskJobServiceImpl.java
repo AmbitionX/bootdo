@@ -246,7 +246,7 @@ public class TaskJobServiceImpl implements TaskJobService {
         Date now = new Date();
         wechatDO.setTaskid(null);  //解除任务绑定
         if(flag) {
-            if(isToday(wechatDO.getLastdate())){// 如果最后一次执行任务不是当天，释放当日执行任务数量
+            if(!isToday(wechatDO.getLastdate())){// 如果最后一次执行任务不是当天，释放当日执行任务数量
                 wechatDO.setTodaytaskquantity(1); //更新当日累计执行任务数量
             }else {
                 wechatDO.setTodaytaskquantity(wechatDO.getTodaytaskquantity() + 1); //更新当日累计执行任务数量

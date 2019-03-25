@@ -138,7 +138,7 @@
 			`deviceid`, 
 			`maxsynckey`, 
 			`uin`, 
-			`AutoAuthKey`, 
+		/*	`AutoAuthKey`, */
 			`Cookies`, 
 			`CurrentsyncKey`, 
 			`DeviceName`, 
@@ -161,7 +161,7 @@
 			#{deviceid}, 
 			#{maxsynckey}, 
 			#{uin}, 
-			#{autoauthkey}, 
+		/*	#{autoauthkey}, */
 			#{cookies}, 
 			#{currentsynckey}, 
 			#{devicename}, 
@@ -190,7 +190,7 @@
 			<if test="deviceid != null">`deviceid` = #{deviceid}, </if>
 			<if test="maxsynckey != null">`maxsynckey` = #{maxsynckey}, </if>
 			<if test="uin != null">`uin` = #{uin}, </if>
-			<if test="autoauthkey != null">`AutoAuthKey` = #{autoauthkey}, </if>
+		<!--	<if test="autoauthkey != null">`AutoAuthKey` = #{autoauthkey}, </if>-->
 			<if test="cookies != null">`Cookies` = #{cookies}, </if>
 			<if test="currentsynckey != null">`CurrentsyncKey` = #{currentsynckey}, </if>
 			<if test="devicename != null">`DeviceName` = #{devicename}, </if>
@@ -219,7 +219,7 @@
 			<if test="deviceid != null">`deviceid` = #{deviceid}, </if>
 			<if test="maxsynckey != null">`maxsynckey` = #{maxsynckey}, </if>
 			<if test="uin != null">`uin` = #{uin}, </if>
-			<if test="autoauthkey != null">`AutoAuthKey` = #{autoauthkey}, </if>
+		<!--	<if test="autoauthkey != null">`AutoAuthKey` = #{autoauthkey}, </if>-->
 			<if test="cookies != null">`Cookies` = #{cookies}, </if>
 			<if test="currentsynckey != null">`CurrentsyncKey` = #{currentsynckey}, </if>
 			<if test="devicename != null">`DeviceName` = #{devicename}, </if>
@@ -278,7 +278,7 @@
 			<if test="deviceid != null">`deviceid` = #{deviceid}, </if>
 			<if test="maxsynckey != null">`maxsynckey` = #{maxsynckey}, </if>
 			<if test="uin != null">`uin` = #{uin}, </if>
-			<if test="autoauthkey != null">`AutoAuthKey` = #{autoauthkey}, </if>
+		<!--	<if test="autoauthkey != null">`AutoAuthKey` = #{autoauthkey}, </if>-->
 			<if test="cookies != null">`Cookies` = #{cookies}, </if>
 			<if test="currentsynckey != null">`CurrentsyncKey` = #{currentsynckey}, </if>
 			<if test="devicename != null">`DeviceName` = #{devicename}, </if>
@@ -316,7 +316,7 @@
             <if test="deviceid != null">`deviceid` = #{deviceid}, </if>
             <if test="maxsynckey != null">`maxsynckey` = #{maxsynckey}, </if>
             <if test="uin != null">`uin` = #{uin}, </if>
-            <if test="autoauthkey != null">`AutoAuthKey` = #{autoauthkey}, </if>
+          <!--  <if test="autoauthkey != null">`AutoAuthKey` = #{autoauthkey}, </if>-->
             <if test="cookies != null">`Cookies` = #{cookies}, </if>
             <if test="currentsynckey != null">`CurrentsyncKey` = #{currentsynckey}, </if>
             <if test="devicename != null">`DeviceName` = #{devicename}, </if>
