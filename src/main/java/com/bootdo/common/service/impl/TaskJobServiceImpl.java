@@ -223,6 +223,8 @@ public class TaskJobServiceImpl implements TaskJobService {
                         taskinfo.setFinishnum(count);
                         if(taskinfo.getNum()<=count){ // 已经完成任务
                             taskinfo.setStauts(5);
+                        }else {
+                            taskinfo.setStauts(3); // 未完成
                         }
                         taskinfoDao.update(taskinfo);
                     }
@@ -254,6 +256,8 @@ public class TaskJobServiceImpl implements TaskJobService {
             wechatDO.setLastdate(now);  //更新最后一次执行任务时间
             wechatDO.setTotaltaskquantity(wechatDO.getTotaltaskquantity() + 1); //更新累计执行任务数量
 
+        }else{
+            wechatDO.setStauts(3);
         }
         wechatDao.relieveStatus(wechatDO);
     }
