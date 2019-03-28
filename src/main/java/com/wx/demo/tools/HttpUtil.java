@@ -317,7 +317,7 @@ public class HttpUtil {
             conn.setRequestProperty("content-type", "application/octet-stream");
             conn.setRequestProperty("user-agent", "MicroMessenger Client");
             conn.setRequestProperty("Connection", "Keep-Alive");
-            conn.setRequestProperty("Accept-Language", "zh-cn");
+            conn.setRequestProperty("Accept-language", "zh-cn");
             conn.setRequestProperty("X-WECHAT-KEY", map.get("key"));
             conn.setRequestProperty("X-WECHAT-UIN", map.get("uin"));
 

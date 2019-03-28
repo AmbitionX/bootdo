@@ -18,7 +18,7 @@ public class Settings {
         public String mysqlUserName = "wx";
         public String mysqlPwd = "wx123456";
         public String server_ip = "127.0.0.1";
-        public String redis_host = "101.132.110.15";
+        public String redis_host = "127.0.0.1";
         public String grpc_host = "grpc.wxipad.com:12580";
         public String redis_auth = "Chen861212";
         public String bindname = "微咖";

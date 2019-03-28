@@ -3,6 +3,7 @@ package com.wx.demo.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bootdo.common.redis.shiro.RedisManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -12,7 +13,6 @@ import com.wx.demo.bean.*;
 import com.wx.demo.frameWork.client.wxClient.Response;
 import com.wx.demo.tools.WechatUtil;
 import com.wx.demo.tools.Constant;
-import com.wx.demo.tools.RedisUtils;
 import com.wx.demo.tools.WxLongUtil;
 import com.wx.demo.httpHandler.HttpResult;
 import org.apache.log4j.Logger;
@@ -384,7 +384,7 @@ public abstract class BaseService {
             wxdbUser.nickName =Nickname;
 
             wxdbUser.wxId = wxId;
-            wxdbUser.serverId = WechatUtil.ServerId;
+            wxdbUser.serverId = WechatUtil.serverId;
             wxdbUser.softwareId = getSoftwareId();
             wxdbUser.settings = new Gson().toJson(userSetting);
             //新增数据,数据库字段serverid，类型改成varchar长度需要改成30
@@ -432,7 +432,7 @@ public abstract class BaseService {
      */
     public HttpResult loginAgain(HashMap<String, String> param) {
         String randomid = param.get("randomid");
-        Map<byte[], byte[]> loginedUsers = RedisUtils.hGetAll((Constant.redisk_key_loinged_user + WechatUtil.ServerId).getBytes());
+        Map<byte[], byte[]> loginedUsers = RedisManager.hGetAll((Constant.redisk_key_loinged_user + WechatUtil.serverId).getBytes());
         Set<byte[]> keySet = loginedUsers.keySet();
         for (byte[] key : keySet) {
             RedisBean bean = RedisBean.unserizlize(loginedUsers.get(key));
@@ -505,7 +505,7 @@ public abstract class BaseService {
 
     protected void exit() {
         logger.info("------------用户" + wxId + "离线---------------");
-        RedisUtils.hrem((Constant.redisk_key_loinged_user + WechatUtil.ServerId).getBytes(), randomid.getBytes());
+        RedisManager.hrem((Constant.redisk_key_loinged_user + WechatUtil.serverId).getBytes(), randomid.getBytes());
         heartBeatExe.shutdown();
         isAlifeCheckSevice.shutdown();
         longUtil.releaseVxClent();

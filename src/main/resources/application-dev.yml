@@ -10,7 +10,7 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://101.132.110.15:3306/bootdo?useUnicode=true&characterEncoding=utf8
+    url: jdbc:mysql://101.132.110.15:3306/bootdotest?useUnicode=true&characterEncoding=utf8
     username: wx
     password: wx123456
     initialSize: 1
@@ -41,6 +41,7 @@ spring:
     password:
     # 连接超时时间（毫秒）
     timeout: 10000
+    database: 10
     jedis:
       pool:
         # 连接池中的最大空闲连接
