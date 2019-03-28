@@ -53,13 +53,14 @@ public class CommonApi extends BaseController {
             if (cmd == 777){// 阅读
 
                 String retStr = service.getReadA8KeyAndRead(wechatApi.getReqUrl(),Integer.parseInt(wechatApi.getScene()),wechatApi.getUsername());
-                if (!"".equalsIgnoreCase(retStr)) {
+                 if (!"".equalsIgnoreCase(retStr)) {
+            /*         System.out.println("------------------>>>阅读返回结果:" + retStr.substring(retStr.indexOf("abtest_cookie"),retStr.indexOf("abtest_cookie")+50));
                     int str = retStr.indexOf("abtest_cookie = \"\"");  // 异常账号阅读，这个值是空
                     if(str > -1) {
                         modelReturn.code(RetEnum.RET_COMM_9999.getCode()).msg(RetEnum.RET_COMM_9999.getMessage());
-                    }else {
+                    }else {*/
                         modelReturn.code(RetEnum.RET_COMM_SUCCESS.getCode()).msg(RetEnum.RET_COMM_SUCCESS.getMessage());
-                    }
+                    /*}*/
                 }
             }
             if (cmd == 888) {
