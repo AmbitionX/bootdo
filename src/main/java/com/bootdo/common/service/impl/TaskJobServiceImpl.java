@@ -90,10 +90,20 @@ public class TaskJobServiceImpl implements TaskJobService {
                     wxMap.put("limit", taskinfo.getNum() - taskinfo.getFinishnum());
                     wxMap.put("stauts",1);
                     //排除已经用过的微信号
-                    if (taskinfo.getFinishnum() > 0) {
-                        wxMap.put("exclude", taskinfo.getId());
+                    Map<String,Object> paramMap = Maps.newHashMap();
+                    paramMap.put("url",taskinfo.getUrl());
+                    List<TaskinfoDO> sameTaskinfos = taskinfoDao.list(paramMap);
+                    String taskInfoIds = "";
+                    if (sameTaskinfos.size() > 0) {
+                        for (int s=0;s<sameTaskinfos.size();s++){
+                            if(s>0){
+                                taskInfoIds = taskInfoIds+","+sameTaskinfos.get(s).getId();
+                            }else{
+                                taskInfoIds = sameTaskinfos.get(s).getId().toString();
+                            }
+                        }
                     }
-
+                    wxMap.put("exclude", taskInfoIds);
                     List<WechatDO> wechatListdb = wechatDao.wechatforJob(wxMap);
 
                     if (wechatListdb.size() == (taskinfo.getNum() - taskinfo.getFinishnum())) {// 有足够的微信号，开始将微信号绑定到任务上
