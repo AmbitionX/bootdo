@@ -6,7 +6,6 @@ import com.wx.demo.tools.WechatUtil;
 import org.apache.log4j.Logger;
 
 import javax.net.ssl.SSLException;
-import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
@@ -51,7 +50,7 @@ public class IpadApplication {
             }
         }
         apiClient = new GrpcClient(true,false);
-        apiClient.create(WechatUtil.APiIp,WechatUtil.ApiPort);
+        apiClient.create(WechatUtil.apiIp,WechatUtil.apiPort);
     }
 
     public void init() {

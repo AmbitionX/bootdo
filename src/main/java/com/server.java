@@ -1,12 +1,9 @@
 package com;
 
-import com.wx.demo.bean.logo;
-import com.wx.demo.frameWork.client.grpcClient.IpadApplication;
+import com.bootdo.common.redis.shiro.RedisManager;
 import com.wx.demo.frameWork.protocol.ServiceManagerDemo;
 import com.wx.demo.frameWork.protocol.WechatServiceGrpc;
 import com.wx.demo.tools.Constant;
-import com.wx.demo.tools.RedisUtils;
-import com.wx.demo.tools.WechatUtil;
 import com.wx.demo.wechatapi.model.WechatApi;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.mybatis.spring.annotation.MapperScan;
@@ -22,20 +19,16 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.net.ssl.SSLException;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-
-import static com.wx.demo.tools.WechatUtil.getMd5;
 
 /**
  *
@@ -78,7 +71,7 @@ public class server extends SpringBootServletInitializer {
     private static  ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(5,
             new BasicThreadFactory.Builder().namingPattern("example-schedule-pool-%d").daemon(true).build());
     private static void uploginedUsers() {
-        Map<byte[], byte[]> loginedUsers = RedisUtils.hGetAll((Constant.redisk_key_loinged_user + serverid).getBytes());
+        Map<byte[], byte[]> loginedUsers = RedisManager.hGetAll((Constant.redisk_key_loinged_user + serverid).getBytes());
         Set<byte[]> keySet = loginedUsers.keySet();
         for (byte[] key : keySet) {
             WechatApi bean = WechatApi.unserizlize(loginedUsers.get(key));
@@ -97,39 +90,39 @@ public class server extends SpringBootServletInitializer {
 
     public static void main(String[] args) throws SSLException, UnknownHostException {
         ac=SpringApplication.run(server.class, args);
-        Environment env = ac.getEnvironment();
-        serverport = Integer.parseInt(env.getProperty("server.port"));
-        hostAddress = InetAddress.getLocalHost().getHostAddress();
-        WechatUtil.init();
-        if (args.length > 0) {
-            String str = args[0];
-            serverport = Integer.parseInt(str);
-            if (serverport > 1000 && serverport < 65000) {
-                WechatUtil.server_port = serverport;
-            }
-        }
-        else if(serverport > 1000 && serverport < 65000){
-            WechatUtil.server_port = serverport;
-        } else {
-            serverport = WechatUtil.server_port;
-        }
-        serverip = WechatUtil.ServerIp;
-        serverhost = serverip + ":" + serverport;
-        serverid = getMd5(serverhost);
-        WechatUtil.ServerId = serverid;
-        // 启动Grpc客户端
-        IpadApplication.getInstance().init();// uploginedUsers(serverid);
-        uploginedUsers();
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                //IpadApplication.getInstance().destroy();
-                logger.info("-------服务器已关闭,host:[" + serverhost + "] 服务器ID:[" + serverid + "]-------");
-            }
-        });
-        logger.info(logo.logo, env.getProperty("spring.application.name"),
-                serverport, hostAddress, serverport, hostAddress, serverport,
-                serverport, serverip, serverport, serverid);
+//        Environment env = ac.getEnvironment();
+//        serverport = Integer.parseInt(env.getProperty("server.port"));
+//        hostAddress = InetAddress.getLocalHost().getHostAddress();
+//        WechatUtil.init();
+//        if (args.length > 0) {
+//            String str = args[0];
+//            serverport = Integer.parseInt(str);
+//            if (serverport > 1000 && serverport < 65000) {
+//                WechatUtil.server_port = serverport;
+//            }
+//        }
+//        else if(serverport > 1000 && serverport < 65000){
+//            WechatUtil.server_port = serverport;
+//        } else {
+//            serverport = WechatUtil.server_port;
+//        }
+//        serverip = WechatUtil.serverIp;
+//        serverhost = serverip + ":" + serverport;
+//        serverid = getMd5(serverhost);
+//        WechatUtil.serverId = serverid;
+//        // 启动Grpc客户端
+//        IpadApplication.getInstance().init();// uploginedUsers(serverid);
+//        uploginedUsers();
+//        Runtime.getRuntime().addShutdownHook(new Thread() {
+//            @Override
+//            public void run() {
+//                //IpadApplication.getInstance().destroy();
+//                logger.info("-------服务器已关闭,host:[" + serverhost + "] 服务器ID:[" + serverid + "]-------");
+//            }
+//        });
+//        logger.info(logo.logo, env.getProperty("spring.application.name"),
+//                serverport, hostAddress, serverport, hostAddress, serverport,
+//                serverport, serverip, serverport, serverid);
     }
 }
 

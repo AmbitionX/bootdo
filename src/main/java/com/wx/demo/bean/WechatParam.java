@@ -45,8 +45,8 @@ public class WechatParam {
         loginData.put("DeviceType", userbuilder.getDeviceType());
         loginData.put("DeviceName", userbuilder.getDeviceName());
         loginData.put("ProtocolVer", WechatUtil.protocolVer);
-        loginData.put("Language", WechatUtil.Language);
-        loginData.put("RealCountry", WechatUtil.RealCountry);
+        loginData.put("language", WechatUtil.language);
+        loginData.put("realCountry", WechatUtil.realCountry);
         byte[] Payloadsbyte = new Gson().toJson(loginData).getBytes(StandardCharsets.UTF_8);
         return NewBaseMsgBuilder(userbuilder,Payloadsbyte);
     }
@@ -86,8 +86,8 @@ public class WechatParam {
         return WechatMsg.newBuilder()
                 .setTimeStamp((int)time)
                 .setIP(WechatUtil.getRealIp())
-                .setToken(WechatUtil.AppTocken)
-                .setVersion(WechatUtil.VERSION)
+                .setToken(WechatUtil.appTocken)
+                .setVersion(WechatUtil.version)
                 .setBaseMsg(BaseMsgbuilder);
     }
     public String getRandomid() {

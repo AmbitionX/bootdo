@@ -3,6 +3,7 @@ package com.bootdo.common.service.impl;
 import com.bootdo.baseinfo.dao.WechatDao;
 import com.bootdo.baseinfo.domain.WechatDO;
 import com.bootdo.common.aspect.LogAspect;
+import com.bootdo.common.redis.shiro.RedisManager;
 import com.bootdo.common.service.TaskJobService;
 import com.bootdo.system.dao.ConfigDao;
 import com.bootdo.system.domain.ConfigDO;
@@ -14,7 +15,6 @@ import com.google.common.collect.Maps;
 import com.wx.demo.common.RetEnum;
 import com.wx.demo.frameWork.protocol.CommonApi;
 import com.wx.demo.tools.Constant;
-import com.wx.demo.tools.RedisUtils;
 import com.wx.demo.wechatapi.model.ModelReturn;
 import com.wx.demo.wechatapi.model.WechatApi;
 import org.slf4j.Logger;
@@ -22,8 +22,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.xml.crypto.Data;
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
@@ -62,11 +60,11 @@ public class TaskJobServiceImpl implements TaskJobService {
             for (int i = 0; i < taskinfoDOS.size(); i++) {
                 TaskinfoDO taskinfo = taskinfoDOS.get(i);
                 //判断是否有锁
-                if(RedisUtils.exists(prefix_task+taskinfo.getId())){
+                if(RedisManager.exists(prefix_task+taskinfo.getId())){
                     continue;
                 }
                 // 加分布式锁
-                RedisUtils.set(prefix_task+taskinfo.getId(),taskinfo.getId().toString());
+                RedisManager.set(prefix_task+taskinfo.getId(),taskinfo.getId().toString());
 
                 int count = taskinfo.getFinishnum(); //成功次数
                 try {
@@ -233,7 +231,7 @@ public class TaskJobServiceImpl implements TaskJobService {
                     //   TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 }finally {
                     // 释放任务锁
-                    RedisUtils.del(prefix_task+taskinfo.getId());
+                    RedisManager.del(prefix_task+taskinfo.getId());
                 }
             }
         }

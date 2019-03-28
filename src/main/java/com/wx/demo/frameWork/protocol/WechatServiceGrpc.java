@@ -4,13 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bootdo.baseinfo.domain.WechatDO;
+import com.bootdo.common.redis.shiro.RedisManager;
 import com.bootdo.common.utils.SpringContextHolder;
 import com.bootdo.wx.service.ParseRecordDetailService;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.wx.demo.bean.RedisBean;
 import com.wx.demo.bean.WxLongCallback;
 import com.wx.demo.frameWork.client.grpcClient.IpadApplication;
 import com.wx.demo.frameWork.proto.BaseMsg;
@@ -29,7 +29,6 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
 
@@ -44,7 +43,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
 
-import static com.wx.demo.httpHandler.HttpResult.getMd5;
 @Component
 public class WechatServiceGrpc implements WechatService {
     private static final Logger logger = LoggerFactory.getLogger(WechatServiceGrpc.class);
@@ -55,8 +53,8 @@ public class WechatServiceGrpc implements WechatService {
     private String randomid;
     private byte[] sessionKey;
     private String version = "6.7.0";
-    private String machineCode = WechatUtil.AppTocken;
-    private String addMachineCode = WechatUtil.ApiTocken;
+    private String machineCode = WechatUtil.appTocken;
+    private String addMachineCode = WechatUtil.apiTocken;
     private int protocolVer = Constant.protocolVer;
     private String account;
     private String shortServerHost = "short.weixin.qq.com";
@@ -232,7 +230,7 @@ public class WechatServiceGrpc implements WechatService {
         this.wechatDevideId = WechatUtil.getDeviceid(randomid,0);
         this.deviceType = WechatUtil.getDeviceType(randomid,0);
         this.sessionKey = WechatUtil.sessionKey;
-        this.version = WechatUtil.VERSION;
+        this.version = WechatUtil.version;
         this.longServerHost = WechatUtil.longServerHost;
         this.shortServerHost = WechatUtil.shortServerHost;
         this.deviceType = WechatUtil.getDeviceType(wechatDevideId,1);
@@ -759,7 +757,7 @@ public class WechatServiceGrpc implements WechatService {
     public void syncToRedis() {
       //  WechatApi redisBean = wechatApi;
        // RedisUtils.set(loginedUser.getUserame(),randomid);
-        RedisUtils.hset((Constant.redisk_key_loinged_user + WechatUtil.ServerId).getBytes(), wechatApi.getRandomId().getBytes(), WechatApi.serialise(wechatApi));
+        RedisManager.hset((Constant.redisk_key_loinged_user + WechatUtil.serverId).getBytes(), wechatApi.getRandomId().getBytes(), WechatApi.serialise(wechatApi));
     }
 
     public void syncToMysql(){
@@ -1098,8 +1096,8 @@ public class WechatServiceGrpc implements WechatService {
         param.put("UUid", deviceUuid);
         param.put("DeviceType", deviceType);
         param.put("DeviceName", deviceName);
-        param.put("Language", "zh-cn");
-        param.put("RealCountry", "cn");
+        param.put("language", "zh-cn");
+        param.put("realCountry", "cn");
 
         longServerRequest(1111, param, new WechatMsgCallback() {
             @Override
@@ -1617,7 +1615,7 @@ public class WechatServiceGrpc implements WechatService {
         HashMap<String, Object> params = new HashMap<>(16);
         params.put("FromUserName",loginedUser.getUserame());
         params.put("ToUserName",toUsername);
-        params.put("AppId","");
+        params.put("appId","");
         params.put("Type",5);
         params.put("Content",WxUtil.getAppMsgXml(title,content,pointUrl,thumburl));
 
@@ -2213,7 +2211,7 @@ public class WechatServiceGrpc implements WechatService {
 
     protected void exit() {
         logger.info("------------用户" + wechatApi.getWxId() + "离线---------------");
-        RedisUtils.hrem((Constant.redisk_key_loinged_user + WechatUtil.ServerId).getBytes(), randomid.getBytes());
+        RedisManager.hrem((Constant.redisk_key_loinged_user + WechatUtil.serverId).getBytes(), randomid.getBytes());
 
         WechatDO wechatDO = new WechatDO();
         wechatDO.setRandomid(this.randomid);

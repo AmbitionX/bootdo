@@ -189,7 +189,7 @@ public class CallBackTread implements Runnable {
 //            httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
 //            httpPost.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
 //            httpPost.setHeader("Accept-Encoding", "gzip, deflate, br");
-//            httpPost.setHeader("Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8");
+//            httpPost.setHeader("Accept-language", "zh-CN,zh;q=0.9,en;q=0.8");
 //            httpPost.setHeader("Cache-Control", "max-age=0");
 //            httpPost.setHeader("Connection", "keep-alive");
 //            httpPost.setHeader("Cookie", "JSESSIONID=F7D950CA38448E35E01F5016C13F50B6; Secure; _ga=GA1.3.115431369.1551964763; _gid=GA1.3.1675008777.1553140025; aliyungf_tc=AQAAAFGxVEu3EwAADArDt+6x87vfVSsm; acw_tc=276082a815531400420232991ebdf77d9378e2409b8edb56f6f098813cb8a3; __utmc=39553075; __utmz=39553075.1553140043.2.2.utmcsr=my.chsi.com.cn|utmccn=(referral)|utmcmd=referral|utmcct=/archive/index.jsp; _ga=GA1.4.115431369.1551964763; _gid=GA1.4.1675008777.1553140025; __utma=39553075.115431369.1551964763.1553140043.1553144276.3");
