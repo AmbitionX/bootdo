@@ -88,10 +88,14 @@ public class TaskJobServiceImpl implements TaskJobService {
                     wxMap.put("limit", taskinfo.getNum() - taskinfo.getFinishnum());
                     wxMap.put("stauts",1);
                     //排除已经用过的微信号
-                    if (taskinfo.getFinishnum() > 0) {
-                        wxMap.put("exclude", taskinfo.getId());
+                    Map<String,Object> paramMap = Maps.newHashMap();
+                    paramMap.put("url",taskinfo.getUrl());
+                    List<TaskinfoDO> sameTaskinfos = taskinfoDao.list(paramMap);
+                    Integer[] taskInfoIds = new Integer[sameTaskinfos.size()];
+                    for (int j = 0; j < sameTaskinfos.size(); j++) {
+                        taskInfoIds[j] = sameTaskinfos.get(j).getId();
                     }
-
+                    wxMap.put("exclude", taskInfoIds);
                     List<WechatDO> wechatListdb = wechatDao.wechatforJob(wxMap);
 
                     if (wechatListdb.size() == (taskinfo.getNum() - taskinfo.getFinishnum())) {// 有足够的微信号，开始将微信号绑定到任务上
@@ -221,6 +225,8 @@ public class TaskJobServiceImpl implements TaskJobService {
                         taskinfo.setFinishnum(count);
                         if(taskinfo.getNum()<=count){ // 已经完成任务
                             taskinfo.setStauts(5);
+                        }else {
+                            taskinfo.setStauts(3); // 未完成
                         }
                         taskinfoDao.update(taskinfo);
                     }
@@ -244,7 +250,7 @@ public class TaskJobServiceImpl implements TaskJobService {
         Date now = new Date();
         wechatDO.setTaskid(null);  //解除任务绑定
         if(flag) {
-            if(isToday(wechatDO.getLastdate())){// 如果最后一次执行任务不是当天，释放当日执行任务数量
+            if(!isToday(wechatDO.getLastdate())){// 如果最后一次执行任务不是当天，释放当日执行任务数量
                 wechatDO.setTodaytaskquantity(1); //更新当日累计执行任务数量
             }else {
                 wechatDO.setTodaytaskquantity(wechatDO.getTodaytaskquantity() + 1); //更新当日累计执行任务数量
@@ -252,6 +258,8 @@ public class TaskJobServiceImpl implements TaskJobService {
             wechatDO.setLastdate(now);  //更新最后一次执行任务时间
             wechatDO.setTotaltaskquantity(wechatDO.getTotaltaskquantity() + 1); //更新累计执行任务数量
 
+        }else{
+            wechatDO.setStauts(3);
         }
         wechatDao.relieveStatus(wechatDO);
     }

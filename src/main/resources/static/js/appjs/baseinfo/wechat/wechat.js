@@ -85,7 +85,7 @@ function load() {
 									field : 'stauts', 
 									title : '状态',
                                     formatter: function (value) {
-                                        var sta = value==1?"启用":value==2?"停用":"占用";
+                                        var sta = value==1?"启用":value==2?"停用":"异常账号";
                                         return sta;
                                     }
 								},

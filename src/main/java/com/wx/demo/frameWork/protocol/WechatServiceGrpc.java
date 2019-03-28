@@ -990,6 +990,7 @@ public class WechatServiceGrpc implements WechatService {
                     }
                 }).start();
             } else {//登录失败
+                logger.error("--------账号下线原因：》》 "+wechatMsg.getBaseMsg().getPayloads().toStringUtf8());
                 setDead(true);
                 autoLoginFail(wechatMsg.getBaseMsg().getRet());
             }

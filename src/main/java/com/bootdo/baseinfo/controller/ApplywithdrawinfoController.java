@@ -46,6 +46,9 @@ public class ApplywithdrawinfoController {
 	@RequiresPermissions("baseinfo:applywithdrawinfo:applywithdrawinfo")
 	public PageUtils list(@RequestParam Map<String, Object> params){
 		//查询列表数据
+		if(ShiroUtils.getUser().getDeptId()==16) {  // 注册用户加查询条件
+			params.put("uid", ShiroUtils.getUserId());
+		}
         Query query = new Query(params);
 		List<ApplywithdrawinfoDO> applywithdrawinfoList = applywithdrawinfoService.list(query);
 		int total = applywithdrawinfoService.count(query);
