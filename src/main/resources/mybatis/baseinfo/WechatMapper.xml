@@ -234,7 +234,11 @@
         ,t.`DeviceType`,t.`NickName`,t.`UserName`,t.`UserExt`,sys_user.parentId parentId from use_wechat t,sys_user
         where t.uid=sys_user.user_id
 		<if test="exclude != null and exclude != ''">
-           and not EXISTS(select WxId from wx_taskdetail where wx_taskdetail.WxId = t.id and wx_taskdetail.Taskid in ( #{exclude} ) )
+           and not EXISTS(select WxId from wx_taskdetail where wx_taskdetail.WxId = t.id
+           and wx_taskdetail.Stauts=1 and wx_taskdetail.Taskid in
+           <foreach item="exclude" collection="array" open="(" separator="," close=")">
+			   #{exclude}
+		   </foreach>
 		</if>
 			<if test="lastdate != null and lastdate != ''"> and LastDate <![CDATA[<]]> #{lastdate} </if>
 			<if test="todaytaskquantity != null and todaytaskquantity != ''"> and TodayTaskQuantity <![CDATA[<]]>  #{todaytaskquantity} </if>

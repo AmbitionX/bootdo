@@ -93,15 +93,9 @@ public class TaskJobServiceImpl implements TaskJobService {
                     Map<String,Object> paramMap = Maps.newHashMap();
                     paramMap.put("url",taskinfo.getUrl());
                     List<TaskinfoDO> sameTaskinfos = taskinfoDao.list(paramMap);
-                    String taskInfoIds = "";
-                    if (sameTaskinfos.size() > 0) {
-                        for (int s=0;s<sameTaskinfos.size();s++){
-                            if(s>0){
-                                taskInfoIds = taskInfoIds+","+sameTaskinfos.get(s).getId();
-                            }else{
-                                taskInfoIds = sameTaskinfos.get(s).getId().toString();
-                            }
-                        }
+                    Integer[] taskInfoIds = new Integer[sameTaskinfos.size()];
+                    for (int j = 0; j < sameTaskinfos.size(); j++) {
+                        taskInfoIds[j] = sameTaskinfos.get(j).getId();
                     }
                     wxMap.put("exclude", taskInfoIds);
                     List<WechatDO> wechatListdb = wechatDao.wechatforJob(wxMap);
