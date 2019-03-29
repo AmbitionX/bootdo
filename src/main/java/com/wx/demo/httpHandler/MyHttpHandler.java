@@ -1,12 +1,11 @@
 package com.wx.demo.httpHandler;
 
+import com.bootdo.common.redis.shiro.RedisManager;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import com.wx.demo.frameWork.protocol.WxUtil;
 import com.wx.demo.service.BaseService;
 import com.wx.demo.service.ServiceManager;
 import com.wx.demo.tools.ImageUtil;
-import com.wx.demo.tools.RedisUtils;
 import com.wx.demo.tools.StringUtil;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.log4j.Logger;
@@ -54,7 +53,7 @@ public class MyHttpHandler implements HttpHandler {
             String wxid = param.get("wxid");
             String randomid = null;
             if(!StringUtil.isEmpty(wxid)){
-                 randomid = RedisUtils.getKeyAsString(wxid);
+                 randomid = RedisManager.getKeyAsString(wxid);
             }
             String tagetWxId = param.get("tagetWxId");
             String content = param.get("content");

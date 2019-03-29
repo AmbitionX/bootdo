@@ -1,6 +1,7 @@
 package com.wx.demo.tools;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bootdo.common.redis.shiro.RedisManager;
 import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 import com.wx.demo.bean.CallBack;
@@ -80,7 +81,7 @@ public class WxLongUtil {
         params.put("ToUserName", userName);
         params.put("Content", content);
         params.put("Type", 5);
-        params.put("AppId", "");
+        params.put("appId", "");
         longServerRequest(222, params, data -> {
             logger.info(Arrays.toString(data));
         });
@@ -611,8 +612,8 @@ public class WxLongUtil {
 //        param.put("DeviceType", deviceType);
 //        param.put("DeviceName", deviceName);
 //        param.put("ProtocolVer", protocolVer);//协议类型 分别是什么 上次写的被擦掉了你
-//        param.put("Language", "en_US");
-//        param.put("RealCountry", "en");
+//        param.put("language", "en_US");
+//        param.put("realCountry", "en");
 //        this.deviceId = wxdat;//62数据
 //        if(code == 3333){
 //            param.put("ProtocolVer", 4);
@@ -1217,8 +1218,8 @@ public class WxLongUtil {
         redisBean.longServerHost = getLongServer();
         redisBean.serverid = getMd5(Settings.getSet().server_ip + ":" + Settings.getSet().server_port);
         redisBean.extraData = baseService.getExtraData();
-        RedisUtils.set(getLoginedUser().UserName,baseService.getrandomid());
-        RedisUtils.hset((Constant.redisk_key_loinged_user + WechatUtil.ServerId).getBytes(), baseService.getrandomid().getBytes(), RedisBean.serialise(redisBean));
+        RedisManager.set(getLoginedUser().UserName,baseService.getrandomid());
+        RedisManager.hset((Constant.redisk_key_loinged_user + WechatUtil.serverId).getBytes(), baseService.getrandomid().getBytes(), RedisBean.serialise(redisBean));
     }
 
     public void sendHeartPackage(final CallBack back) {

@@ -1,161 +1,230 @@
 package com.wx.demo.tools;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.bootdo.common.utils.GenUtils;
 import com.wx.demo.frameWork.proto.WechatMsg;
 import com.server;
+import org.apache.commons.configuration.Configuration;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.log4j.Logger;
 
 import java.io.*;
-import java.net.URL;
 import java.security.MessageDigest;
 import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+
 public class WechatUtil {
     public static Logger logger = Logger.getLogger(server.class);
     public static boolean foreText;
     public static boolean test;
     public static long configLastModifyTime = 0;
-    public static int ServerPort;
-    public static String ServerId;
-    public static String ServerIp;
-    public static String RealCountry;
-    public static String Language;
-    public static int protocolVer;
-    public static String Certificatetype;
+    public static Integer serverPort;
+    public static String serverId;
+    public static String serverIp;
+    public static String realCountry;
+    public static String language;
+    public static Integer protocolVer;
+    public static String certificatetype;
     public static String crtFile;
-    public static String VERSION = "7.0.1";
+    public static String version = "7.0.1";
     public static String longServerHost = "szlong.weixin.qq.com";
     public static String shortServerHost = "szshort.weixin.qq.com";
-    public static int AppPort = 12580;
-    public static String AppIp = "grpc.wxipad.com";
-    public static String AppHost = AppIp+":" + AppPort;
-    public static String AppId = "v1_804188876_CodeVip";
-    public static String AppKey = "v2_1b76be021d21114b6d59bd7edd7c55dc";
-    public static String AppTocken = "v3_8799ed22a680b70e6dbe0596b1a82bdc";
-    public static int ApiPort = 12580;
-    public static String APiIp = "111.231.104.181";
-    public static String ApiHost = APiIp+":" + ApiPort;
-    public static String ApiId = "v1_xukeoscar_CodeVip";
-    public static String ApiKey = "v2_7b3d44d2ce848751f2f9d27993d93471";
-    public static String ApiTocken = "v3_651fc2c44e3a0aced535fa2e5f16dfc6";
-    public static int MyPort = 3021;
-    public static String MyIp = "127.0.0.1";
-    public static String MyHost = MyIp + MyPort;
-    public static String ServerHost = MyIp + MyPort;
+    public static Integer appPort = 12580;
+    public static String appIp = "grpc.wxipad.com";
+    public static String appHost = appIp +":" + appPort;
+    public static String appId = "v1_804188876_CodeVip";
+    public static String appKey = "v2_1b76be021d21114b6d59bd7edd7c55dc";
+    public static String appTocken = "v3_8799ed22a680b70e6dbe0596b1a82bdc";
+    public static Integer apiPort = 12580;
+    public static String apiIp = "111.231.104.181";
+    public static String apiHost = apiIp +":" + apiPort;
+    public static String apiId = "v1_xukeoscar_CodeVip";
+    public static String apiKey = "v2_7b3d44d2ce848751f2f9d27993d93471";
+    public static String apiTocken = "v3_651fc2c44e3a0aced535fa2e5f16dfc6";
+    public static Integer myPort = 3021;
+    public static String myIp = "127.0.0.1";
+    public static String myHost = myIp + myPort;
+    public static String serverHost = myIp + myPort;
     public static String driverClass = "com.mysql.jdbc.Driver";
     public static String mysqlUrl = "jdbc:mysql://127.0.0.1/ceshi?zeroDateTimeBehavior=convertToNull";
     public static String mysqlUserName = "root";
     public static String mysqlPwd = "";
-    public static String Redisip = "192.168.1.105";
-    public static int RedisDB = 4;
-    public static int RedisPort = 6379;
-    public static String RedisAuth = "";
+    public static String redisip = "192.168.1.105";
+    public static Integer redisDB = 4;
+    public static Integer redisPort = 6379;
+    public static String redisAuth = "";
     public static String SOFTWARE_ZF = "888";
     public static String SOFTWARE_YY = "666";
-    public static boolean SSL =  true;
-    public static String CrtFile ;
-    public static String Config;
-    public static int maxPoolSize = 50;
-    public static int minPoolSize = 5;
-    public static int maxIdleTime = 10;
-    public static int server_port = 4567;
+    public static boolean ssl =  true;
+    public static String config;
+    public static Integer maxPoolSize = 50;
+    public static Integer minPoolSize = 5;
+    public static Integer maxIdleTime = 10;
+    public static Integer server_port = 4567;
     public static boolean force_text = false;
     public static boolean isForceText = false;
     public static boolean debug;
     public static String notifyUrl;
     public static byte[] sessionKey = new byte[]{80, 117, -128, 85, 2, 55, -76, 126, -115, 93, -71, -36, 112, -114, 15, -128};
-    private static Integer RobotId;
-    public static void init() {
-        loadProps();
-        ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1, new BasicThreadFactory.Builder().namingPattern("example-schedule-pool-%d").daemon(true).build());
-        executorService.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    loadProps();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        },10 * 1000,10 * 1000, TimeUnit.HOURS);
-    }
+    private static Integer robotId;
 
-    public static File getMyProperty() {
-        return new File(System.getProperty("user.dir"));
-    }
-
-    public static void main(String[] args) {
-        System.out.println(getCrtFile());
-    }
-
-    public static String getCrtFile() {
-        CrtFile =  getMyProperty() +"\\src\\main\\resources\\ca.crt";
-        CrtFile = CrtFile.replace("/", File.separator);
-        CrtFile = CrtFile.replace("\\", File.separator);
-        return CrtFile;
-    }
-    public static String getConfig() {
-        Config = getMyProperty() +"\\src\\main\\resources\\config.json";
-        Config = Config.replace("/", File.separator);
-        Config = Config.replace("\\", File.separator);
-        return Config;
-    }
-
-    public static String getRealIp() {
-        String url = "http://myip.fireflysoft.net/";
-      //  ServerIp = HttpUtil.sendPost(url,  null);
-        ServerIp = "127.0.0.1";
-        return ServerIp;
-    }
-    private static void loadProps() {
-        getConfig();
-        //读取根目录下配置项文件
-        //logger.info("user.dir=" + System.getProperty("user.dir"));
-        File confFile = new File(Config);
-        if (configLastModifyTime != confFile.lastModified()) {
-            configLastModifyTime = confFile.lastModified();
-            InputStreamReader reader = null;
+    static {
+        Configuration grpcConfig = GenUtils.getGrpcConfig();
+        if (grpcConfig!=null) {
             try {
-                reader = new InputStreamReader(new FileInputStream(confFile.toString()), "utf-8");
-                char buf[] = new char[655360];
-                int len;
-                if ((len = reader.read(buf, 0, buf.length)) > 0) {
-                    JSONObject root = JSON.parseObject(new String(buf, 0, len));
-                    ServerPort = root.getInteger("server_port");
-                    ServerIp = getRealIp();
-                    ServerHost =  ServerIp +":"+ server_port;
-                    ServerId = getMd5(ServerHost);
-                    Redisip = root.getString("redis_host");
-                    AppId = root.getString("app_id");
-                    AppKey = root.getString("app_key");
-                    AppTocken = root.getString("machine_Code");
-                    APiIp = root.getString("app_host");
-                    VERSION = root.getString("version");
-                    shortServerHost = root.getString("shortServerHost");
-                    longServerHost = root.getString("longServerHost");
-                    AppPort = root.getInteger("app_port");
-                    protocolVer = root.getInteger("protocolVer");
-                    RedisPort = root.getInteger("redis_port");
-                    RobotId = root.getInteger("redis_Id");
-                    RedisAuth = root.getString("redis_auth");
-                    RedisDB = root.getInteger("redis_db");
-                    foreText = root.getBoolean("force_text");
-                    Certificatetype = root.getString("certificatetype");
-                    crtFile = root.getString("crtFile");
-                    test = root.containsKey("test") ? root.getBoolean("test") : false;
-                    debug = root.containsKey("debug") ? root.getBoolean("debug") : false;
-                    notifyUrl = root.getString("notifyUrl");
-                }
-                reader.close();
+                serverPort = Integer.parseInt(grpcConfig.getProperty("server_port").toString());
+                serverIp = getRealIp();
+                serverHost =  serverIp +":"+ server_port;
+                serverId = getMd5(serverHost);
+                redisip = grpcConfig.getString("redis_host");
+                appId = grpcConfig.getString("app_id");
+                appKey = grpcConfig.getString("app_key");
+                appTocken = grpcConfig.getString("machine_Code");
+                apiIp = grpcConfig.getString("app_host");
+                version = grpcConfig.getString("version");
+                shortServerHost = grpcConfig.getString("shortServerHost");
+                longServerHost = grpcConfig.getString("longServerHost");
+                appPort = grpcConfig.getInteger("app_port",12580);
+                redisPort = grpcConfig.getInteger("redis_port",6379);
+                protocolVer = grpcConfig.getInteger("protocolVer",1);
+                robotId = grpcConfig.getInteger("redis_Id",0);
+                redisAuth = grpcConfig.getString("redis_auth");
+                redisDB = grpcConfig.getInteger("redis_db",0);
+                foreText = grpcConfig.getBoolean("force_text");
+                certificatetype = grpcConfig.getString("certificatetype");
+                crtFile = grpcConfig.getString("crtFile");
+                test = grpcConfig.containsKey("test") ? grpcConfig.getBoolean("test") : false;
+                debug = grpcConfig.containsKey("debug") ? grpcConfig.getBoolean("debug") : false;
+                notifyUrl = grpcConfig.getString("notifyUrl");
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
+//    public static void init() {
+//        loadProps();
+//        ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1, new BasicThreadFactory.Builder().namingPattern("example-schedule-pool-%d").daemon(true).build());
+//        executorService.scheduleAtFixedRate(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    loadProps();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        },10 * 1000,10 * 1000, TimeUnit.HOURS);
+//    }
+
+    public static File getMyProperty() {
+        return new File(System.getProperty("user.dir"));
+    }
+
+    public static String getCrtFile() {
+        crtFile =  getMyProperty() +"\\src\\main\\resources\\ca.crt";
+        crtFile = crtFile.replace("/", File.separator);
+        crtFile = crtFile.replace("\\", File.separator);
+        return crtFile;
+    }
+//    public static String getConfig() {
+//        config = getMyProperty() +"\\src\\main\\resources\\config.json";
+//        config = config.replace("/", File.separator);
+//        config = config.replace("\\", File.separator);
+//        return config;
+//    }
+
+    public static String getRealIp() {
+        String url = "http://myip.fireflysoft.net/";
+      //  serverIp = HttpUtil.sendPost(url,  null);
+        serverIp = "127.0.0.1";
+        return serverIp;
+    }
+    private static void loadProps() {
+//        getConfig();
+        //读取根目录下配置项文件
+        //logger.info("user.dir=" + System.getProperty("user.dir"));
+        Configuration grpcConfig = GenUtils.getGrpcConfig();
+        if (grpcConfig!=null) {
+            try {
+                serverPort = Integer.parseInt(grpcConfig.getProperty("server_port").toString());
+                serverIp = getRealIp();
+                serverHost =  serverIp +":"+ server_port;
+                serverId = getMd5(serverHost);
+                redisip = grpcConfig.getString("redis_host");
+                appId = grpcConfig.getString("app_id");
+                appKey = grpcConfig.getString("app_key");
+                appTocken = grpcConfig.getString("machine_Code");
+                apiIp = grpcConfig.getString("app_host");
+                version = grpcConfig.getString("version");
+                shortServerHost = grpcConfig.getString("shortServerHost");
+                longServerHost = grpcConfig.getString("longServerHost");
+                appPort = grpcConfig.getInteger("app_port",12580);
+                redisPort = grpcConfig.getInteger("redis_port",6379);
+                protocolVer = grpcConfig.getInteger("protocolVer",1);
+                robotId = grpcConfig.getInteger("redis_Id",0);
+                redisAuth = grpcConfig.getString("redis_auth");
+                redisDB = grpcConfig.getInteger("redis_db",0);
+                foreText = grpcConfig.getBoolean("force_text");
+                certificatetype = grpcConfig.getString("certificatetype");
+                crtFile = grpcConfig.getString("crtFile");
+                test = grpcConfig.containsKey("test") ? grpcConfig.getBoolean("test") : false;
+                debug = grpcConfig.containsKey("debug") ? grpcConfig.getBoolean("debug") : false;
+                notifyUrl = grpcConfig.getString("notifyUrl");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+//
+//    private static void loadProps() {
+//        getConfig();
+//        //读取根目录下配置项文件
+//        //logger.info("user.dir=" + System.getProperty("user.dir"));
+//        File confFile = new File(config);
+//        Configuration grpcConfig = GenUtils.getGrpcConfig();
+//        if (configLastModifyTime != confFile.lastModified()) {
+//            configLastModifyTime = confFile.lastModified();
+//            InputStreamReader reader = null;
+//            try {
+//                reader = new InputStreamReader(new FileInputStream(confFile.toString()), "utf-8");
+//                char buf[] = new char[655360];
+//                int len;
+//                if ((len = reader.read(buf, 0, buf.length)) > 0) {
+//                    JSONObject root = JSON.parseObject(new String(buf, 0, len));
+//                    serverPort = root.getInteger("server_port");
+//                    serverIp = getRealIp();
+//                    serverHost =  serverIp +":"+ server_port;
+//                    serverId = getMd5(serverHost);
+//                    redisip = root.getString("redis_host");
+//                    appId = root.getString("app_id");
+//                    appKey = root.getString("app_key");
+//                    appTocken = root.getString("machine_Code");
+//                    apiIp = root.getString("app_host");
+//                    version = root.getString("version");
+//                    shortServerHost = root.getString("shortServerHost");
+//                    longServerHost = root.getString("longServerHost");
+//                    appPort = root.getInteger("app_port");
+//                    protocolVer = root.getInteger("protocolVer");
+//                    redisPort = root.getInteger("redis_port");
+//                    RobotId = root.getInteger("redis_Id");
+//                    redisAuth = root.getString("redis_auth");
+//                    redisDB = root.getInteger("redis_db");
+//                    foreText = root.getBoolean("force_text");
+//                    certificatetype = root.getString("certificatetype");
+//                    crtFile = root.getString("crtFile");
+//                    test = root.containsKey("test") ? root.getBoolean("test") : false;
+//                    debug = root.containsKey("debug") ? root.getBoolean("debug") : false;
+//                    notifyUrl = root.getString("notifyUrl");
+//                }
+//                reader.close();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
     public static int[] byte2Int(byte[] bys) {
         int[] res = new int[bys.length];
         for (int x = 0; x < bys.length; x++) {

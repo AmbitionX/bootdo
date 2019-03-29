@@ -2,7 +2,6 @@ package com.wx.demo.frameWork.client.grpcClient;
 
 import com.wx.demo.frameWork.proto.WechatGrpc;
 import com.wx.demo.tools.WechatUtil;
-import com.wx.demo.tools.Settings;
 import io.grpc.ManagedChannel;
 import io.grpc.Metadata;
 import io.grpc.netty.GrpcSslContexts;
@@ -24,11 +23,11 @@ public class GrpcClient {
     }
 
     private String host;
-    private String appId = WechatUtil.AppId;
-    private String appKey = WechatUtil.AppKey;
-    private String apiappId =WechatUtil.ApiId;
-    private String apiappKey = WechatUtil.ApiKey;
-    private boolean SSL = WechatUtil.SSL;
+    private String appId = WechatUtil.appId;
+    private String appKey = WechatUtil.appKey;
+    private String apiappId =WechatUtil.apiId;
+    private String apiappKey = WechatUtil.apiKey;
+    private boolean SSL = WechatUtil.ssl;
     private boolean api;
     private int port;
     private File CerFile;
@@ -58,7 +57,7 @@ public class GrpcClient {
         SslContext sslContext;
         if(ssl){
             CerFile = new File(WechatUtil.getCrtFile());
-            logger.info("使用 SSL/TLS 创建 [安全] 链接成功！当前有效连接数:[" + (IpadApplication.getInstance().getTotalClientNum() +1) + "]个  SSL/TLS 路径:[" + CerFile + "]" );
+            logger.info("使用 ssl/TLS 创建 [安全] 链接成功！当前有效连接数:[" + (IpadApplication.getInstance().getTotalClientNum() +1) + "]个  ssl/TLS 路径:[" + CerFile + "]" );
             SslProvider provider = SslContext.defaultClientProvider();
             switch (provider) {
                 case JDK:
@@ -88,7 +87,7 @@ public class GrpcClient {
                     break;
             }
         } else {
-            logger.info("不使用 SSL/TLS 创建链接！[不安全]");
+            logger.info("不使用 ssl/TLS 创建链接！[不安全]");
             sslContext = GrpcSslContexts.forClient()
                     .trustManager(InsecureTrustManagerFactory.INSTANCE)
                     .build();

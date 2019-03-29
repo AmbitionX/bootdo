@@ -170,6 +170,17 @@ public class GenUtils {
     }
 
     /**
+     * 获取Grpc配置信息
+     */
+    public static Configuration getGrpcConfig() {
+        try {
+            return new PropertiesConfiguration("grpconfig.properties");
+        } catch (ConfigurationException e) {
+            throw new BDException("获取配置文件失败，", e);
+        }
+    }
+
+    /**
      * 获取文件名
      */
     public static String getFileName(String template, String classname, String className, String packageName) {
