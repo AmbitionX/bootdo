@@ -1,11 +1,14 @@
 package com.wx.demo.tools;
 
 
+import com.bootdo.util.HxHttpClient;
+import com.google.common.collect.Maps;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.apache.log4j.Logger;
+import sun.net.www.http.HttpClient;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -366,6 +369,83 @@ public class HttpUtil {
             }
         }
     }
+
+
+    public static String sendPostReadTest(String url, Map<String,String> map,String param) {
+        PrintWriter out = null;
+        BufferedReader in = null;
+        String result = "";
+        try {
+            URL realUrl = new URL(url);
+            // 打开和URL之间的连接
+            URLConnection conn = realUrl.openConnection();
+            // 设置通用的请求属性
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36 MicroMessenger/6.5.2.501 NetType/WIFI WindowsWechat QBCore/3.43.1021.400 QQBrowser/9.0.2524.400");
+
+            // 发送POST请求必须设置如下两行
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            // 获取URLConnection对象对应的输出流
+            out = new PrintWriter(conn.getOutputStream());
+            // 发送请求参数
+            out.print(param.getBytes());
+            // flush输出流的缓冲
+            out.flush();
+            // 定义BufferedReader输入流来读取URL的响应
+            in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
+            String line;
+            while ((line = in.readLine()) != null) {
+                result += line;
+            }
+        } catch (Exception e) {
+            System.out.println("发送 POST 请求出现异常！" + e);
+            logger.info(e);
+        }
+        //使用finally块来关闭输出流、输入流
+        finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return result;
+    }
+
+    public static void main(String[] args) {
+//        String url = "https://mp.weixin.qq.com/mp/getappmsgext?uin=MjE5Mzg1ODIyMQ%253D%253D&key=0962614294a774607aca62e6412d65b132dfaabac7ad1020d2d587396aec52bf3c307cda606300d0af01023f46770ecc17b34d6c42d74ed52e2f93f4aa7274cd49c6ea5804b0c4c2a430ca2260acaff4";
+//        String url = "https://mp.weixin.qq.com/mp/getappmsgext?uin=ODk4OTc0NDAx&key=81b6aa47e73a826f66e0ececf627f60c1f86074a2e4aa4832df4a752060c6248fa7bcf4772ea9ff495cadb6d1c6053d668d0d582537bec66c13db4bdc23918870cea27c34718ade1dd2726db47e08abe";
+        String url = "https://mp.weixin.qq.com/mp/getappmsgext?uin=ODk4OTc0NDAx&key=d79f64025a3eaf7a7e4e7783636c71b79324f80b94fa9d6d883df5bc06e22eb362781541f7495821aae04818a1cd01922c631066a82ac60c182ef71cd895283ff1e332c7aee856a26ada057328ec0d54";
+
+//        String param = "__biz=Mzg4OTAxNTY0NA%3D%3D&mid=2247484156&sn=0583f39be085fa1df5ae8de24e8e52b5&idx=3&is_only_read=1";
+//        String param = "__biz=Mzg4OTAxNTY0NA%3D%3D&mid=2247484156&sn=a03526317e50b47617747ad68eb5627c&idx=5&is_only_read=1";
+        String param = "__biz=Mzg4OTAxNTY0NA==&mid=2247484156&idx=5&sn=a03526317e50b47617747ad68eb5627c&ascene=7&devicetype=iPad+iPhone+OS9.3.3&version=16060520&nettype=WIFI&lang=zh-cn&fontScale=100&pass_ticket=SSsrwXWTZoshrST%2BDiyEIPuU49wzHBRXQfQ5mSgvKy7UatWl%2BeqnJCta65LN9cbd&wx_header=1&is_only_read=1";
+
+
+        int paramDataIndex = url.indexOf("?");
+        String paramData = url.substring(paramDataIndex + 1);
+        System.out.println("------------------>"+paramData);
+        String[] params=param.split("&");
+        Map map=Maps.newHashMap();
+        for (String str : params) {
+            int eqindex = str.indexOf("=");
+            if (eqindex!=-1) {
+                String key = str.substring(0, eqindex);
+                String value = str.substring(eqindex+1);
+                map.put(key, value);
+            }
+        }
+        System.out.println("--------------->>>>>>>>>>>>"+HxHttpClient.post(url,map));
+//        System.out.println(JSONUtils.beanToJson(map));
+        //System.out.println(sendPostReadTest(url,map, JSONUtils.beanToJson(map)));
+    }
+
+
 
 
 }
