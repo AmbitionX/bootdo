@@ -721,12 +721,12 @@ public class WechatServiceGrpc implements WechatService {
         httpParam.put("content", content);
         HttpService.httpRequest(path, httpParam);
 
-       /* syncToRedis();   // 先不更新db，看看数据有效时长
-        syncToMysql();*/
+        syncToRedis();
+        syncToMysql(wechatMsg);
         logger.info(dateFormat.format(new Date())+"-autoLoginSuccess-randomid:"+ randomid);
     }
 
-    private void autoLoginFail(int ret) {
+    private void autoLoginFail(int ret,WechatMsg wechatMsg) {
         if (isLogin == -1 && loginedUser == null) {
             return;
         }
@@ -751,6 +751,7 @@ public class WechatServiceGrpc implements WechatService {
         httpParam.put("content", "");
         HttpService.httpRequest(path, httpParam);
         setDead(true);
+        wechatApi.setPayLoads(wechatMsg.getBaseMsg().getPayloads());
         logger.info(dateFormat.format(new Date())+"-autoLoginFail-ret:"+ret+"-randomid:"+ randomid);
     }
 
@@ -760,7 +761,7 @@ public class WechatServiceGrpc implements WechatService {
         RedisManager.hset((Constant.redisk_key_loinged_user + WechatUtil.serverId).getBytes(), wechatApi.getRandomId().getBytes(), WechatApi.serialise(wechatApi));
     }
 
-    public void syncToMysql(){
+    public void syncToMysql(WechatMsg wechatMsg){
         //微信数据写入到db
         Map<String,Object> param = Maps.newHashMap();
         param.put("wechat",loginedUser.getUserame());
@@ -832,6 +833,7 @@ public class WechatServiceGrpc implements WechatService {
                 wechatDO.setUsername(Base64Utils.encodeToString(bytes));
                 wechatDO.setUserext(String.valueOf(loginedUser.getUserExt()));
 
+                //wechatDO.setRemark(wechatMsg.getBaseMsg().getPayloads().toStringUtf8());
                 wechatService.update(wechatDO);
             }else {
                 wechatDO = new WechatDO();
@@ -923,7 +925,7 @@ public class WechatServiceGrpc implements WechatService {
         HttpService.httpRequest(path, param);
 
         syncToRedis();
-        syncToMysql();
+        syncToMysql(wechatMsg);
         logger.info(dateFormat.format(new Date())+"-loginSuccess-randomid:"+ randomid);
     }
 
@@ -992,7 +994,7 @@ public class WechatServiceGrpc implements WechatService {
             } else {//登录失败
                 logger.error("--------账号下线原因：》》 "+wechatMsg.getBaseMsg().getPayloads().toStringUtf8());
                 setDead(true);
-                autoLoginFail(wechatMsg.getBaseMsg().getRet());
+                autoLoginFail(wechatMsg.getBaseMsg().getRet(),wechatMsg);
             }
         });
     }
@@ -1302,7 +1304,7 @@ public class WechatServiceGrpc implements WechatService {
         }
 
         if (protocolVer == 2) {
-            autoLoginFail(0);
+            autoLoginFail(0,null);
         }
 
         logger.info(dateFormat.format(new Date())+"-deleteDevice-randomid:"+ randomid);
@@ -1315,7 +1317,7 @@ public class WechatServiceGrpc implements WechatService {
         }
 
         if (protocolVer == 2) {
-            autoLoginFail(0);
+            autoLoginFail(0,null);
         }
 
         logger.info(dateFormat.format(new Date())+"-logout-randomid:"+ randomid);
@@ -2211,18 +2213,28 @@ public class WechatServiceGrpc implements WechatService {
     }
 
     protected void exit() {
-        logger.info("------------用户" + wechatApi.getWxId() + "离线---------------");
+        logger.info("------------用户" + wechatApi.getWxId() + "离线-----------离线原因----"+wechatApi.getPayLoads().toStringUtf8());
         RedisManager.hrem((Constant.redisk_key_loinged_user + WechatUtil.serverId).getBytes(), randomid.getBytes());
 
         WechatDO wechatDO = new WechatDO();
         wechatDO.setRandomid(this.randomid);
         wechatDO.setStauts(2);
-      //  wechatDO.setRemark(wechatApi.getGrpcPayLoads());
+        String remark = wechatApi.getPayLoads().toStringUtf8();
+        if(remark.indexOf("Content")>-1){
+            remark =remark.substring(remark.indexOf("Content")+17,remark.lastIndexOf("Content")-5);
+        }
+        wechatDO.setRemark(remark);
         wechatService.updateForWechatId(wechatDO);
 
         wechatSocket.close();
         heartBeatExe.shutdown();
         isAlifeCheckSevice.shutdown();
+    }
+
+    public static void main(String[] args) {
+        String a = "<Content><![CDATA[你已退出微信]]></Content>";
+        a =a.substring(a.indexOf("Content")+17,a.lastIndexOf("Content")-5);
+        System.out.println("结果："+a);
     }
 
     @Override

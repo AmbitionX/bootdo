@@ -69,8 +69,12 @@ public class CommonApi extends BaseController {
             if (cmd == 999){ // 关注
                 Map<String, String> map = service.contactOperate(wechatApi.getGzwxId(),null,null,1,3);
                 if(map!=null){
-                    modelReturn.code(Integer.parseInt(map.get("status")));
-                    modelReturn.msg(map.get("remaker"));
+                    if(map.get("status").equals("0")){ // 成功
+                        modelReturn.code(RetEnum.RET_COMM_SUCCESS.getCode()).msg(RetEnum.RET_COMM_SUCCESS.getMessage());
+
+                    }else{
+                        modelReturn.code(RetEnum.RET_COMM_9999.getCode()).msg(map.get("remaker"));
+                    }
                 }
             }
         }

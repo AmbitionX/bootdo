@@ -15,7 +15,8 @@
 		  		  <if test="username != null and username != ''"> and username = #{username} </if>
 		  		  <if test="password != null and password != ''"> and password = #{password} </if>
 		  		  <if test="wxdata != null and wxdata != ''"> and wxdata = #{wxdata} </if>
-		  		  <if test="state != null and state != ''"> and state = #{state} </if>
+		  		  <if test="state != null and state != '' and state ==2"> and state = #{state} </if>
+			      <if test="state != null and state != '' and state !=2"> and state != 2 </if>
 		  		  <if test="ctime != null and ctime != ''"> and ctime = #{ctime} </if>
 		  		  <if test="utime != null and utime != ''"> and utime = #{utime} </if>
 		  		</where>
@@ -40,7 +41,8 @@
 		  		  <if test="username != null and username != ''"> and username = #{username} </if>
 		  		  <if test="password != null and password != ''"> and password = #{password} </if>
 		  		  <if test="wxdata != null and wxdata != ''"> and wxdata = #{wxdata} </if>
-		  		  <if test="state != null and state != ''"> and state = #{state} </if>
+			      <if test="state != null and state != '' and state ==2"> and state = #{state} </if>
+			      <if test="state != null and state != '' and state !=2"> and state != 2 </if>
 		  		  <if test="ctime != null and ctime != ''"> and ctime = #{ctime} </if>
 		  		  <if test="utime != null and utime != ''"> and utime = #{utime} </if>
 		  		</where>

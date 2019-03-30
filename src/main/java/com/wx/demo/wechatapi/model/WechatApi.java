@@ -14,6 +14,7 @@
 package com.wx.demo.wechatapi.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.protobuf.ByteString;
 import com.wx.demo.bean.RedisBean;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
@@ -132,7 +133,18 @@ public class WechatApi implements Serializable{
   @JsonProperty("gzwxId")
   private String gzwxId = null; // 公众号
 
-    public String getGzwxId() {
+  @JsonProperty("payLoads")
+  private com.google.protobuf.ByteString payLoads = null;
+
+  public ByteString getPayLoads() {
+    return payLoads;
+  }
+
+  public void setPayLoads(ByteString payLoads) {
+    this.payLoads = payLoads;
+  }
+
+  public String getGzwxId() {
         return gzwxId;
     }
 

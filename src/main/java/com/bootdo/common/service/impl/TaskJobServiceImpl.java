@@ -5,6 +5,7 @@ import com.bootdo.baseinfo.domain.WechatDO;
 import com.bootdo.common.aspect.LogAspect;
 import com.bootdo.common.redis.shiro.RedisManager;
 import com.bootdo.common.service.TaskJobService;
+import com.bootdo.common.utils.R;
 import com.bootdo.system.dao.ConfigDao;
 import com.bootdo.system.domain.ConfigDO;
 import com.bootdo.wx.dao.TaskdetailDao;
@@ -143,7 +144,7 @@ public class TaskJobServiceImpl implements TaskJobService {
                                 taskdetailDao.save(taskdetailDO);
 
                                 //释放微信号，根据执行成功失败传参
-                                relieveStatus(wxid, flag==1);
+                                relieveStatus(wxid, modelReturn);
                                 if (modelReturn.getCode()== RetEnum.RET_COMM_SUCCESS.getCode()) {//记录成功次数
                                     count = count + 1;
                                 }
@@ -154,8 +155,7 @@ public class TaskJobServiceImpl implements TaskJobService {
                               /*  BaseService service = ServiceManager.getInstance().getServiceByRandomId(wxid.getRandomid());
                                 String paymentStr = service.getA8KeyService(taskinfo.getUrl(), 7, taskinfo.getWxname());
 */
-
-                                TaskdetailDO taskdetailDO = new TaskdetailDO();
+                               /* TaskdetailDO taskdetailDO = new TaskdetailDO();
                                 taskdetailDO.setTaskid(taskinfo.getId());
                                 taskdetailDO.setUid(wxid.getUid());
                                 taskdetailDO.setWxid(wxid.getId());
@@ -169,7 +169,7 @@ public class TaskJobServiceImpl implements TaskJobService {
                                 if (true) {//记录成功次数
                                     count = count + 1;
                                 }
-                                Thread.sleep(taskinfo.getTaskperiod());
+                                Thread.sleep(taskinfo.getTaskperiod());*/
                             }
                         } else if (taskinfo.getTasktype().equals(3)) {//关注
                             for (WechatDO wxid : wechatListdb) {
@@ -187,18 +187,21 @@ public class TaskJobServiceImpl implements TaskJobService {
                                 wechatApi.setCmd(999);
 
                                 ModelReturn modelReturn = commonApi.execute(wechatApi);
-
+                                int flag = 1;
+                                if(modelReturn.getCode()!= RetEnum.RET_COMM_SUCCESS.getCode()) {
+                                    flag = 2;
+                                }
                                 TaskdetailDO taskdetailDO = new TaskdetailDO();
                                 taskdetailDO.setTaskid(taskinfo.getId());
                                 taskdetailDO.setUid(wxid.getUid());
                                 taskdetailDO.setWxid(wxid.getId());
                                 taskdetailDO.setPrice(taskinfo.getPrice());
                                 taskdetailDO.setTasktype(taskinfo.getTasktype());
-                                taskdetailDO.setStauts(1); //根据任务执行情况设定
+                                taskdetailDO.setStauts(flag); //根据任务执行情况设定
                                 taskdetailDO.setParentid(wxid.getParentid());
                                 taskdetailDao.save(taskdetailDO);
                                 //释放微信号，根据执行成功失败传参
-                                relieveStatus(wxid, true);
+                                relieveStatus(wxid, modelReturn);
 
                                 if (modelReturn!=null && modelReturn.getCode()==0) {//记录成功次数
                                     count = count + 1;
@@ -225,8 +228,6 @@ public class TaskJobServiceImpl implements TaskJobService {
                         taskinfo.setFinishnum(count);
                         if(taskinfo.getNum()<=count){ // 已经完成任务
                             taskinfo.setStauts(5);
-                        }else {
-                            taskinfo.setStauts(3); // 未完成
                         }
                         taskinfoDao.update(taskinfo);
                     }
@@ -246,10 +247,10 @@ public class TaskJobServiceImpl implements TaskJobService {
 
 
 
-    public void relieveStatus(WechatDO wechatDO,boolean flag){
+    public void relieveStatus(WechatDO wechatDO, ModelReturn ret){
         Date now = new Date();
         wechatDO.setTaskid(null);  //解除任务绑定
-        if(flag) {
+        if(ret.getCode()==RetEnum.RET_COMM_SUCCESS.getCode()) {
             if(!isToday(wechatDO.getLastdate())){// 如果最后一次执行任务不是当天，释放当日执行任务数量
                 wechatDO.setTodaytaskquantity(1); //更新当日累计执行任务数量
             }else {
