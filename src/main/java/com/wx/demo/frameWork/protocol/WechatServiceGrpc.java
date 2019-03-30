@@ -824,6 +824,7 @@ public class WechatServiceGrpc implements WechatService {
                     wechatDO.setUid(Long.valueOf(this.account));
                 }
                 wechatDO.setStauts(1);//启用
+                wechatDO.setRemark(null);
                 wechatDO.setUin(String.valueOf(loginedUser.getUin()));
                 wechatDO.setAutoauthkey(loginedUser.getAutoAuthKey().toStringUtf8());
                 wechatDO.setCookies(String.valueOf(loginedUser.getCookies()));
@@ -2058,7 +2059,7 @@ public class WechatServiceGrpc implements WechatService {
                         Thread.sleep(200);
                         int readNumSecond=getReadNum(reqReadNumUrl, map,2);
                         if (readNumFirst != -1 && readNumSecond != -1) {
-                            if (readNumSecond>=readNumFirst) {
+                            if (readNumSecond>readNumFirst) {
                                 ret = R.ok();
                             }else{
                                 ret = R.error(3,"未能实际进行有效阅读");

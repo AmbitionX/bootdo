@@ -220,7 +220,7 @@ public class TaskJobServiceImpl implements TaskJobService {
                         taskinfoDao.update(taskinfo);
                     } else {
                         logger.info("--------->>>任务url{}" + taskinfo.getUrl() + "没有足够的资源进行操作,稍后系统进行重试.cc" + now);
-                        break;
+                        continue;
                     }
                 } catch (Exception e) {
                     //更新任务
@@ -260,6 +260,13 @@ public class TaskJobServiceImpl implements TaskJobService {
             wechatDO.setTotaltaskquantity(wechatDO.getTotaltaskquantity() + 1); //更新累计执行任务数量
 
         }else{
+            if(ret.getCode()==RetEnum.RET_COMM_2001.getCode()){
+                wechatDO.setStauts(4);
+                wechatDO.setRemark(RetEnum.RET_COMM_2001.getMessage());
+            }else if(ret.getCode()==RetEnum.RET_COMM_2002.getCode()){
+                wechatDO.setStauts(5);
+                wechatDO.setRemark(RetEnum.RET_COMM_2002.getMessage());
+            }
             wechatDO.setStauts(3);
         }
         wechatDao.relieveStatus(wechatDO);
