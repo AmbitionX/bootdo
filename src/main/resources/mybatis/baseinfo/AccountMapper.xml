@@ -72,7 +72,6 @@
 	<update id="update" parameterType="com.bootdo.baseinfo.domain.AccountDO">
 		update use_account 
 		<set>
-			<if test="uid != null">`Uid` = #{uid}, </if>
 			<if test="totalgainmoney != null">`TotalGainMoney` = #{totalgainmoney}, </if>
 			<if test="totalwithdrawmoney != null">`TotalWithdrawMoney` = #{totalwithdrawmoney}, </if>
 			<if test="applywithdrawmoney != null">`ApplyWithdrawMoney` = #{applywithdrawmoney}, </if>

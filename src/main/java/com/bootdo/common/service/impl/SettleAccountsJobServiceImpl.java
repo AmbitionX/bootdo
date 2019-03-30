@@ -91,6 +91,7 @@ public class SettleAccountsJobServiceImpl implements SettleAccountsJobService {
                         accountdetailDO.setDealmoney(secondmoney);
                         num = accountdetailDao.save(accountdetailDO);
                     } else {  // 结算
+                        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                         throw new Exception("写入账户资金变动记录失败！");
                     }
                     // 一级用户结算

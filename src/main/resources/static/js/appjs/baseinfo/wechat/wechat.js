@@ -91,7 +91,10 @@ function load() {
 								},
 																{
 									field : 'remark', 
-									title : '微信状态备注' 
+									title : '微信状态备注' ,
+									formatter: function(value){
+										return value;
+									}
 								},
 																{
 									field : 'createdate', 
