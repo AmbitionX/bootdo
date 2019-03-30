@@ -20,5 +20,5 @@ public class Constant {
 
     public static String LOG_ERROR = "error";
 
-    
+
 }

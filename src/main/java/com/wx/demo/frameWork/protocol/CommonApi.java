@@ -1,6 +1,7 @@
 package com.wx.demo.frameWork.protocol;
 
 import com.bootdo.common.enums.EnumWxCmdType;
+import com.bootdo.common.utils.R;
 import com.wx.demo.common.RetEnum;
 import com.wx.demo.ctrl.BaseController;
 import com.wx.demo.util.MyLog;
@@ -52,16 +53,18 @@ public class CommonApi extends BaseController {
             }
             if (cmd == 777){// 阅读
 
-                String retStr = service.getReadA8KeyAndRead(wechatApi.getReqUrl(),Integer.parseInt(wechatApi.getScene()),wechatApi.getUsername());
-                 if (!"".equalsIgnoreCase(retStr)) {
-            /*         System.out.println("------------------>>>阅读返回结果:" + retStr.substring(retStr.indexOf("abtest_cookie"),retStr.indexOf("abtest_cookie")+50));
-                    int str = retStr.indexOf("abtest_cookie = \"\"");  // 异常账号阅读，这个值是空
-                    if(str > -1) {
-                        modelReturn.code(RetEnum.RET_COMM_9999.getCode()).msg(RetEnum.RET_COMM_9999.getMessage());
-                    }else {*/
-                        modelReturn.code(RetEnum.RET_COMM_SUCCESS.getCode()).msg(RetEnum.RET_COMM_SUCCESS.getMessage());
-                    /*}*/
-                }
+                 R ret = service.getReadA8KeyAndRead(wechatApi.getReqUrl(),Integer.parseInt(wechatApi.getScene()),wechatApi.getUsername());
+                 String code = ret.get("code").toString();
+                 String msg = ret.get("msg").toString();
+                 if ("0".equals(code)) {
+                     modelReturn.code(RetEnum.RET_COMM_SUCCESS.getCode()).msg(RetEnum.RET_COMM_SUCCESS.getMessage());
+                 } else if ("2".equals(code)) {
+                     modelReturn.code(RetEnum.RET_COMM_2001.getCode()).msg(RetEnum.RET_COMM_2001.getMessage());
+                 } else if ("3".equals(code)) {
+                     modelReturn.code(RetEnum.RET_COMM_2002.getCode()).msg(RetEnum.RET_COMM_2002.getMessage());
+                 } else {
+                     modelReturn.code(RetEnum.RET_COMM_1000.getCode()).msg(RetEnum.RET_COMM_1000.getMessage());
+                 }
             }
             if (cmd == 888) {
 

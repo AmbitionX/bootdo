@@ -5,7 +5,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bootdo.baseinfo.domain.WechatDO;
 import com.bootdo.common.redis.shiro.RedisManager;
+import com.bootdo.common.utils.R;
 import com.bootdo.common.utils.SpringContextHolder;
+import com.bootdo.util.HxHttpClient;
 import com.bootdo.wx.service.ParseRecordDetailService;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
@@ -1974,8 +1976,33 @@ public class WechatServiceGrpc implements WechatService {
         shortServerRequest(213,params);
     }
 
+    public int getReadNum(String reqReadNumUrl,Map<String,String> map,int count){
+        int readNum = -1;
+        count--;
+        try {
+            String readNumRet=HxHttpClient.postRead(reqReadNumUrl, map);
+            Map<String, Object> readNumMap = Maps.newHashMap();
+            readNumMap = JSONUtils.jsonToMap(readNumRet);
+            if (readNumMap.size() > 0) {
+                //判断阅读数量
+                String appmsgstat = readNumMap.get("appmsgstat").toString();
+                Map<String, Object> finalMap = JSONUtils.jsonToMap(appmsgstat);
+                readNum = Integer.parseInt(finalMap.get("read_num").toString());
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            logger.error("com.wx.demo.frameWork.protocol.WechatServiceGrpc.getReadNum_error：msg={},cause={}，detail={}",e.getMessage(),e.getCause(),e.toString());
+        }
+        if (readNum<0&&count>0) {
+            getReadNum(reqReadNumUrl, map, count);
+        }
+        return readNum;
+    }
+
     @Override
-    public String getReadA8KeyAndRead(String reqUrl, int scene, String username) {
+    public R getReadA8KeyAndRead(String reqUrl, int scene, String username) {
+        R ret=new R();
+        Boolean isReamNumSuccess=false;
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("ReqUrl", reqUrl);
         params.put("Scene", scene);//Scene = 2 来源好友或群 必须设置来源的id 3 历史阅读 4 二维码连接 7 来源公众号 必须设置公众号的id
@@ -1986,26 +2013,78 @@ public class WechatServiceGrpc implements WechatService {
         try {
             String a8kJson=shortServerRequest(233, params);
             Map<String, Object> a8kMap = JSONUtils.jsonToMap(a8kJson);
-            if (a8kMap.size() > 0) {
+            logger.info("-----a8kMap-------------->>"+JSONObject.toJSONString(a8kMap));
+            if (a8kMap!=null && a8kMap.size() > 0) {
                 Map<String,String> readReq=Maps.newHashMap();
                 StringBuilder fullUrl=new StringBuilder();
-                fullUrl.append(a8kMap.get("Url").toString());
+
+                String a8kUrl=a8kMap.get("Url").toString();
+                fullUrl.append(a8kUrl);
+
                 String XWechatUin=a8kMap.get("XWechatUin").toString();
                 String XWechatKey=a8kMap.get("XWechatKey").toString();
-                if (StringUtils.isNotBlank(XWechatUin)) {
-                    readReq.put("uin", XWechatUin);
+
+                //解析a8k返回的参数
+//                String decodeA8kUrl = GsonUtil.unicodetoString(a8kUrl);
+
+//                int paramDataIndex = decodeA8kUrl.indexOf("?");
+                int paramDataIndex = a8kUrl.indexOf("?");
+                if (paramDataIndex!=-1) {
+                    String paramData = a8kUrl.substring(paramDataIndex + 1);
+                    String[] readParam=paramData.split("&");
+                    Map map=Maps.newHashMap();
+                    map.put("is_only_read","1");
+                    for (String str : readParam) {
+                        int eqindex = str.indexOf("=");
+                        if (eqindex != -1) {
+                            String key = str.substring(0, eqindex);
+                            String value = str.substring(eqindex+1);
+                            map.put(key, value);
+                        }
+                    }
+                    if (map.size()>0) {
+                        //带数字比较的阅读
+                        String reqReadNumUrl=Constant.WX_READ_NUM_URL+"uin="+XWechatUin+"&key="+XWechatKey;
+
+                        int readNumFirst=getReadNum(reqReadNumUrl, map,2);
+
+                        if (StringUtils.isNotBlank(XWechatUin)) {
+                            readReq.put("uin", XWechatUin);
+                        }
+                        if (StringUtils.isNotBlank(XWechatKey)) {
+                            readReq.put("key", XWechatKey);
+                        }
+                        reqJson=HttpUtil.sendPostRead(fullUrl.toString(), readReq);
+                        Thread.sleep(200);
+                        int readNumSecond=getReadNum(reqReadNumUrl, map,2);
+                        if (readNumFirst != -1 && readNumSecond != -1) {
+                            if (readNumSecond>=readNumFirst) {
+                                ret = R.ok();
+                            }else{
+                                ret = R.error(3,"未能实际进行有效阅读");
+                            }
+                        }
+                    }else{
+                        //不带
+                        if (StringUtils.isNotBlank(XWechatUin)) {
+                            readReq.put("uin", XWechatUin);
+                        }
+                        if (StringUtils.isNotBlank(XWechatKey)) {
+                            readReq.put("key", XWechatKey);
+                        }
+                        reqJson=HttpUtil.sendPostRead(fullUrl.toString(), readReq);
+                    }
                 }
-                if (StringUtils.isNotBlank(XWechatKey)) {
-                    readReq.put("key", XWechatKey);
-                }
-                reqJson=HttpUtil.sendPostRead(fullUrl.toString(), readReq);
-                return reqJson;
+            }else{
+                ret = R.error(2, "a8k拉取为空,微信号系没有阅读功能");
             }
         } catch (Exception e) {
             e.printStackTrace();
+            ret = R.error();
         }
-        return reqJson;
+        return ret;
     }
+
 
     @Override
     public String getA8Key(String reqUrl, int scene, String username) {
