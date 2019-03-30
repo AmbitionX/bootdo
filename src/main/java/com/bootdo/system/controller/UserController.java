@@ -7,6 +7,8 @@ import com.bootdo.common.domain.FileDO;
 import com.bootdo.common.domain.Tree;
 import com.bootdo.common.service.DictService;
 import com.bootdo.common.utils.*;
+import com.bootdo.system.dao.ConfigDao;
+import com.bootdo.system.domain.ConfigDO;
 import com.bootdo.system.domain.DeptDO;
 import com.bootdo.system.domain.RoleDO;
 import com.bootdo.system.domain.UserDO;
@@ -14,6 +16,8 @@ import com.bootdo.system.service.RoleService;
 import com.bootdo.system.service.UserService;
 import com.bootdo.system.vo.UserVO;
 import javax.servlet.http.HttpServletRequest;
+
+import com.google.common.collect.Maps;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
@@ -43,6 +47,8 @@ public class UserController extends BaseController {
 	RoleService roleService;
 	@Autowired
 	DictService dictService;
+	@Autowired
+	private ConfigDao configDao;
 	@RequiresPermissions("sys:user:user")
 	@GetMapping("")
 	String user(Model model) {
@@ -251,6 +257,16 @@ public class UserController extends BaseController {
 	@GetMapping("/personal")
 	String personal(Model model) {
 		UserDO userDO  = userService.get(getUserId());
+		Map<String,Object> configMap = Maps.newHashMap();
+		configMap.put("key", "invitecodeprefix");
+		List<ConfigDO> configDos = configDao.list(configMap);
+
+		//设置邀请码链接
+		if (userDO.getInvitecode() != null) {
+			if (configDos!=null&&configDos.size()>0) {
+				userDO.setInvitecode(configDos.get(0).getValue() + userDO.getInvitecode());
+			}
+		}
 		model.addAttribute("user",userDO);
 		model.addAttribute("hobbyList",dictService.getHobbyList(userDO));
 		model.addAttribute("sexList",dictService.getSexList());

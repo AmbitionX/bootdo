@@ -74,6 +74,13 @@
 <script src="/js/plugins/layer/layer.min.js" th:src="@{/js/plugins/layer/layer.min.js}"></script>
 <script src="/js/plugins/iCheck/icheck.min.js" th:src="@{/js/plugins/iCheck/icheck.min.js}"></script>
 <script type="text/javascript">
+    var inviCode=getQueryString("invitecode");
+    if (inviCode != undefined && inviCode != null && inviCode != '') {
+        var inicode=document.getElementById("invitecode");
+        inicode.value = inviCode;
+        inicode.readOnly=true;
+    }
+
     $(document).ready(function () {
         $("#register").on('click',function(){$("#registerForm").submit();});
         validateRule();
@@ -83,6 +90,13 @@
             radioClass: 'iradio_square-green',
         });
     });
+
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+    }
 
     $.validator.setDefaults({
         submitHandler: function () {
