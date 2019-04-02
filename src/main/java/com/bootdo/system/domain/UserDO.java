@@ -29,6 +29,16 @@ public class UserDO implements Serializable {
 	private Long deptId;
 	private String deptName;
 
+	private int maxnum;
+
+	public int getMaxnum() {
+		return maxnum;
+	}
+
+	public void setMaxnum(int maxnum) {
+		this.maxnum = maxnum;
+	}
+
 	public String getDeptName() {
 		return deptName;
 	}

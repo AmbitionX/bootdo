@@ -81,11 +81,11 @@ public class TaskJobServiceImpl implements TaskJobService {
 
                     System.out.println("nowTime----------->>: "+nowTime);
 
-                    configMap.put("key", "todaytaskquantity");
-                    configDos = configDao.list(configMap);
+                  /*  configMap.put("key", "todaytaskquantity");
+                    configDos = configDao.list(configMap);*/
                     Map<String, Object> wxMap = Maps.newHashMap();
                     wxMap.put("lastdate", sdf.format(nowTime.getTime()));
-                    wxMap.put("todaytaskquantity", Integer.parseInt(configDos.get(0).getValue()));
+                //    wxMap.put("todaytaskquantity", Integer.parseInt(configDos.get(0).getValue()));
                     wxMap.put("limit", taskinfo.getNum() - taskinfo.getFinishnum());
                     wxMap.put("stauts",1);
                     //排除已经用过的微信号
@@ -184,6 +184,7 @@ public class TaskJobServiceImpl implements TaskJobService {
                                 wechatApi.setReqUrl(taskinfo.getUrl());
                                 wechatApi.setScene(Constant.scene);
                                 wechatApi.setUserName(taskinfo.getWxname());
+                                wechatApi.setGzwxId(taskinfo.getWxid());
                                 wechatApi.setCmd(999);
 
                                 ModelReturn modelReturn = commonApi.execute(wechatApi);
@@ -219,7 +220,7 @@ public class TaskJobServiceImpl implements TaskJobService {
                         }
                         taskinfoDao.update(taskinfo);
                     } else {
-                        logger.info("--------->>>任务url{}" + taskinfo.getUrl() + "没有足够的资源进行操作,稍后系统进行重试.cc" + now);
+                        logger.info("----第"+i+"个----->>>任务url{}" + taskinfo.getUrl() + "没有足够的资源进行操作,稍后系统进行重试.cc" + now);
                         continue;
                     }
                 } catch (Exception e) {

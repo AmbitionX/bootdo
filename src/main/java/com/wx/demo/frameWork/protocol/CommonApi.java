@@ -1,5 +1,7 @@
 package com.wx.demo.frameWork.protocol;
 
+import com.alibaba.fastjson.JSONObject;
+import com.bootdo.common.aspect.LogAspect;
 import com.bootdo.common.enums.EnumWxCmdType;
 import com.bootdo.common.utils.R;
 import com.wx.demo.common.RetEnum;
@@ -7,12 +9,14 @@ import com.wx.demo.ctrl.BaseController;
 import com.wx.demo.util.MyLog;
 import com.wx.demo.wechatapi.model.ModelReturn;
 import com.wx.demo.wechatapi.model.WechatApi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.UUID;
 
 public class CommonApi extends BaseController {
-    private final MyLog _log = MyLog.getLog(CommonApi.class);
+    private static final Logger logger = LoggerFactory.getLogger(CommonApi.class);
     private ServiceManagerDemo grpvcserver = ServiceManagerDemo.getInstance();
     private static final CommonApi INSTANCE = new CommonApi();
     public static CommonApi getInstance() {
@@ -70,13 +74,15 @@ public class CommonApi extends BaseController {
 
             }
             if (cmd == 999){ // 关注
+                logger.info("999开始关注-------》》"+JSONObject.toJSONString(wechatApi));
                 Map<String, String> map = service.contactOperate(wechatApi.getGzwxId(),null,null,1,3);
+                logger.info("999关注返回信息------》》" + JSONObject.toJSONString(map));
                 if(map!=null){
                     if(map.get("status").equals("0")){ // 成功
                         modelReturn.code(RetEnum.RET_COMM_SUCCESS.getCode()).msg(RetEnum.RET_COMM_SUCCESS.getMessage());
 
                     }else{
-                        modelReturn.code(RetEnum.RET_COMM_9999.getCode()).msg(map.get("remaker"));
+                        modelReturn.code(RetEnum.RET_COMM_3001.getCode()).msg(map.get("remaker"));
                     }
                 }
             }
