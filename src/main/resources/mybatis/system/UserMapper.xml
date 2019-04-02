@@ -4,12 +4,12 @@
 <mapper namespace="com.bootdo.system.dao.UserDao">
 
     <select id="get" resultType="com.bootdo.system.domain.UserDO">
-		select `user_id`,`username`,`name`,`password`,`dept_id`,`email`,`mobile`,`status`,`user_id_create`,`gmt_create`,`gmt_modified`,`sex`,`birth`,`pic_id`,`live_address`,`hobby`,`province`,`city`,`district`,`invitecode` from sys_user where user_id = #{value}
+		select `user_id`,`username`,`name`,`password`,`dept_id`,`email`,`mobile`,`status`,`user_id_create`,`gmt_create`,`gmt_modified`,`sex`,`birth`,`pic_id`,`live_address`,`hobby`,`province`,`city`,`district`,`invitecode`,`maxnum` from sys_user where user_id = #{value}
 	</select>
 
     <select id="list" resultType="com.bootdo.system.domain.UserDO">
         select
-        `user_id`,`username`,`name`,`password`,`dept_id`,`email`,`mobile`,`status`,`user_id_create`,`gmt_create`,`gmt_modified`,`sex`,`birth`,`pic_id`,`live_address`,`hobby`,`province`,`city`,`district`
+        `user_id`,`username`,`name`,`password`,`dept_id`,`email`,`mobile`,`status`,`user_id_create`,`gmt_create`,`gmt_modified`,`sex`,`birth`,`pic_id`,`live_address`,`hobby`,`province`,`city`,`district`,`maxnum`
         from sys_user
         <where>
             <if test="userId != null and userId != ''">and user_id = #{userId}</if>
@@ -98,7 +98,8 @@
 			`city`,
 			`invitecode`,
 			`parentid`,
-			`district`
+			`district`,
+			`maxnum`
 		)
 		values
 		(
@@ -121,7 +122,8 @@
 			#{city},
             #{invitecode},
             #{parentid},
-			#{district}
+			#{district},
+			#{maxnum}
 		)
 	</insert>
 
@@ -145,7 +147,8 @@
             <if test="hobby != null">`hobby` = #{hobby},</if>
             <if test="province != null">`province` = #{province},</if>
             <if test="city != null">`city` = #{city},</if>
-            <if test="district != null">`district` = #{district}</if>
+            <if test="district != null">`district` = #{district},</if>
+            <if test="maxnum != null ">`maxnum` = #{maxnum}</if>
         </set>
         where user_id = #{userId}
     </update>

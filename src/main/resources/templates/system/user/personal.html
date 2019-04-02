@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 <meta charset="utf-8">
 
 <head th:include="system/user/include :: header"></head>
@@ -34,6 +34,15 @@
                                 </div>
                             </div>
                             <div class="gg-formGroup">
+                            <div class="gg-formTitle">
+                                <em class="gg-star">*</em>
+                                <span>每日上限任务次数:</span>
+                            </div>
+                            <div class="gg-formDetail">
+                                <input type="text" class="form-control" id="maxnum" name="maxnum"  th:value="${user.maxnum}" placeholder="请输入每日上限任务次数" />
+                            </div>
+                        </div>
+                            <div class="gg-formGroup" style="display: none">
                                 <div class="gg-formTitle">
                                     <em class="gg-star">*</em>
                                     <span>性别:</span>
@@ -46,7 +55,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="gg-formGroup">
+                            <div class="gg-formGroup" >
                                 <div class="gg-formTitle">
                                     <em class="gg-star">*</em>
                                     <span>出生年月:</span>
@@ -82,7 +91,7 @@
                                     <input type="text" class="form-control" id="email" name="email" th:value="${user.email}" placeholder="请输入邮箱" />
                                 </div>
                             </div>
-                            <div class="gg-formGroup">
+                            <div class="gg-formGroup" style="display: none">
                                 <div class="gg-formTitle">
                                     <em class="gg-star">*</em>
                                     <span>居住地:</span>
@@ -102,7 +111,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="gg-formGroup">
+                            <div class="gg-formGroup" style="display: none">
                                 <div class="gg-formTitle">
                                     <em class="gg-star">*</em>
                                     <span>联系地址:</span>
@@ -111,7 +120,7 @@
                                     <input type="text" class="form-control" id="address" name="liveAddress" th:value="${user.liveAddress}" placeholder="请输入居住地址" />
                                 </div>
                             </div>
-                            <div class="gg-formGroup">
+                            <div class="gg-formGroup" style="display: none">
                                 <div class="gg-formTitle">
                                     <em class="gg-star">*</em>
                                     <span>爱好:</span>

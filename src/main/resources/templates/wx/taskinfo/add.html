@@ -9,24 +9,12 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-content">
                     <form class="form-horizontal m-t" id="signupForm">
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">链接地址：</label>
-                            <div class="col-sm-8">
-                                <input id="url" name="url" class="form-control" type="text">
-                            </div>
-                        </div>
-                        <div class="form-group">
+                      <!--  <div class="form-group">
                             <label class="col-sm-3 control-label">公众号名称：</label>
                             <div class="col-sm-8">
                                 <input id="wxname" name="wxname" class="form-control" type="text">
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">公众号id：</label>
-                            <div class="col-sm-8">
-                                <input id="wxid" name="wxid" class="form-control" type="text">
-                            </div>
-                        </div>
+                        </div>-->
                         <!--<div class="form-group">
                             <label class="col-sm-3 control-label">uin：</label>
                             <div class="col-sm-8">
@@ -42,11 +30,23 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">任务类型：</label>
                             <div class="col-sm-8">
-                                <select class="form-control" name="tasktype" id="tasktype">
+                                <select class="form-control" name="tasktype" id="tasktype" onchange="selectChange()">
                                     <option value="1">阅读</option>
                                     <option value="2">点赞</option>
                                     <option value="3">关注</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="form-group" style="display:none;" id="urldiv">
+                            <label class="col-sm-3 control-label">链接地址：</label>
+                            <div class="col-sm-8">
+                                <input id="url" name="url" class="form-control" type="text">
+                            </div>
+                        </div>
+                        <div class="form-group" style="display:none;" id="wxiddiv">
+                            <label class="col-sm-3 control-label">公众号ID：</label>
+                            <div class="col-sm-8">
+                                <input id="wxid" name="wxid" class="form-control" type="text">
                             </div>
                         </div>
                         <div class="form-group">

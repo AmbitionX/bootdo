@@ -59,7 +59,10 @@ function load() {
 																{
 									field : 'wechat', 
 									title : '微信号' 
-								},
+								}, {
+								field : 'nickname',
+								title : '微信昵称'
+							},
 																{
 									field : 'password', 
 									title : '微信密码' 
@@ -71,15 +74,15 @@ function load() {
 								},*/
 																{
 									field : 'lastdate', 
-									title : '最近一次做任务时间' 
+									title : '近一次任务时间'
 								},
 																{
 									field : 'totaltaskquantity', 
-									title : '累计任务次数' 
+									title : '累计次数'
 								},
 																{
 									field : 'todaytaskquantity', 
-									title : '今日任务次数' 
+									title : '今日次数'
 								},
 																{
 									field : 'stauts', 
