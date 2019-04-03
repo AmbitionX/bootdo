@@ -28,13 +28,13 @@ function update() {
 	if(tasktype == "1"){
 		var url = $('#url').val();
 		if(url==""){
-			alert("请输入 阅读链接url ");
+			parent.layer.alert("请输入 阅读链接url ");
 			return;
 		}
 	}else if (tasktype == "3"){
 		var wxid = $('#wxid').val();
 		if(wxid==""){
-			alert("请输入 公众号ID ");
+			parent.layer.alert("请输入 公众号ID ");
 			return;
 		}
 	}
