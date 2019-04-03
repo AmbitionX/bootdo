@@ -11,4 +11,5 @@ public interface Constant {
     public static final Integer protocolVer=1;
     public static final String scene="7";
     public static final int DEFAULT_PROTOCOLVER=1;
+    public static final String scene30="30"; //扫码
 }
