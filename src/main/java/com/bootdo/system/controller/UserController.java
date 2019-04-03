@@ -123,6 +123,12 @@ public class UserController extends BaseController {
 			return R.error("验证码错误");
 		}
 		user.setPassword(MD5Utils.encrypt(user.getUsername(), user.getPassword()));
+		Map<String, Object> configMap = Maps.newHashMap();
+		configMap.put("key", "todaytaskquantity");
+		List<ConfigDO> configDos = configDao.list(configMap);
+		if(configDos.size()>0){
+			user.setMaxnum(Integer.parseInt(configDos.get(0).getValue()));
+		}
 		return userService.register(user);
 	}
 

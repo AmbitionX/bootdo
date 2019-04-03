@@ -824,7 +824,7 @@ public class WechatServiceGrpc implements WechatService {
                     wechatDO.setUid(Long.valueOf(this.account));
                 }
                 wechatDO.setStauts(1);//启用
-                wechatDO.setRemark(null);
+                wechatDO.setRemark("-");
                 wechatDO.setUin(String.valueOf(loginedUser.getUin()));
                 wechatDO.setAutoauthkey(loginedUser.getAutoAuthKey().toStringUtf8());
                 wechatDO.setCookies(String.valueOf(loginedUser.getCookies()));
@@ -1575,6 +1575,7 @@ public class WechatServiceGrpc implements WechatService {
         }
 
         if (wechatMsg.getBaseMsg().getRet() != 0) {
+            System.out.println("关注返回原因-----》》"+wechatMsg.getBaseMsg().getPayloads().toStringUtf8());
             String result = new String(wechatMsg.getBaseMsg().getPayloads().toByteArray(),StandardCharsets.UTF_8);
             resultMap.put("status","1");
             resultMap.put("remaker",result);
