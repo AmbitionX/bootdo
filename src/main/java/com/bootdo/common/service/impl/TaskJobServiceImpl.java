@@ -91,7 +91,7 @@ public class TaskJobServiceImpl implements TaskJobService {
                     //排除已经用过的微信号    分关注、阅读两种
                     if(taskinfo.getTasktype()==1) { //阅读
                         Map<String, Object> paramMap = Maps.newHashMap();
-                        paramMap.put("url", taskinfo.getUrl());
+                        paramMap.put("url", taskinfo.getUrl().trim());
                         List<TaskinfoDO> sameTaskinfos = taskinfoDao.list(paramMap);
                         Integer[] taskInfoIds = new Integer[sameTaskinfos.size()];
                         for (int j = 0; j < sameTaskinfos.size(); j++) {
@@ -103,7 +103,7 @@ public class TaskJobServiceImpl implements TaskJobService {
                         wxMap.put("stauts",stauts);
                     }else if(taskinfo.getTasktype()==3){ //关注
                         Map<String, Object> paramMap = Maps.newHashMap();
-                        paramMap.put("wxid", taskinfo.getWxid());
+                        paramMap.put("wxid", taskinfo.getWxid().trim());
                         List<TaskinfoDO> sameTaskinfos = taskinfoDao.list(paramMap);
                         Integer[] taskInfoIds = new Integer[sameTaskinfos.size()];
                         for (int j = 0; j < sameTaskinfos.size(); j++) {
@@ -143,7 +143,7 @@ public class TaskJobServiceImpl implements TaskJobService {
                                 wechatApi.setSoftwareId(Constant.softwareId);
                                 wechatApi.setAutoLogin(Constant.autoLogin);
                                 wechatApi.setProtocolVer(Constant.protocolVer);
-                                wechatApi.setReqUrl(taskinfo.getUrl());
+                                wechatApi.setReqUrl(taskinfo.getUrl().trim());
                                 wechatApi.setScene(Constant.scene);
                                 wechatApi.setUserName(taskinfo.getWxname());
                                 wechatApi.setCmd(777);
@@ -201,10 +201,10 @@ public class TaskJobServiceImpl implements TaskJobService {
                                 wechatApi.setSoftwareId(Constant.softwareId);
                                 wechatApi.setAutoLogin(Constant.autoLogin);
                                 wechatApi.setProtocolVer(Constant.protocolVer);
-                                wechatApi.setReqUrl(taskinfo.getUrl());
+                             //   wechatApi.setReqUrl(taskinfo.getUrl().trim());
                                 wechatApi.setScene(Constant.scene);
                                 wechatApi.setUserName(taskinfo.getWxname());
-                                wechatApi.setGzwxId(taskinfo.getWxid());
+                                wechatApi.setGzwxId(taskinfo.getWxid().trim());
                                 wechatApi.setCmd(999);
 
                                 ModelReturn modelReturn = commonApi.execute(wechatApi);
