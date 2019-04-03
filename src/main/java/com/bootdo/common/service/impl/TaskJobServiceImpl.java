@@ -88,15 +88,35 @@ public class TaskJobServiceImpl implements TaskJobService {
                 //    wxMap.put("todaytaskquantity", Integer.parseInt(configDos.get(0).getValue()));
                     wxMap.put("limit", taskinfo.getNum() - taskinfo.getFinishnum());
                     wxMap.put("stauts",1);
-                    //排除已经用过的微信号
-                    Map<String,Object> paramMap = Maps.newHashMap();
-                    paramMap.put("url",taskinfo.getUrl());
-                    List<TaskinfoDO> sameTaskinfos = taskinfoDao.list(paramMap);
-                    Integer[] taskInfoIds = new Integer[sameTaskinfos.size()];
-                    for (int j = 0; j < sameTaskinfos.size(); j++) {
-                        taskInfoIds[j] = sameTaskinfos.get(j).getId();
+                    //排除已经用过的微信号    分关注、阅读两种
+                    if(taskinfo.getTasktype()==1) { //阅读
+                        Map<String, Object> paramMap = Maps.newHashMap();
+                        paramMap.put("url", taskinfo.getUrl());
+                        List<TaskinfoDO> sameTaskinfos = taskinfoDao.list(paramMap);
+                        Integer[] taskInfoIds = new Integer[sameTaskinfos.size()];
+                        for (int j = 0; j < sameTaskinfos.size(); j++) {
+                            taskInfoIds[j] = sameTaskinfos.get(j).getId();
+                        }
+                        wxMap.put("exclude", taskInfoIds);
+                        Integer[] stauts = new Integer[1];
+                        stauts[0] = 1;
+                        wxMap.put("stauts",stauts);
+                    }else if(taskinfo.getTasktype()==3){ //关注
+                        Map<String, Object> paramMap = Maps.newHashMap();
+                        paramMap.put("wxid", taskinfo.getWxid());
+                        List<TaskinfoDO> sameTaskinfos = taskinfoDao.list(paramMap);
+                        Integer[] taskInfoIds = new Integer[sameTaskinfos.size()];
+                        for (int j = 0; j < sameTaskinfos.size(); j++) {
+                            taskInfoIds[j] = sameTaskinfos.get(j).getId();
+                        }
+                        wxMap.put("exclude", taskInfoIds);
+                        Integer[] stauts = new Integer[3];
+                        stauts[0] = 1;
+                        stauts[1] = 4;
+                        stauts[2] = 5;
+                        wxMap.put("stauts",stauts);
                     }
-                    wxMap.put("exclude", taskInfoIds);
+
                     List<WechatDO> wechatListdb = wechatDao.wechatforJob(wxMap);
 
                     if (wechatListdb.size() == (taskinfo.getNum() - taskinfo.getFinishnum())) {// 有足够的微信号，开始将微信号绑定到任务上
@@ -268,7 +288,7 @@ public class TaskJobServiceImpl implements TaskJobService {
                 wechatDO.setStauts(5);
                 wechatDO.setRemark(RetEnum.RET_COMM_2002.getMessage());
             }
-            wechatDO.setStauts(3);
+           // wechatDO.setStauts(3);
         }
         wechatDao.relieveStatus(wechatDO);
     }
