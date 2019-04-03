@@ -232,7 +232,7 @@
         select t.`id`,t.`uid`,t.Wechat,t.`Password`,t.`Data62`,t.`LastDate`,t.`TotalTaskQuantity`,t.`TodayTaskQuantity`,t.`Stauts`,t.`Remark`,t.`Createdate`
         ,t.`Modifydate`,t.`Taskid`,t.`randomid`,t.`sessionkey`,t.`deviceid`,t.`maxsynckey`,t.`uin`,t.`AutoAuthKey`,t.`Cookies`,t.`CurrentsyncKey`,t.`DeviceName`
         ,t.`DeviceType`,t.`NickName`,t.`UserName`,t.`UserExt`,sys_user.parentId parentId from use_wechat t,sys_user
-        where t.uid=sys_user.user_id and  sys_user.maxnum > t.TotalTaskQuantity
+        where t.uid=sys_user.user_id and  sys_user.maxnum > t.TodayTaskQuantity
 		<if test="exclude != null and exclude.length >0">
 			and not EXISTS(select WxId from wx_taskdetail where wx_taskdetail.WxId = t.id
 			and wx_taskdetail.Stauts=1 and wx_taskdetail.Taskid in
