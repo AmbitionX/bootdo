@@ -202,7 +202,7 @@ public class TaskJobServiceImpl implements TaskJobService {
                                 wechatApi.setAutoLogin(Constant.autoLogin);
                                 wechatApi.setProtocolVer(Constant.protocolVer);
                              //   wechatApi.setReqUrl(taskinfo.getUrl().trim());
-                                wechatApi.setScene(Constant.scene);
+                                wechatApi.setScene(Constant.scene30);
                                 wechatApi.setUserName(taskinfo.getWxname());
                                 wechatApi.setGzwxId(taskinfo.getWxid().trim());
                                 wechatApi.setCmd(999);

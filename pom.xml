@@ -397,6 +397,15 @@
             </properties>
         </profile>
         <!-- end -->
+
+        <!--测试环境-->
+        <profile>
+            <id>test</id>
+            <properties>
+                <active.profile>test</active.profile>
+            </properties>
+        </profile>
+        <!-- end -->
     </profiles>
 
     <build>

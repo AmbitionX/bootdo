@@ -83,7 +83,7 @@ function validateRuleRead() {
             taskperiod : {
                 required : true
             },wxid : {
-				required : false
+				required : true
 			}
 		},
 		messages : {
