@@ -2,6 +2,7 @@ package com.bootdo.common.service.impl;
 
 import com.bootdo.baseinfo.dao.WechatDao;
 import com.bootdo.baseinfo.domain.WechatDO;
+import com.bootdo.common.TreadPool.TreadUtils;
 import com.bootdo.common.aspect.LogAspect;
 import com.bootdo.common.redis.shiro.RedisManager;
 import com.bootdo.common.service.TaskJobService;
@@ -33,7 +34,7 @@ import java.util.Map;
 
 @Service
 public class TaskJobServiceImpl implements TaskJobService {
-    private static final Logger logger = LoggerFactory.getLogger(LogAspect.class);
+    private static final Logger logger = LoggerFactory.getLogger(TaskJobServiceImpl.class);
 
     @Autowired
     TaskinfoDao taskinfoDao;
@@ -66,7 +67,7 @@ public class TaskJobServiceImpl implements TaskJobService {
                 // 加分布式锁
                 RedisManager.set(Constant.prefix_task+taskinfo.getId(),taskinfo.getId().toString());
 
-                int count = taskinfo.getFinishnum(); //成功次数
+              //  int count = taskinfo.getFinishnum(); //成功次数
                 try {
                     // 提取任务微信号，判断是否有足够的微信号, 冷却时间、当日上限数量、状态及绑定任务
                     Map<String, Object> configMap = Maps.newHashMap();
@@ -134,9 +135,13 @@ public class TaskJobServiceImpl implements TaskJobService {
 
                         logger.info("------------->>>完成微信号与任务的绑定<<<---------------cc" + now);
                         // 绑定完任务，开始做任务 ----------------------------功能待开发-------------------------------
-                        WechatApi wechatApi = new WechatApi();
-                        if (taskinfo.getTasktype().equals(1)) {//阅读
-                            for (WechatDO wxid : wechatListdb) {
+                    //    WechatApi wechatApi = new WechatApi();
+                       // if (taskinfo.getTasktype().equals(1)) {//阅读
+                            // 调用执行任务线程
+                            TreadUtils.taskRun(wechatListdb, taskinfo);
+
+                            // 不使用线程执行任务
+                           /* for (WechatDO wxid : wechatListdb) {
                                 wechatApi.setRandomId(wxid.getRandomid());
                                 wechatApi.setAccount(wxid.getUid().toString());
                                 wechatApi.setSoftwareId(Constant.softwareId);
@@ -171,10 +176,10 @@ public class TaskJobServiceImpl implements TaskJobService {
                             }
                         } else if (taskinfo.getTasktype().equals(2)) {//点赞
                             for (WechatDO wxid : wechatListdb) {
-                              /*  BaseService service = ServiceManager.getInstance().getServiceByRandomId(wxid.getRandomid());
+                              *//*  BaseService service = ServiceManager.getInstance().getServiceByRandomId(wxid.getRandomid());
                                 String paymentStr = service.getA8KeyService(taskinfo.getUrl(), 7, taskinfo.getWxname());
-*/
-                               /* TaskdetailDO taskdetailDO = new TaskdetailDO();
+*//*
+                             *//* TaskdetailDO taskdetailDO = new TaskdetailDO();
                                 taskdetailDO.setTaskid(taskinfo.getId());
                                 taskdetailDO.setUid(wxid.getUid());
                                 taskdetailDO.setWxid(wxid.getId());
@@ -188,13 +193,13 @@ public class TaskJobServiceImpl implements TaskJobService {
                                 if (true) {//记录成功次数
                                     count = count + 1;
                                 }
-                                Thread.sleep(taskinfo.getTaskperiod());*/
+                                Thread.sleep(taskinfo.getTaskperiod());*//*
                             }
                         } else if (taskinfo.getTasktype().equals(3)) {//关注
                             for (WechatDO wxid : wechatListdb) {
-                             /*   BaseService service = ServiceManager.getInstance().getServiceByRandomId(wxid.getRandomid());
+                             *//*   BaseService service = ServiceManager.getInstance().getServiceByRandomId(wxid.getRandomid());
                                 String paymentStr = service.getA8KeyService(taskinfo.getUrl(), 7, taskinfo.getWxname());
-*/
+*//*
                                 wechatApi.setRandomId(wxid.getRandomid());
                                 wechatApi.setAccount(wxid.getUid().toString());
                                 wechatApi.setSoftwareId(Constant.softwareId);
@@ -237,12 +242,12 @@ public class TaskJobServiceImpl implements TaskJobService {
                         } else {
                             taskinfo.setStauts(3); // 未完成
                         }
-                        taskinfoDao.update(taskinfo);
-                    } else {
-                        logger.info("----第"+i+"个----->>>任务url{}" + taskinfo.getUrl() + "没有足够的资源进行操作,稍后系统进行重试.cc" + now);
-                        continue;
-                    }
-                } catch (Exception e) {
+                        taskinfoDao.update(taskinfo);*/
+                        } else {
+                            logger.info("----第" + i + "个----->>>任务url{}" + taskinfo.getUrl() + "没有足够的资源进行操作,稍后系统进行重试.cc" + now);
+                            continue;
+                        }
+               /* } catch (Exception e) {
                     //更新任务
                     if(count>taskinfo.getFinishnum()){ // 有执行任务
                         taskinfo.setFinishnum(count);
@@ -259,6 +264,16 @@ public class TaskJobServiceImpl implements TaskJobService {
                 }finally {
                     // 释放任务锁
                     RedisManager.del(Constant.prefix_task+taskinfo.getId());
+                }
+            }
+        }*/
+                    }catch (Exception e){
+                    //释放微信号
+                    relieveAllForTaskId(taskinfo.getId().toString());
+                    // 释放任务锁
+                    RedisManager.del(prefix_task+taskinfo.getId());
+                    e.printStackTrace();
+                    logger.error("com.bootdo.common.task.TaskJob->exception!message:{},cause:{},detail{}", e.getMessage(), e.getCause(), e.toString());
                 }
             }
         }

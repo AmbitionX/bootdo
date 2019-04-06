@@ -585,7 +585,7 @@ public class WechatServiceGrpc implements WechatService {
             }
 
             if (code == 109) {// 保存图片
-                try {
+                /*try {
                     File file = new File(IpadApplication.groupId);
                     if (!file.exists()) {
                         file.mkdir();
@@ -603,11 +603,11 @@ public class WechatServiceGrpc implements WechatService {
                 } catch (Exception e) {
                     e.printStackTrace();
                     return "";
-                }
+                }*/
             }
 
             if (code == 128) {// 保存语音
-                try {
+                /*try {
                     File file = new File(IpadApplication.groupId);
                     if (!file.exists()) {
                         file.mkdir();
@@ -628,7 +628,7 @@ public class WechatServiceGrpc implements WechatService {
                 } catch (Exception e) {
                     e.printStackTrace();
                     return "";
-                }
+                }*/
             }
 
             result = new String(responseMsg.getBaseMsg().getPayloads().toByteArray(),StandardCharsets.UTF_8);
