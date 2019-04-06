@@ -112,5 +112,15 @@ public class TaskinfoController {
 		//taskinfoService.batchRemove(ids);
 		return R.error();
 	}
-	
+
+	/**
+	 * 结束任务
+	 */
+	@PostMapping( "/batchOverTask")
+	@ResponseBody
+	@RequiresPermissions("wx:taskinfo:batchOverTask")
+	public R batchOverTask(@RequestParam("id") Integer id){
+		return taskinfoService.batchOverTask(id);
+	}
+
 }

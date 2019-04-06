@@ -16,6 +16,10 @@
 								onclick="batchRemove()">
 								<i class="fa fa-trash" aria-hidden="true"></i>删除
 							</button>
+							<button shiro:hasPermission="wx:taskinfo:add" type="button" class="btn  btn-warning"
+								onclick="batchOverTask()">
+								<i class="fa fa-circle-o" aria-hidden="true"></i>手动结束
+							</button>
 						</div>
 						<div class="columns pull-right">
 							<button class="btn btn-success" onclick="reLoad()">查询</button>
@@ -28,6 +32,7 @@
 								<option value="3">未完成</option>
 								<option value="5">已完成</option>
 								<option value="7">已结算</option>
+								<option value="9">手动结束</option>
 							</select>
 						</div>
 						<!--<div class="columns pull-right col-md-2 nopadding">

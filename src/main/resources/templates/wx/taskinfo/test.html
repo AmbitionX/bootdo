@@ -25,9 +25,6 @@
             <input type="hidden" id="randomId" name="randomId"></input>
             <div id="qrcodeUUID"></div>
             <img id="qrImg" src="" width="150px" height="150px" alt="微信登录二维码" />
-            <div id="existRandomIds">
-
-            </div>
 
 
         </ul>
@@ -57,19 +54,6 @@
 <script th:inline="javascript"> var ctx = [[@{/}]] ; </script>
 <script type="text/javascript">
     var ind = "";
-    var randomIds='${randomIds}';
-
-    $(function(){
-        handleRandomIds();
-    })
-
-    function handleRandomIds() {
-        $("#existRandomIds").empty();
-        $(randomIds).each(function(index,element){
-            $("#existRandomIds").append("<p>"+element+"<p>");
-        })
-
-    }
 
     function parse62(){
         var parUrl=$("#62DataUrl").val();

@@ -115,18 +115,7 @@ public class LoginController extends BaseController {
 
     @GetMapping("/main")
     ModelAndView main() {
-        Map<String, WechatServiceGrpc> serviceByRandomMap = ServiceManagerDemo.getInstance().getServiceByRandomMap();
-        Set set=serviceByRandomMap.keySet();
-        Iterator it=set.iterator();
-        List randomids= Lists.newArrayList();
-        while (it.hasNext()) {
-            String key=it.next().toString();
-            randomids.add(key);
-        }
-        Map<String,List> ret= Maps.newConcurrentMap();
-        ret.put("randomIds", randomids);
-
-        return new ModelAndView("main",ret);
+        return new ModelAndView("main");
     }
 
 }

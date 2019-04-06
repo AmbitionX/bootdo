@@ -20,7 +20,7 @@ function load() {
 						pagination : true, // 设置为true会在底部显示分页条
 						// queryParamsType : "limit",
 						// //设置为limit则会发送符合RESTFull格式的参数
-						singleSelect : false, // 设置为true将禁止多选
+						singleSelect : true, // 设置为true将禁止多选
 						// contentType : "application/x-www-form-urlencoded",
 						// //发送到服务器的数据编码类型
 						pageSize : 10, // 如果设置了分页，每页数据条数
@@ -100,7 +100,7 @@ function load() {
 									field : 'stauts', 
 									title : '任务状态',
 									formatter: function (value) {
-											var sta = value==1?"未开始":value==3?"未完成":value==5?"已完成":value==7?"已结算":"未知错误";
+											var sta = value==1?"未开始":value==3?"未完成":value==5?"已完成":value==7?"已结算":value==9?"手动结束":"未知错误";
 											return sta;
 										}
 
@@ -183,6 +183,72 @@ function remove(id) {
 			}
 		});
 	})
+}
+
+//结束任务(单个)
+function batchOverTask() {
+	var rows = $('#exampleTable').bootstrapTable('getSelections'); // 返回所有选择的行，当没有选择的记录时，返回一个空数组
+	if (rows.length == 0) {
+		layer.msg("请选择要手动线束的任务数据");
+		return;
+	}
+	layer.confirm('请选择要手动结束的任务记录？', {
+		btn : [ '确定', '取消' ]
+	}, function() {
+		$.ajax({
+			url : prefix+"/batchOverTask",
+			type : "post",
+			data : {
+				'id' : rows[0].id
+			},
+			success : function(r) {
+				console.info(r);
+				if (r.code==0) {
+					layer.msg(r.msg);
+					reLoad();
+				}else{
+					layer.msg(r.msg);
+				}
+			}
+		});
+	}, function() {
+
+	})
+}
+//结束 任务(多个)
+function batchOverTasks() {
+	var rows = $('#exampleTable').bootstrapTable('getSelections'); // 返回所有选择的行，当没有选择的记录时，返回一个空数组
+	if (rows.length == 0) {
+		layer.msg("请选择要手动线束的任务数据");
+		return;
+	}
+	layer.confirm("确认要手动结束选中的'" + rows.length + "'条任务数据吗?", {
+		btn : [ '确定', '取消' ]
+		// 按钮
+	}, function() {
+		var ids = new Array();
+		// 遍历所有选择的行数据，取每条数据对应的ID
+		$.each(rows, function(i, row) {
+			ids[i] = row['id'];
+		});
+		$.ajax({
+			type : 'POST',
+			data : {
+				"ids" : ids
+			},
+			url : prefix + '/batchOverTask',
+			success : function(r) {
+				if (r.code == 0) {
+					layer.msg(r.msg);
+					reLoad();
+				} else {
+					layer.msg(r.msg);
+				}
+			}
+		});
+	}, function() {
+
+	});
 }
 
 function resetPwd(id) {

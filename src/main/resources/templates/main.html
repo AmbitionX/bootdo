@@ -88,11 +88,6 @@
 <script th:inline="javascript"> var ctx = [[@{/}]] ; </script>
 <script type="text/javascript">
     var ind = "";
-    var randomIds='${randomIds}';
-
-    $(function(){
-        handleRandomIds();
-    })
 
     function parseUpload() {
         var formData = new FormData();
@@ -135,13 +130,6 @@
         }
     }
 
-    function handleRandomIds() {
-        $("#existRandomIds").empty();
-        $(randomIds).each(function(index,element){
-            $("#existRandomIds").append("<p>"+element+"<p>");
-        })
-
-    }
 
     function parse62(){
         var parUrl=$("#62DataUrl").val();
