@@ -28,4 +28,6 @@ public interface TaskinfoService {
 	R remove(Integer id);
 	
 	int batchRemove(Integer[] ids);
+
+	R batchOverTask(Integer id);
 }

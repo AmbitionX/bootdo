@@ -47,7 +47,6 @@ public class TaskJobServiceImpl implements TaskJobService {
     private CommonApi commonApi = CommonApi.getInstance();
 
 
-    private final String prefix_task = "wx_task";
 
   //  @Transactional
     @Override
@@ -61,11 +60,11 @@ public class TaskJobServiceImpl implements TaskJobService {
             for (int i = 0; i < taskinfoDOS.size(); i++) {
                 TaskinfoDO taskinfo = taskinfoDOS.get(i);
                 //判断是否有锁
-                if(RedisManager.exists(prefix_task+taskinfo.getId())){
+                if(RedisManager.exists(Constant.prefix_task+taskinfo.getId())){
                     continue;
                 }
                 // 加分布式锁
-                RedisManager.set(prefix_task+taskinfo.getId(),taskinfo.getId().toString());
+                RedisManager.set(Constant.prefix_task+taskinfo.getId(),taskinfo.getId().toString());
 
                 int count = taskinfo.getFinishnum(); //成功次数
                 try {
@@ -259,7 +258,7 @@ public class TaskJobServiceImpl implements TaskJobService {
                     //   TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 }finally {
                     // 释放任务锁
-                    RedisManager.del(prefix_task+taskinfo.getId());
+                    RedisManager.del(Constant.prefix_task+taskinfo.getId());
                 }
             }
         }

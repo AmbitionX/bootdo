@@ -5,6 +5,9 @@ public interface Constant {
     public static final String DEFAULT_DECODE = "UTF-8";
     public static final String WX_READ_NUM_URL="https://mp.weixin.qq.com/mp/getappmsgext?";
 
+    //任务使用
+    public final String prefix_task = "wx_task";
+
 
     public static final String softwareId="666";
     public static final boolean autoLogin=true;

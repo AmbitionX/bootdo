@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bootdo.baseinfo.dao.WechatDao;
 import com.bootdo.baseinfo.domain.WechatDO;
 import com.bootdo.common.aspect.LogAspect;
+import com.bootdo.common.redis.shiro.RedisManager;
 import com.bootdo.common.utils.R;
 import com.bootdo.system.dao.ConfigDao;
 import com.bootdo.system.domain.ConfigDO;
@@ -12,6 +13,7 @@ import com.bootdo.util.MsgUtil;
 import com.bootdo.wx.dao.TaskdetailDao;
 import com.bootdo.wx.domain.TaskdetailDO;
 import com.google.common.collect.Maps;
+import com.wx.demo.tools.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -242,5 +244,31 @@ public class TaskinfoServiceImpl implements TaskinfoService {
 		//return taskinfoDao.batchRemove(ids);
 		return -1;
 	}
-	
+
+	@Override
+	public R batchOverTask(Integer id) {
+		int retIndex = -1;
+		R ret = new R();
+		try {
+			if(!RedisManager.exists(Constant.prefix_task+id)){
+				// 查看任务状态
+				TaskinfoDO taskinfodb = taskinfoDao.get(id);
+				//未开始与未完成才允许手动结束
+				if(taskinfodb.getStauts()==1||taskinfodb.getStauts()==3){
+					taskinfodb.setStauts(9);
+					taskinfoDao.update(taskinfodb);
+				}else{
+					ret = R.error(1, MsgUtil.getMsg(MessagesCode.ERROR_CODE_3002));
+				}
+			}else{
+				ret = R.error(1, MsgUtil.getMsg(MessagesCode.ERROR_CODE_3001));
+			}
+		} catch (Exception e) {
+			ret = R.error();
+			logger.error("com.bootdo.wx.service.impl.TaskinfoServiceImpl.batchOverTask->exception!message:{},cause:{},detail{}", e.getMessage(), e.getCause(), e.toString());
+			e.printStackTrace();
+		}
+		return ret;
+	}
+
 }
