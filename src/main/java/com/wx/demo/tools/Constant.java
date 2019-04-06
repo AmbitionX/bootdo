@@ -8,7 +8,7 @@ public interface Constant {
 
     public static final String softwareId="666";
     public static final boolean autoLogin=true;
-    public static final Integer protocolVer=1;
+    public static final Integer protocolVer=1; // 1. ipad ,2.不知道 , 3. mac ,4.不知道 , 5.windows
     public static final String scene="7";
     public static final int DEFAULT_PROTOCOLVER=1;
     public static final String scene30="30"; //扫码
