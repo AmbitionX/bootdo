@@ -48,7 +48,6 @@ public class CallBackTask implements Runnable {
     // 准备执行的任务
     private TaskinfoDO taskinfo;
 
-    private final String prefix_task = "wx_task";
     //链接超时时间
     private static final int CONN_TIME_OUT = 5000;
     //读取超时时间
@@ -166,7 +165,7 @@ public class CallBackTask implements Runnable {
                 logger.error("执行任务失败，任务详情：{}，异常：{}", new Object[]{taskinfo, e});
             } finally {
                 // 释放任务锁
-                RedisManager.del(prefix_task + taskinfo.getId());
+                RedisManager.del(Constant.prefix_task + taskinfo.getId());
             }
         }catch (Exception e){
             e.printStackTrace();

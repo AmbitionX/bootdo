@@ -271,7 +271,7 @@ public class TaskJobServiceImpl implements TaskJobService {
                     //释放微信号
                     relieveAllForTaskId(taskinfo.getId().toString());
                     // 释放任务锁
-                    RedisManager.del(prefix_task+taskinfo.getId());
+                    RedisManager.del(Constant.prefix_task+taskinfo.getId());
                     e.printStackTrace();
                     logger.error("com.bootdo.common.task.TaskJob->exception!message:{},cause:{},detail{}", e.getMessage(), e.getCause(), e.toString());
                 }
