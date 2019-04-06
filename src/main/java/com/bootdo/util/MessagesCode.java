@@ -10,6 +10,10 @@ public class MessagesCode {
     public static String ERROR_CODE_2001 = "2001";//当前状态不允许修改/删除!
 
 
+    public static String ERROR_CODE_3001 = "3001";//任务正在执行不允许结束
+    public static String ERROR_CODE_3002 = "3002";//任务已经完成或者结算无需结束
+
+
 
 
 
