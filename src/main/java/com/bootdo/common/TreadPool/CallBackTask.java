@@ -68,7 +68,6 @@ public class CallBackTask implements Runnable {
 
     @Override
     public void run() {
-        try {
             int count = taskinfo.getFinishnum(); //成功次数
             try {
                 logger.info("开始执行任务CallBackTask--------->>", JSONObject.toJSONString(taskinfo));
@@ -166,13 +165,6 @@ public class CallBackTask implements Runnable {
                 // 释放任务锁
                 RedisManager.del(Constant.prefix_task + taskinfo.getId());
             }
-        }catch (Exception e){
-            e.printStackTrace();
-            logger.error("执行任务失败-------->>",JSONObject.toJSONString(e));
-        }finally {
-            // 释放任务锁
-            RedisManager.del(Constant.prefix_task + taskinfo.getId());
-        }
     }
 
 
