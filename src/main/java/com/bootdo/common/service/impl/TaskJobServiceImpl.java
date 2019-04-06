@@ -244,6 +244,7 @@ public class TaskJobServiceImpl implements TaskJobService {
                         }
                         taskinfoDao.update(taskinfo);*/
                         } else {
+                            RedisManager.del(Constant.prefix_task+taskinfo.getId());
                             logger.info("----第" + i + "个----->>>任务url{}" + taskinfo.getUrl() + "没有足够的资源进行操作,稍后系统进行重试.cc" + now);
                             continue;
                         }
@@ -268,12 +269,12 @@ public class TaskJobServiceImpl implements TaskJobService {
             }
         }*/
                     }catch (Exception e){
-                    //释放微信号
-                    relieveAllForTaskId(taskinfo.getId().toString());
-                    // 释放任务锁
-                    RedisManager.del(Constant.prefix_task+taskinfo.getId());
-                    e.printStackTrace();
-                    logger.error("com.bootdo.common.task.TaskJob->exception!message:{},cause:{},detail{}", e.getMessage(), e.getCause(), e.toString());
+                        //释放微信号
+                        relieveAllForTaskId(taskinfo.getId().toString());
+                        // 释放任务锁
+                        RedisManager.del(Constant.prefix_task+taskinfo.getId());
+                        e.printStackTrace();
+                        logger.error("com.bootdo.common.task.TaskJob->exception!message:{},cause:{},detail{}", e.getMessage(), e.getCause(), e.toString());
                 }
             }
         }
