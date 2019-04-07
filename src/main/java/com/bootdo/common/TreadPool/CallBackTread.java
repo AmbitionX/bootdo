@@ -78,13 +78,13 @@ public class CallBackTread implements Runnable {
     public void run() {
         try {
             String respose = "";
-            logger.info("CallBackTread---------开始执行批量62登录，62数据组：{}", new Object[]{wxdatas});
+            logger.info("CallBackTread---------开始执行批量62登录");
 
             String account = String.valueOf(ShiroUtils.getUserId());
             List<ParseRecordDetailDO> parseRecordDetailDOList = Lists.newArrayList();
             try {
+                logger.info("CallBackTread---------执行循环");
                 for (String wxStr : wxdatas) {
-                    logger.info("CallBackTread---------执行循环，{}", new Object[]{wxdatas});
                     if (StringUtils.isNotBlank(wxStr)) {
                         String[] wxs = wxStr.split("----");
                         if (wxs.length == 3) {
@@ -110,7 +110,7 @@ public class CallBackTread implements Runnable {
                 e.printStackTrace();
                 parseRecordService.removeByCode(this.parseCode);
                 parseRecordDetailService.removeByCode(this.parseCode);
-                logger.error("执行批量62数据新建明细失败，62数据组：{}，异常：{}", new Object[]{wxdatas, e});
+                logger.error("执行批量62数据新建明细失败异常，cause:{},message:{},detail:{}",e.getCause(),e.getMessage(),e.toString());
             }
             //执行微信功能
             for (ParseRecordDetailDO parseRecordDetailDO : parseRecordDetailDOList) {
@@ -133,10 +133,10 @@ public class CallBackTread implements Runnable {
                 CommonApi.getInstance().execute(wechatApi);
             }
 
-            logger.info("CallBackTread---------结束执行批量62登录，62数据组：{}", new Object[]{wxdatas});
+            logger.info("CallBackTread---------结束执行批量62登录" );
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error("执行批量62登录失败，62数据组：{}，异常：{}", new Object[]{wxdatas, e});
+            logger.error("执行批量62登录失败，cause:{},message:{},detail:{}",e.getCause(),e.getMessage(),e.toString());
 
         }
     }
