@@ -67,7 +67,7 @@ public class ParseRecordServiceImpl implements ParseRecordService {
 	}
 
 	@Override
-	public R batch62DataBusi(List<String> wx62Data, String url) {
+	public R batch62DataBusi(List<String> wx62Data, String url,String account) {
 //		for (String wx : wx62Data) {
 //			if (StringUtils.isNotBlank(wx)) {
 //				String[] wxdata=wx.split("----");
@@ -86,7 +86,7 @@ public class ParseRecordServiceImpl implements ParseRecordService {
 		parseRecordDO.setParsedate(new Date());
 		parseRecordDO.setParsestate(EnumParseRecordType.NUM_TYPE_ONE.getCode());
 		save(parseRecordDO);
-		TreadUtils.login62DataXl(wx62Data,parseCode);
+		TreadUtils.login62DataXl(wx62Data,parseCode,account);
 		return R.ok();
 	}
 	
