@@ -68,7 +68,6 @@ public class CallBackTask implements Runnable {
 
     @Override
     public void run() {
-        try {
             int count = taskinfo.getFinishnum(); //成功次数
             try {
                 logger.info("开始执行任务CallBackTask--------->>", JSONObject.toJSONString(taskinfo));
@@ -134,13 +133,12 @@ public class CallBackTask implements Runnable {
                         taskdetailDao.save(taskdetailDO);
                         //释放微信号，根据执行成功失败传参
                         relieveStatus(wxid, modelReturn);
-
                         if (modelReturn != null && modelReturn.getCode() == 0) {//记录成功次数
                             count = count + 1;
                         }
                         Thread.sleep(taskinfo.getTaskperiod());
                     }
-
+                }
                     //------------------------------ 任务结束，执行任务数量累计、任务状态 -----------------------------
                     taskinfo.setFinishnum(count);
                     if (taskinfo.getNum() <= count) {
@@ -149,7 +147,7 @@ public class CallBackTask implements Runnable {
                         taskinfo.setStauts(3); // 未完成
                     }
                     taskinfoDao.update(taskinfo);
-                }
+
             } catch (Exception e) {
                 //更新任务
                 if (count > taskinfo.getFinishnum()) { // 有执行任务
@@ -167,10 +165,6 @@ public class CallBackTask implements Runnable {
                 // 释放任务锁
                 RedisManager.del(Constant.prefix_task + taskinfo.getId());
             }
-        }catch (Exception e){
-            e.printStackTrace();
-            logger.error("执行任务失败-------->>",JSONObject.toJSONString(e));
-        }
     }
 
 

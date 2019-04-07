@@ -235,7 +235,7 @@
         where t.uid=sys_user.user_id and  sys_user.maxnum > t.TodayTaskQuantity and t.Taskid is null
 		<if test="exclude != null and exclude.length >0">
 			and not EXISTS(select WxId from wx_taskdetail where wx_taskdetail.WxId = t.id
-			and wx_taskdetail.Stauts=1 and wx_taskdetail.Taskid in
+			and wx_taskdetail.Taskid in
 			<foreach item="taskInfoIds" collection="exclude" open="(" separator="," close=")">#{taskInfoIds}
 			</foreach>
 		   )

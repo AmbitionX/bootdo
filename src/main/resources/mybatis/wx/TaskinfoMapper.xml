@@ -149,7 +149,7 @@
 	<select id="waitSettleTaskList" resultType="com.bootdo.wx.domain.TaskinfoDO">
 		select `id`,`url`,`WxName`,`WxId`,`uin`,`key`,`TaskType`,`Price`,`Num`,`TotalMoney`,`taskPeriod`,`Stauts`,`FinishNum`,`sort`,
 		`Createdate`,`Modifydate`,`settletype`,`settlenum` from wx_taskinfo
-		where Stauts = 5 and settletype = 1 order by settlenum,Createdate asc limit 3
+		where (Stauts = 5 or Stauts =9) and settletype = 1 order by settlenum,Createdate asc limit 3
 	</select>
 
 </mapper>
