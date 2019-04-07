@@ -19,14 +19,14 @@ import java.util.Map;
  */
 public class TreadUtils {
     private static final Logger logger = LoggerFactory.getLogger(TreadUtils.class);
-	public static boolean login62DataXl(List<String> wxdatas,String parseCode){
+	public static boolean login62DataXl(List<String> wxdatas,String parseCode,String account){
         boolean bo = false;
 		if (wxdatas == null || wxdatas.size() == 0) {
 			return false;
 		}
 		try{
 			//回调新浪
-	        Runnable r = new CallBackTread(wxdatas,parseCode);
+	        Runnable r = new CallBackTread(wxdatas,parseCode,account);
 	        ThreadPoolExecutorManage.getInstance().putTread(r);
 			bo = true;
 		}catch(Exception e){

@@ -90,6 +90,7 @@ public class server extends SpringBootServletInitializer {
 
     public static void main(String[] args) throws SSLException, UnknownHostException {
         ac=SpringApplication.run(server.class, args);
+        System.out.println("-----------bootdoWx-start-----------");
 //        Environment env = ac.getEnvironment();
 //        serverport = Integer.parseInt(env.getProperty("server.port"));
 //        hostAddress = InetAddress.getLocalHost().getHostAddress();

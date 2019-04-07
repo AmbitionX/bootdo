@@ -127,32 +127,37 @@ public class ParseRecordController {
 	public R parse62Data(HttpServletRequest request, MultipartFile myfile) {
 		R ret=new R();
 		try {
-			String url = "";
-			if (myfile!=null && myfile.getSize() > 0) {
-				try {
-					url = FileUtils.uploadFile(myfile, "62data", "");
-				} catch (Exception e) {
-					logger.error("上传62数据失败:" + e.getMessage());
-				}
-			}
-			if (!StringUtils.isEmpty(url)) {
-				byte[] b=FileUtils.downloadFile_NoRootPath(url);
-				if (b.length != 0) {
-					String data62 = new String(b, Constant.DEFAULT_DECODE);
-					BufferedReader rdr = new BufferedReader(new StringReader(data62));
-					List<String> lines = new ArrayList<String>();
+			String account = String.valueOf(ShiroUtils.getUserId());
+			if (!StringUtils.isEmpty(account)) {
+				String url = "";
+				if (myfile != null && myfile.getSize() > 0) {
 					try {
-						for (String line = rdr.readLine(); line != null; line = rdr.readLine()) {
-							lines.add(line);
-						}
-						rdr.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					if (lines.size()>0) {
-						ret=parseRecordService.batch62DataBusi(lines,url);
+						url = FileUtils.uploadFile(myfile, "62data", "");
+					} catch (Exception e) {
+						logger.error("上传62数据失败:" + e.getMessage());
 					}
 				}
+				if (!StringUtils.isEmpty(url)) {
+					byte[] b = FileUtils.downloadFile_NoRootPath(url);
+					if (b.length != 0) {
+						String data62 = new String(b, Constant.DEFAULT_DECODE);
+						BufferedReader rdr = new BufferedReader(new StringReader(data62));
+						List<String> lines = new ArrayList<String>();
+						try {
+							for (String line = rdr.readLine(); line != null; line = rdr.readLine()) {
+								lines.add(line);
+							}
+							rdr.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						if (lines.size() > 0) {
+							ret = parseRecordService.batch62DataBusi(lines, url, account);
+						}
+					}
+				}
+			} else {
+				ret = R.error(1, "账户异常");
 			}
 		} catch (Exception e) {
 			logger.error("解析62数据失败:" + e.getMessage());
