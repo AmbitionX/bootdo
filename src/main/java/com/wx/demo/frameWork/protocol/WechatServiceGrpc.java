@@ -374,6 +374,15 @@ public class WechatServiceGrpc implements WechatService {
         WechatMsg requestMsg = addHelloWechat(wechatMsg,1);
         String url = "http://" + shortServerHost + requestMsg.getBaseMsg().getCmdUrl();
         byte[] resData = HttpService.wechatRequest(url,requestMsg.getBaseMsg().getPayloads().toByteArray());
+
+/*        URL url = null;
+        try {
+            url = new URL("http://" + shortServerHost + requestMsg.getBaseMsg().getCmdUrl());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        byte[] resData = WechatUtil.postwechat(url,requestMsg.getBaseMsg().getPayloads().toByteArray());*/
+
         if (resData == null && shortServerList != null) {
             if (shortServerIndex >= shortServerList.size()) {
                 shortServerIndex = 0;

@@ -8,6 +8,8 @@ import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.log4j.Logger;
 
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
@@ -365,6 +367,34 @@ public class WechatUtil {
         }
         return "";
     }
+    public static byte[] postwechat(URL url,byte[] data) {
+        try {
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setDoOutput(true);
+            con.setDoInput(true);
+            OutputStream os = con.getOutputStream();
+            os.write(data);
+            os.flush();
+            InputStream is = con.getInputStream();
+            int x = 0;
+            byte[] bys = new byte[1024];
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            while ((x = is.read(bys)) != -1) {
+                bos.write(bys, 0, x);
+                bos.flush();
+            }
+            bos.close();
+            os.close();
+            is.close();
+            byte[] vxRes = bos.toByteArray();
+           return vxRes;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
     public static String getMac(String usercode) {
         String res = "";
         if (usercode.length() < 12) {
