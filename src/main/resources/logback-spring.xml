@@ -15,7 +15,7 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--日志文件输出的文件名 -->
             <FileNamePattern>
-                ${LOG_HOME}/%d{yyyy-MM-dd}/%d{yyyy-MM-dd}.log
+                ${LOG_HOME}/%d{yyyy-MM-dd}/wx.%d{yyyy-MM-dd}.%i.log
             </FileNamePattern>
             <MaxHistory>30</MaxHistory>
             <timeBasedFileNamingAndTriggeringPolicy
