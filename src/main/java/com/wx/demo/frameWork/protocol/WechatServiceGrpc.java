@@ -1575,7 +1575,7 @@ public class WechatServiceGrpc implements WechatService {
         }
 
         if (wechatMsg.getBaseMsg().getRet() != 0) {
-            System.out.println("关注返回原因-----》》"+wechatMsg.getBaseMsg().getPayloads().toStringUtf8());
+            logger.info("关注返回原因-----》》"+wechatMsg.getBaseMsg().getPayloads().toStringUtf8());
             String result = new String(wechatMsg.getBaseMsg().getPayloads().toByteArray(),StandardCharsets.UTF_8);
             resultMap.put("status","1");
             resultMap.put("remaker",result);
@@ -2315,7 +2315,7 @@ public class WechatServiceGrpc implements WechatService {
     public static void main(String[] args) {
         String a = "<Content><![CDATA[你已退出微信]]></Content>";
         a =a.substring(a.indexOf("Content")+17,a.lastIndexOf("Content")-5);
-        System.out.println("结果："+a);
+        logger.info("结果："+a);
     }
 
     @Override

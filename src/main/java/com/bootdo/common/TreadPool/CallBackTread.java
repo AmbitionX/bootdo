@@ -56,6 +56,9 @@ public class CallBackTread implements Runnable {
     private List<String> wxdatas;
     // 解析记录code
     private String parseCode;
+    // 当前执行的用户id
+    private String account;
+
 
     //链接超时时间
     private static final int CONN_TIME_OUT = 5000;
@@ -68,9 +71,10 @@ public class CallBackTread implements Runnable {
     // 间隔时间 s
     private int time = 60;
 
-    public CallBackTread(List<String> wxdatas, String parseCode) {
+    public CallBackTread(List<String> wxdatas, String parseCode,String account) {
         this.wxdatas = wxdatas;
         this.parseCode = parseCode;
+        this.account = account;
 
     }
 
@@ -81,7 +85,6 @@ public class CallBackTread implements Runnable {
             String respose = "";
             logger.info("l:{}_com.bootdo.common.TreadPool.CallBackTread.run_CallBackTread---------开始执行批量62登录",l);
 
-            String account = String.valueOf(ShiroUtils.getUserId());
             List<ParseRecordDetailDO> parseRecordDetailDOList = Lists.newArrayList();
             try {
                 for (String wxStr : wxdatas) {
@@ -117,7 +120,7 @@ public class CallBackTread implements Runnable {
                 //组装62数据登录数据
                 WechatApi wechatApi = new WechatApi();
                 wechatApi.setRandomId(UUID.randomUUID().toString());
-                wechatApi.setAccount(account);
+                wechatApi.setAccount(this.account);
                 wechatApi.setSoftwareId("666");
                 wechatApi.setAutoLogin(true);
                 wechatApi.setProtocolVer(Constant.DEFAULT_PROTOCOLVER);
@@ -138,12 +141,6 @@ public class CallBackTread implements Runnable {
             e.printStackTrace();
             logger.error("l:{}_com.bootdo.common.TreadPool.CallBackTread.run_CallBackTread_执行批量62登录失败，cause:{},message:{},detail:{}",l,e.getCause(),e.getMessage(),e.toString());
 
-        }
-    }
-
-    public static void main(String[] args) {
-        for (int i = 0; i < 1000; i++) {
-            logger.info(">>>>>>>>>>>测试日志》》》》》》》");
         }
     }
 

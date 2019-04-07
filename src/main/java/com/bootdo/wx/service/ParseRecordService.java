@@ -33,5 +33,5 @@ public interface ParseRecordService {
 
 	int batchRemove(Long[] ids);
 
-	public R batch62DataBusi(List<String> wx62Data, String url);
+	public R batch62DataBusi(List<String> wx62Data, String url,String account);
 }
