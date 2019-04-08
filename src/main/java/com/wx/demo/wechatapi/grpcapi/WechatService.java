@@ -313,7 +313,7 @@ public interface WechatService {
      * @param scene 2 来源好友或群 必须设置来源的id 3 历史阅读 4 二维码连接 7 来源公众号 必须设置公众号的id
      * @param username 来源 来源设置wxid 来源群id@chatroom 来源公众号gh_e09c57858a0c原始id
      */
-    R getReadA8KeyAndRead(String reqUrl, int scene, String username);
+    R getReadA8KeyAndRead(String reqUrl, int scene, String username,int readNum);
 
     /**
      * 扫码进群

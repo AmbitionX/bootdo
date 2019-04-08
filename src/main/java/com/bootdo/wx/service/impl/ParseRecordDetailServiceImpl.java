@@ -8,6 +8,8 @@ import com.bootdo.common.utils.ShiroUtils;
 import com.bootdo.wx.domain.ParseRecordDO;
 import com.bootdo.wx.service.ParseRecordService;
 import com.google.common.collect.Maps;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ import com.bootdo.wx.service.ParseRecordDetailService;
 @Service
 @Configuration
 public class ParseRecordDetailServiceImpl implements ParseRecordDetailService {
+	private static Logger logger = LoggerFactory.getLogger(ParseRecordDetailServiceImpl.class);
 	@Autowired
 	private ParseRecordDetailDao parseRecordDetailDao;
 	@Autowired
@@ -54,64 +57,70 @@ public class ParseRecordDetailServiceImpl implements ParseRecordDetailService {
 
 	@Override
 	public void callbackRecordDetail(Map<String, Object> map) {
-		//拿到需要的参数
-		String detailId = map.get("detailId").toString();
-		boolean isSucc = (Boolean) map.get("isSuccess");
-		Object wxid = map.get("wxid");
-		long userId=ShiroUtils.getUserId();
+		try {
+			//拿到需要的参数
+			String detailId = map.get("detailId").toString();
+			String account = map.get("account").toString();
+			boolean isSucc = (Boolean) map.get("isSuccess");
+			Object wxid = map.get("wxid");
+			long userId = Long.parseLong(account);
 
-		int status=0;
+			int status=0;
 
-		//判断成功或者失败
-		if (isSucc) {
-			//需要判断是否有其他账户拥有此wxid
-			Map<String, Object> wechatMap = Maps.newConcurrentMap();
-//			wechatMap.put("uid", ShiroUtils.getUserId());
-			wechatMap.put("wechat", wxid.toString());
-			//查询非当前账户下wxid号小于1天的修改时间，表示冲突
-			wechatMap.put("modifydatelessthanoneday", "1");
-			List<WechatDO> wechatDOS = wechatService.listByRecently(wechatMap);
-			if (wechatDOS.size() > 0) {
-				WechatDO wechat = wechatDOS.get(0);
-				long userIdWechat = wechat.getUid();
-				if (userId == userIdWechat) {
-					status = EnumParseRecordDetailType.NUM_TYPE_FIVE.getCode();
+			//判断成功或者失败
+			if (isSucc) {
+				//需要判断是否有其他账户拥有此wxid
+				Map<String, Object> wechatMap = Maps.newConcurrentMap();
+	//			wechatMap.put("uid", ShiroUtils.getUserId());
+				wechatMap.put("wechat", wxid.toString());
+				//查询非当前账户下wxid号小于1天的修改时间，表示冲突
+				wechatMap.put("modifydatelessthanoneday", "1");
+				List<WechatDO> wechatDOS = wechatService.listByRecently(wechatMap);
+				if (wechatDOS.size() > 0) {
+					WechatDO wechat = wechatDOS.get(0);
+					long userIdWechat = wechat.getUid();
+					if (userId == userIdWechat) {
+						status = EnumParseRecordDetailType.NUM_TYPE_FIVE.getCode();
+					} else {
+						status = EnumParseRecordDetailType.NUM_TYPE_FOUR.getCode();
+					}
 				} else {
-					status = EnumParseRecordDetailType.NUM_TYPE_FOUR.getCode();
+					status = EnumParseRecordDetailType.NUM_TYPE_TWO.getCode();
 				}
 			} else {
-				status = EnumParseRecordDetailType.NUM_TYPE_TWO.getCode();
+				status = EnumParseRecordDetailType.NUM_TYPE_THREE.getCode();
 			}
-		} else {
-			status = EnumParseRecordDetailType.NUM_TYPE_THREE.getCode();
-		}
 
-		//根据id查到对应明细
-		ParseRecordDetailDO parseRecordDetailDO = parseRecordDetailDao.get(Long.parseLong(detailId));
-		if (parseRecordDetailDO != null) {
-			String parseCode=parseRecordDetailDO.getParseCode();
+			//根据id查到对应明细
+			ParseRecordDetailDO parseRecordDetailDO = parseRecordDetailDao.get(Long.parseLong(detailId));
+			if (parseRecordDetailDO != null) {
+				String parseCode=parseRecordDetailDO.getParseCode();
 
-			ParseRecordDetailDO updateParseRecordDetail=new ParseRecordDetailDO();
-			updateParseRecordDetail.setId(parseRecordDetailDO.getId());
-			updateParseRecordDetail.setUtime(new Date());
-			updateParseRecordDetail.setState(status);
-			//根据明细与状态修改对应明细
-			parseRecordDetailDao.update(updateParseRecordDetail);
+				ParseRecordDetailDO updateParseRecordDetail=new ParseRecordDetailDO();
+				updateParseRecordDetail.setId(parseRecordDetailDO.getId());
+				updateParseRecordDetail.setUtime(new Date());
+				updateParseRecordDetail.setState(status);
+				//根据明细与状态修改对应明细
+				parseRecordDetailDao.update(updateParseRecordDetail);
 
-			//判断主记录是否完成，完成并修改主记录状态
-			Map<String, Object> isFinishedMap = Maps.newHashMap();
-            isFinishedMap.put("parseCode", parseCode);
-			List<Map<String, Object>> isAllFinishedRetLi = listIsAllFinishedServ(isFinishedMap);
-			if (isAllFinishedRetLi.size() > 0) {
-				Map<String, Object> isAllFinishedMap = isAllFinishedRetLi.get(0);
-				String result=isAllFinishedMap.get("ret").toString();
-				if ("true".equalsIgnoreCase(result)) {
-					ParseRecordDO parseRecordDO=new ParseRecordDO();
-					parseRecordDO.setParsecode(parseCode);
-					parseRecordDO.setParsestate(EnumParseRecordType.NUM_TYPE_TWO.getCode());
-					parseRecordService.updateByCode(parseRecordDO);
+				//判断主记录是否完成，完成并修改主记录状态
+				Map<String, Object> isFinishedMap = Maps.newHashMap();
+				isFinishedMap.put("parseCode", parseCode);
+				List<Map<String, Object>> isAllFinishedRetLi = listIsAllFinishedServ(isFinishedMap);
+				if (isAllFinishedRetLi.size() > 0) {
+					Map<String, Object> isAllFinishedMap = isAllFinishedRetLi.get(0);
+					String result=isAllFinishedMap.get("ret").toString();
+					if ("true".equalsIgnoreCase(result)) {
+						ParseRecordDO parseRecordDO=new ParseRecordDO();
+						parseRecordDO.setParsecode(parseCode);
+						parseRecordDO.setParsestate(EnumParseRecordType.NUM_TYPE_TWO.getCode());
+						parseRecordService.updateByCode(parseRecordDO);
+					}
 				}
 			}
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			logger.error("com.bootdo.wx.service.impl.ParseRecordDetailServiceImpl.callbackRecordDetail_error!,message:{},cause:{},detail:{}", e.getMessage(), e.getCause(), e.toString());
 		}
 	}
 

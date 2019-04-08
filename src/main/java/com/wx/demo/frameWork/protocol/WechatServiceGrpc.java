@@ -37,6 +37,8 @@ import org.springframework.util.Base64Utils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.math.BigInteger;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -552,8 +554,22 @@ public class WechatServiceGrpc implements WechatService {
             tempWechatMsg = msg;
         }
 
-        String url = "http://" + shortServerHost + msg.getBaseMsg().getCmdUrl();
-        byte[] data = HttpService.wechatRequest(url,msg.getBaseMsg().getPayloads().toByteArray());
+//        String url = "http://" + shortServerHost + msg.getBaseMsg().getCmdUrl();
+//        byte[] data = HttpService.wechatRequest(url,msg.getBaseMsg().getPayloads().toByteArray());
+
+       URL url = null;
+        try {
+            url = new URL("http://" + shortServerHost + msg.getBaseMsg().getCmdUrl());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        long bd=System.currentTimeMillis();
+        byte[] data = WechatUtil.postwechat(url,msg.getBaseMsg().getPayloads().toByteArray());
+        long ed=System.currentTimeMillis();
+        if (code==233) {
+            logger.info("--------------->>>短连接url时间！！！！—————>>>:"+(ed-bd));
+        }
+
         if (data == null && shortServerList != null) {
             if (shortServerIndex >= shortServerList.size()) {
                 shortServerIndex = 0;
@@ -875,11 +891,12 @@ public class WechatServiceGrpc implements WechatService {
         }
     }
 
-    private void login62Callback(WechatMsg wechatMsg, Boolean isSuccess) {
+    private void login62Callback(WechatMsg wechatMsg, Boolean isSuccess,String account) {
         //拿到对应的值
         Map<String, Object> data = Maps.newHashMap();
         data.put("detailId", wechatApi.getInsideBusi());
         data.put("isSuccess", isSuccess);
+        data.put("account", account);
         data.put("wxid", wechatMsg.getBaseMsg().getUser().getUserame());
         //执行回调
         parseRecordDetailService.callbackRecordDetail(data);
@@ -1173,7 +1190,7 @@ public class WechatServiceGrpc implements WechatService {
 
                 modelReturn.code(wechatMsg.getBaseMsg().getRet()).msg(wechatMsg.getBaseMsg().getPayloads().toStringUtf8());
                 if (wechatMsg.getBaseMsg().getRet() == 0) {
-                    login62Callback(wechatMsg,Boolean.TRUE);
+                    login62Callback(wechatMsg,Boolean.TRUE,wechatApi.getAccount());
                     loginSuccess(wechatMsg);
 //                  initContact();
                 } else if (wechatMsg.getBaseMsg().getRet() == -301) {//重定向
@@ -1193,7 +1210,7 @@ public class WechatServiceGrpc implements WechatService {
                         }
                     }).start();
                 } else {//登录失败
-                    login62Callback(wechatMsg,Boolean.FALSE);
+                    login62Callback(wechatMsg,Boolean.FALSE,wechatApi.getAccount());
                     loginFail(wechatMsg.getBaseMsg().getRet());
                 }
             }
@@ -2017,7 +2034,7 @@ public class WechatServiceGrpc implements WechatService {
     }
 
     @Override
-    public R getReadA8KeyAndRead(String reqUrl, int scene, String username) {
+    public R getReadA8KeyAndRead(String reqUrl, int scene, String username,int readNum) {
         R ret=new R();
         Boolean isReamNumSuccess=false;
         HashMap<String, Object> params = new HashMap<String, Object>();
@@ -2065,8 +2082,10 @@ public class WechatServiceGrpc implements WechatService {
                     if (map.size()>0) {
                         //带数字比较的阅读
                         String reqReadNumUrl=Constant.WX_READ_NUM_URL+"uin="+XWechatUin+"&key="+XWechatKey;
+                        if (readNum==0) {
+                            readNum=getReadNum(reqReadNumUrl, map,2);
+                        }
 
-                        int readNumFirst=getReadNum(reqReadNumUrl, map,2);
 
                         if (StringUtils.isNotBlank(XWechatUin)) {
                             readReq.put("uin", XWechatUin);
@@ -2080,9 +2099,9 @@ public class WechatServiceGrpc implements WechatService {
                         logger.info("===================READ-inginginginginging-time========date::::::::::"+(ed1-bd1));
                         Thread.sleep(200);
                         int readNumSecond=getReadNum(reqReadNumUrl, map,2);
-                        if (readNumFirst != -1 && readNumSecond != -1) {
-                            if (readNumSecond>readNumFirst) {
-                                ret = R.ok();
+                        if (readNum != -1 && readNumSecond != -1) {
+                            if (readNumSecond>readNum) {
+                                ret = R.ok().put("retReadNum",readNumSecond);
                             }else{
                                 ret = R.error(3,"未能实际进行有效阅读");
                             }

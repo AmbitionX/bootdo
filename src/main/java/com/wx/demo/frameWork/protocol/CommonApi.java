@@ -58,13 +58,14 @@ public class CommonApi extends BaseController {
             if (cmd == 777){// 阅读
 
                 long bd=System.currentTimeMillis();
-                 R ret = service.getReadA8KeyAndRead(wechatApi.getReqUrl(),Integer.parseInt(wechatApi.getScene()),wechatApi.getUsername());
+                R ret = service.getReadA8KeyAndRead(wechatApi.getReqUrl(), Integer.parseInt(wechatApi.getScene()), wechatApi.getUsername(), wechatApi.getReadNum());
                  long ed=System.currentTimeMillis();
                  logger.info("===================READALL-time========date::::::::::"+(ed-bd));
                  String code = ret.get("code").toString();
                  String msg = ret.get("msg").toString();
                  if ("0".equals(code)) {
-                     modelReturn.code(RetEnum.RET_COMM_SUCCESS.getCode()).msg(RetEnum.RET_COMM_SUCCESS.getMessage());
+                     int retReadNum = Integer.parseInt(ret.get("retReadNum").toString());
+                     modelReturn.code(RetEnum.RET_COMM_SUCCESS.getCode()).msg(RetEnum.RET_COMM_SUCCESS.getMessage()).retdata(retReadNum+"");
                  } else if ("2".equals(code)) {
                      modelReturn.code(RetEnum.RET_COMM_2001.getCode()).msg(RetEnum.RET_COMM_2001.getMessage());
                  } else if ("3".equals(code)) {
