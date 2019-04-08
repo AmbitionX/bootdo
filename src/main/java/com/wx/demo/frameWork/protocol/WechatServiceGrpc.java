@@ -373,7 +373,19 @@ public class WechatServiceGrpc implements WechatService {
         WechatMsg wechatMsg = addGetWechatMsg(code,params);
         WechatMsg requestMsg = addHelloWechat(wechatMsg,1);
         String url = "http://" + shortServerHost + requestMsg.getBaseMsg().getCmdUrl();
+        long bd=System.currentTimeMillis();
         byte[] resData = HttpService.wechatRequest(url,requestMsg.getBaseMsg().getPayloads().toByteArray());
+        long ed=System.currentTimeMillis();
+        logger.info("===================addUserRequest-wechatRequest-time========date::::::::::"+(ed-bd));
+
+/*        URL url = null;
+        try {
+            url = new URL("http://" + shortServerHost + requestMsg.getBaseMsg().getCmdUrl());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        byte[] resData = WechatUtil.postwechat(url,requestMsg.getBaseMsg().getPayloads().toByteArray());*/
+
         if (resData == null && shortServerList != null) {
             if (shortServerIndex >= shortServerList.size()) {
                 shortServerIndex = 0;
