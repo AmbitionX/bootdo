@@ -72,6 +72,7 @@ public class CallBackTask implements Runnable {
             try {
                 logger.info("开始执行任务CallBackTask--------->>", JSONObject.toJSONString(taskinfo));
                 WechatApi wechatApi = new WechatApi();
+                int readNum = 0;
                 if (taskinfo.getTasktype().equals(1)) {//阅读
                     for (WechatDO wxid : wechatList) {
                         wechatApi.setRandomId(wxid.getRandomid());
@@ -83,11 +84,13 @@ public class CallBackTask implements Runnable {
                         wechatApi.setScene(Constant.scene);
                         wechatApi.setUserName(taskinfo.getWxname());
                         wechatApi.setCmd(777);
+                        wechatApi.setReadNum(readNum);
 
                         ModelReturn modelReturn = commonApi.execute(wechatApi);
                         int flag = 1;
                         if (modelReturn.getCode() != RetEnum.RET_COMM_SUCCESS.getCode()) {
                             flag = 2;
+                            readNum = 0;
                         }
                         TaskdetailDO taskdetailDO = new TaskdetailDO();
                         taskdetailDO.setTaskid(taskinfo.getId());
@@ -102,6 +105,8 @@ public class CallBackTask implements Runnable {
                         relieveStatus(wxid, modelReturn);
                         if (modelReturn.getCode() == RetEnum.RET_COMM_SUCCESS.getCode()) {//记录成功次数
                             count = count + 1;
+                            String readNumStr=modelReturn.getRetdata();
+                            readNum = Integer.parseInt(readNumStr);
                         }
                         Thread.sleep(taskinfo.getTaskperiod());
                     }

@@ -133,6 +133,9 @@ public class WechatApi implements Serializable{
   @JsonProperty("gzwxId")
   private String gzwxId = null; // 公众号
 
+  @JsonProperty("readNum")
+  private Integer readNum;//记录阅读数量
+
   @JsonProperty("payLoads")
   private com.google.protobuf.ByteString payLoads = null;
 
@@ -491,6 +494,25 @@ public class WechatApi implements Serializable{
     return this;
   }
 
+
+  /**
+   * 阅读数量
+   * @return wxDat
+   **/
+  @ApiModelProperty(value = "阅读数量")
+  public Integer getReadNum() {
+    return readNum;
+  }
+
+  public void setReadNum(Integer readNum) {
+    this.readNum = readNum;
+  }
+
+  public WechatApi readNum(Integer readNum) {
+    this.readNum = readNum;
+    return this;
+  }
+
   /**
    * 服务器地址
    * @return serverIp
@@ -702,6 +724,7 @@ public class WechatApi implements Serializable{
             Objects.equals(this.grpcWechatMsg, wechatApi.grpcWechatMsg) &&
             Objects.equals(this.grpcBaseMsg, wechatApi.grpcBaseMsg) &&
             Objects.equals(this.grpcUser, wechatApi.grpcUser) &&
+            Objects.equals(this.readNum, wechatApi.readNum) &&
             Objects.equals(this.grpcPayLoads, wechatApi.grpcPayLoads);
   }
 
