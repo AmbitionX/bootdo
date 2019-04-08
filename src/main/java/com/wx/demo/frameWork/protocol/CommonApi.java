@@ -78,7 +78,10 @@ public class CommonApi extends BaseController {
             }
             if (cmd == 999){ // 关注
                 logger.info("999开始关注-------》》"+JSONObject.toJSONString(wechatApi));
+                long bd=System.currentTimeMillis();
                 Map<String, String> map = service.contactOperate(wechatApi.getGzwxId(),null,null,1,3);
+                long ed=System.currentTimeMillis();
+                logger.info("===================一次关注整体耗时-time========date::::::::::"+(ed-bd));
                 logger.info("999关注返回信息------》》" + JSONObject.toJSONString(map));
                 if(map!=null){
                     if(map.get("status").equals("0")){ // 成功

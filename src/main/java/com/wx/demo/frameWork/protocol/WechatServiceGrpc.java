@@ -373,7 +373,10 @@ public class WechatServiceGrpc implements WechatService {
         WechatMsg wechatMsg = addGetWechatMsg(code,params);
         WechatMsg requestMsg = addHelloWechat(wechatMsg,1);
         String url = "http://" + shortServerHost + requestMsg.getBaseMsg().getCmdUrl();
+        long bd=System.currentTimeMillis();
         byte[] resData = HttpService.wechatRequest(url,requestMsg.getBaseMsg().getPayloads().toByteArray());
+        long ed=System.currentTimeMillis();
+        logger.info("===================addUserRequest-wechatRequest-time========date::::::::::"+(ed-bd));
 
 /*        URL url = null;
         try {
