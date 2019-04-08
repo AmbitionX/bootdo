@@ -1982,7 +1982,10 @@ public class WechatServiceGrpc implements WechatService {
         int readNum = -1;
         count--;
         try {
+            long bd=System.currentTimeMillis();
             String readNumRet=HxHttpClient.postRead(reqReadNumUrl, map);
+            long ed=System.currentTimeMillis();
+            logger.info("===================READ-getReadTime-time========date::::::::::"+(ed-bd));
             Map<String, Object> readNumMap = Maps.newHashMap();
             readNumMap = JSONUtils.jsonToMap(readNumRet);
             if (readNumMap.size() > 0) {
@@ -2013,7 +2016,10 @@ public class WechatServiceGrpc implements WechatService {
 
         String reqJson = "";
         try {
+            long bd=System.currentTimeMillis();
             String a8kJson=shortServerRequest(233, params);
+            long ed=System.currentTimeMillis();
+            logger.info("===================READ-getA8key-time========date::::::::::"+(ed-bd));
             Map<String, Object> a8kMap = JSONUtils.jsonToMap(a8kJson);
             logger.info("-----a8kMap-------------->>"+JSONObject.toJSONString(a8kMap));
             if (a8kMap!=null && a8kMap.size() > 0) {
@@ -2056,7 +2062,10 @@ public class WechatServiceGrpc implements WechatService {
                         if (StringUtils.isNotBlank(XWechatKey)) {
                             readReq.put("key", XWechatKey);
                         }
+                        long bd1=System.currentTimeMillis();
                         reqJson=HttpUtil.sendPostRead(fullUrl.toString(), readReq);
+                        long ed1=System.currentTimeMillis();
+                        logger.info("===================READ-inginginginginging-time========date::::::::::"+(ed1-bd1));
                         Thread.sleep(200);
                         int readNumSecond=getReadNum(reqReadNumUrl, map,2);
                         if (readNumFirst != -1 && readNumSecond != -1) {
