@@ -87,6 +87,7 @@ public class CallBackTask implements Runnable {
                         wechatApi.setReadNum(readNum);
 
                         ModelReturn modelReturn = commonApi.execute(wechatApi);
+                        logger.info("---任务返回信息：{}",JSONObject.toJSONString(modelReturn));
                         int flag = 1;
                         if (modelReturn.getCode() != RetEnum.RET_COMM_SUCCESS.getCode()) {
                             flag = 2;
@@ -165,7 +166,7 @@ public class CallBackTask implements Runnable {
                 //释放微信号
                 relieveAllForTaskId(taskinfo.getId().toString());
                 e.printStackTrace();
-                logger.error("执行任务失败，任务详情：{}，异常：{}", new Object[]{taskinfo, e});
+                logger.error("执行任务失败，任务详情：{}，异常：{}，返回：{}", new Object[]{JSONObject.toJSONString(taskinfo), e});
             } finally {
                 // 释放任务锁
                 RedisManager.del(Constant.prefix_task + taskinfo.getId());
@@ -192,6 +193,9 @@ public class CallBackTask implements Runnable {
             }else if(ret.getCode()==RetEnum.RET_COMM_2002.getCode()){
                 wechatDO.setStauts(5);
                 wechatDO.setRemark(RetEnum.RET_COMM_2002.getMessage());
+            }else if (ret.getCode() == RetEnum.RET_COMM_4444.getCode()){
+                wechatDO.setStauts(2);
+                wechatDO.setRemark(RetEnum.RET_COMM_4444.getMessage());
             }
             // wechatDO.setStauts(3);
         }

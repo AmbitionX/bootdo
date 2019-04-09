@@ -10,6 +10,7 @@ import com.bootdo.common.utils.SpringContextHolder;
 import com.bootdo.util.HxHttpClient;
 import com.bootdo.wx.service.ParseRecordDetailService;
 import com.google.common.collect.Maps;
+import com.google.common.util.concurrent.SimpleTimeLimiter;
 import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -554,17 +555,18 @@ public class WechatServiceGrpc implements WechatService {
             tempWechatMsg = msg;
         }
 
-//        String url = "http://" + shortServerHost + msg.getBaseMsg().getCmdUrl();
-//        byte[] data = HttpService.wechatRequest(url,msg.getBaseMsg().getPayloads().toByteArray());
+        String url = "http://" + shortServerHost + msg.getBaseMsg().getCmdUrl();
+        long bd=System.currentTimeMillis();
+        byte[] data = HttpService.wechatRequest(url,msg.getBaseMsg().getPayloads().toByteArray());
 
-       URL url = null;
+ /*      URL url = null;
         try {
             url = new URL("http://" + shortServerHost + msg.getBaseMsg().getCmdUrl());
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        long bd=System.currentTimeMillis();
-        byte[] data = WechatUtil.postwechat(url,msg.getBaseMsg().getPayloads().toByteArray());
+
+        byte[] data = HttpService.postwechat(url,msg.getBaseMsg().getPayloads().toByteArray());*/
         long ed=System.currentTimeMillis();
         if (code==233) {
             logger.info("--------------->>>短连接url时间！！！！—————>>>:"+(ed-bd));
@@ -2097,7 +2099,6 @@ public class WechatServiceGrpc implements WechatService {
                         reqJson=HttpUtil.sendPostRead(fullUrl.toString(), readReq);
                         long ed1=System.currentTimeMillis();
                         logger.info("===================READ-inginginginginging-time========date::::::::::"+(ed1-bd1));
-                        Thread.sleep(200);
                         int readNumSecond=getReadNum(reqReadNumUrl, map,2);
                         if (readNum != -1 && readNumSecond != -1) {
                             if (readNumSecond>readNum) {
@@ -2350,12 +2351,6 @@ public class WechatServiceGrpc implements WechatService {
         wechatSocket.close();
         heartBeatExe.shutdown();
         isAlifeCheckSevice.shutdown();
-    }
-
-    public static void main(String[] args) {
-        String a = "<Content><![CDATA[你已退出微信]]></Content>";
-        a =a.substring(a.indexOf("Content")+17,a.lastIndexOf("Content")-5);
-        logger.info("结果："+a);
     }
 
     @Override

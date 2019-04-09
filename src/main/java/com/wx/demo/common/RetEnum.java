@@ -16,7 +16,9 @@ public enum RetEnum {
     RET_COMM_2001(2001, "a8k拉取为空,微信号系没有阅读功能"),
     RET_COMM_2002(2002, "未能实际进行有效阅读"),
 
-    RET_COMM_3001(3001,"未能关注成功");
+    RET_COMM_3001(3001,"未能关注成功"),
+
+    RET_COMM_4444(4444,"登录出现错误，请你重新登录。"); //线程不存在
 
     private int code;
     private String message;
