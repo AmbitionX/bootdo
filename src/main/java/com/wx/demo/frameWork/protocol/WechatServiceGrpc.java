@@ -10,6 +10,7 @@ import com.bootdo.common.utils.SpringContextHolder;
 import com.bootdo.util.HxHttpClient;
 import com.bootdo.wx.service.ParseRecordDetailService;
 import com.google.common.collect.Maps;
+import com.google.common.util.concurrent.SimpleTimeLimiter;
 import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
