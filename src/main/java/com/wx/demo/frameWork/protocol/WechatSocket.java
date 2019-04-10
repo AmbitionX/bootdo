@@ -1,5 +1,6 @@
 package com.wx.demo.frameWork.protocol;
 
+import com.bootdo.common.singleton.NettyEventLoopGropuSin;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
@@ -42,7 +43,7 @@ public class WechatSocket {
         this.wechatServiceGrpc = wechatServiceGrpc;
 
         WechatClientHandler handler = new WechatClientHandler(this);
-        eventLoopGroup = new NioEventLoopGroup();
+        eventLoopGroup = NettyEventLoopGropuSin.getInstance();
         bootstrap = new Bootstrap();
         bootstrap.channel(NioSocketChannel.class);
         bootstrap.group(eventLoopGroup);
