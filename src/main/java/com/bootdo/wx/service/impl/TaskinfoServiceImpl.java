@@ -206,12 +206,16 @@ public class TaskinfoServiceImpl implements TaskinfoService {
 	@Override
 	public R update(TaskinfoDO taskinfo){
 		try {
-			// 查看任务状态
-			TaskinfoDO taskinfodb = taskinfoDao.get(taskinfo.getId());
-			if(taskinfodb.getStauts()!=1){
+			if(!RedisManager.exists(Constant.prefix_task+taskinfo.getId())) {
+				// 查看任务状态
+				TaskinfoDO taskinfodb = taskinfoDao.get(taskinfo.getId());
+				if (taskinfodb.getStauts() != 1) {
+					return R.error(1, MsgUtil.getMsg(MessagesCode.ERROR_CODE_2001));
+				}
+				taskinfoDao.update(taskinfo);
+			}else {
 				return R.error(1, MsgUtil.getMsg(MessagesCode.ERROR_CODE_2001));
 			}
-			taskinfoDao.update(taskinfo);
 		}catch (Exception e){
 			e.printStackTrace();
 			logger.error("com.bootdo.wx.service.impl.TaskinfoServiceImpl.update->exception!message:{},cause:{},detail{}", e.getMessage(), e.getCause(), e.toString());
