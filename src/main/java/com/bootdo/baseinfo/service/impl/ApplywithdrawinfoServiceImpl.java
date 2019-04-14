@@ -114,7 +114,7 @@ public class ApplywithdrawinfoServiceImpl implements ApplywithdrawinfoService {
 				accountdetailDO.setOperatetype(3);//提现
 				accountdetailDO.setAid(accountDO.getId());
 				accountdetailDao.save(accountdetailDO);
-			}else if(applywithdrawinfo.getStauts().toString()=="3"){ // 审核拒绝
+			}else if(applywithdrawinfo.getStauts().toString().equals("3")){ // 审核拒绝
 				accountDO.setApplywithdrawmoney(accountDO.getApplywithdrawmoney().subtract(applywithdrawinfodb.getApplymoney()));
 				//accountDO.setUsemoney(accountDO.getUsemoney().add(applywithdrawinfodb.getApplymoney()));
 			}else {
