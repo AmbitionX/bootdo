@@ -49,19 +49,23 @@ function load() {
 								},
 																{
 									field : 'id', 
-									title : '主键' 
-								},
+									title : 'ID'
+								}/*,
 																{
 									field : 'aid', 
 									title : '账户id' 
-								},
+								}*/,
 																{
 									field : 'username', 
 									title : '用户账号' 
 								},
 																{
 									field : 'isincome', 
-									title : '收支类型1.收入，2.支出' 
+									title : '收支类型',
+									formatter: function (value) {
+										 var sta = value==1?"收入":value==2?"支出":"未知";
+											 return sta;
+										 }
 								},
 																{
 									field : 'dealmoney', 

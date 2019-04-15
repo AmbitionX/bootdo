@@ -40,7 +40,7 @@ function validateRule() {
 				required : true
 			},
             applymoney : {
-				number:true,min:10
+				required: true,number:true,min:10
             },
             paytype : {
                 required : true

@@ -56,7 +56,7 @@ function load() {
                     },
                     {
                         field: 'phone',
-                        title: '手机号码'
+                        title: '收款账号姓名'
                     },
                     {
                         field: 'applymoney',

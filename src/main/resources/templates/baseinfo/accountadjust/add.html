@@ -8,13 +8,13 @@
 			<div class="col-sm-12">
 				<div class="ibox float-e-margins">
 					<div class="ibox-content">
-						<form class="form-horizontal m-t" id="signupForm">
+						<form class="form-horizontal m-t" id="signupForm"><!--
 							<div class="form-group">	
 								<label class="col-sm-3 control-label">账户id：</label>
 								<div class="col-sm-8">
 									<input id="aid" name="aid" class="form-control" type="text">
 								</div>
-							</div>
+							</div>-->
 														<div class="form-group">	
 								<label class="col-sm-3 control-label">用户账号：</label>
 								<div class="col-sm-8">
@@ -22,9 +22,12 @@
 								</div>
 							</div>
 														<div class="form-group">	
-								<label class="col-sm-3 control-label">收支类型1.收入，2.支出：</label>
+								<label class="col-sm-3 control-label">收支类型</label>
 								<div class="col-sm-8">
-									<input id="isincome" name="isincome" class="form-control" type="text">
+									<select class="form-control" name="isincome" id="isincome">
+										<option value="1">收入</option>
+										<option value="2">支出</option>
+									</select>
 								</div>
 							</div>
 														<div class="form-group">	

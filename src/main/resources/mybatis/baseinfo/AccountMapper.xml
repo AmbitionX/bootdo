@@ -21,7 +21,7 @@
 		  		  <if test="createdate != null and createdate != ''"> and Createdate = #{createdate} </if>
 		  		  <if test="modifydate != null and modifydate != ''"> and Modifydate = #{modifydate} </if>
 				  <if test="version != null and version !=''"> and version = #{version} </if>
-				   <if test="searchName !=null and searchName !='' "> and t2.username = #{searchName}</if>
+				  <if test="searchName !=null and searchName !='' "> and t2.username = #{searchName}</if>
 		  		</where>
         <choose>
             <when test="sort != null and sort.trim() != ''">
@@ -37,7 +37,7 @@
 	</select>
 	
  	<select id="count" resultType="int">
-		select count(*) from use_account
+		select count(*) from use_account t1 left join sys_user t2 on t1.Uid=t2.user_id
 		 <where>  
 		  		  <if test="id != null and id != ''"> and id = #{id} </if>
 		  		  <if test="uid != null and uid != ''"> and Uid = #{uid} </if>
@@ -48,6 +48,7 @@
 		  		  <if test="createdate != null and createdate != ''"> and Createdate = #{createdate} </if>
 		  		  <if test="modifydate != null and modifydate != ''"> and Modifydate = #{modifydate} </if>
 			 	  <if test="version != null and version != ''"> and version = #{version} </if>
+			 	  <if test="searchName !=null and searchName !='' "> and t2.username = #{searchName}</if>
 		  		</where>
 	</select>
 	 
