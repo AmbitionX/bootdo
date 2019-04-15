@@ -22,6 +22,7 @@
 		  		  <if test="remark != null and remark != ''"> and Remark = #{remark} </if>
 		  		  <if test="createdate != null and createdate != ''"> and Createdate = #{createdate} </if>
 		  		  <if test="modifydate != null and modifydate != ''"> and Modifydate = #{modifydate} </if>
+				  <if test="searchName !=null and searchName !='' "> and t2.username = #{searchName}</if>
 		  		</where>
         <choose>
             <when test="sort != null and sort.trim() != ''">
