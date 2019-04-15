@@ -3,6 +3,7 @@ package com.bootdo.baseinfo.controller;
 import java.util.List;
 import java.util.Map;
 
+import com.bootdo.bizservice.AccountadjustBizService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -34,6 +35,8 @@ import com.bootdo.common.utils.R;
 public class AccountadjustController {
 	@Autowired
 	private AccountadjustService accountadjustService;
+	@Autowired
+	private AccountadjustBizService accountadjustBizService;
 	
 	@GetMapping()
 	@RequiresPermissions("baseinfo:accountadjust:accountadjust")
@@ -74,10 +77,7 @@ public class AccountadjustController {
 	@PostMapping("/save")
 	@RequiresPermissions("baseinfo:accountadjust:add")
 	public R save( AccountadjustDO accountadjust){
-		if(accountadjustService.save(accountadjust)>0){
-			return R.ok();
-		}
-		return R.error();
+		return accountadjustBizService.save(accountadjust);
 	}
 	/**
 	 * 修改

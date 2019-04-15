@@ -18,7 +18,9 @@ public enum RetEnum {
 
     RET_COMM_3001(3001,"未能关注成功"),
 
-    RET_COMM_4444(4444,"登录出现错误，请你重新登录。"); //线程不存在
+    RET_COMM_4444(4444,"登录出现错误，请你重新登录。"),//线程不存在
+
+    EET_COMM_5001(5001,"输入的用户账号有误，请核实。");
 
     private int code;
     private String message;

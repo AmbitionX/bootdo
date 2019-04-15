@@ -42,6 +42,7 @@
 		  		  <if test="nickname != null and nickname != ''"> and NickName = #{nickname} </if>
 		  		  <if test="username != null and username != ''"> and use_wechat.UserName = #{username} </if>
 		  		  <if test="userext != null and userext != ''"> and UserExt = #{userext} </if>
+				  <if test="searchName !=null and searchName !='' "> and t2.username = #{searchName}</if>
 		  		</where>
         <choose>
             <when test="sort != null and sort.trim() != ''">
