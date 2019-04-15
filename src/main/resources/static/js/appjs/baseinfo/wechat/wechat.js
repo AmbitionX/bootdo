@@ -34,7 +34,7 @@ function load() {
 								limit: params.limit,
 								offset:params.offset,
 					           // name:$('#searchName').val(),
-					           // username:$('#searchName').val()
+					            searchName:$('#searchName').val(),
 								stauts:$('#status').val()
 							};
 						},
