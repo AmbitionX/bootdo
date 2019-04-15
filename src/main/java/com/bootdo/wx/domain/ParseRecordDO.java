@@ -19,6 +19,8 @@ public class ParseRecordDO implements Serializable {
 	private Long id;
 	//用户id
 	private Long userid;
+	//
+	private String username;
 	//62数据解析记录主键uuid
 	private String parsecode;
 	//62数据文件地址
@@ -29,6 +31,14 @@ public class ParseRecordDO implements Serializable {
 	private Integer parsestate;
 	//解析记录完成时间
 	private Date finishdate;
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
 	/**
 	 * 设置：主键

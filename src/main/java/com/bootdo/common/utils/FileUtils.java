@@ -128,15 +128,25 @@ public class FileUtils {
      * @param file      文件名称
      * @param modelName 模块名称（分类名称）
      * @param realPath  真实路径（一般为获取tomcat下项目跟目录）
+     * @param suffixFileType  规定的文件格式 不限制传Null
      * @return
      * @throws Exception
      */
-    public static String uploadFile(MultipartFile file, String modelName, String realPath) throws Exception {
+    public static String uploadFile(MultipartFile file, String modelName, String realPath,String suffixFileType) throws Exception {
         // 获取了文件整个名称及路径
         String attachName = file.getOriginalFilename();
         // 获取文件类型
         String fileType = attachName
                 .substring((attachName.lastIndexOf(".")) + 1);
+
+        //校验文件格式
+        if (StringUtils.isNotBlank(suffixFileType)&&StringUtils.isNotBlank(fileType)) {
+            int existFitType = suffixFileType.indexOf(fileType);
+            if (existFitType == -1) {
+                return null;
+            }
+        }
+
         String fileName = System.currentTimeMillis() + "." + fileType;//创建文件名
         String dirPath = realPath + "/upfile/" + modelName;  //modelName的文件夹的路径
         String resPath = "/upfile/" + modelName + File.separator + fileName;
@@ -247,25 +257,28 @@ public class FileUtils {
     }
 
     public static void main(String[] args) {
-        byte[] b=downloadFile_NoRootPath("/upfile/62data/1552191252754.txt");
+        int s = "txt_html_jps".indexOf("txt1");
+        System.out.println(s);
 
-        if (b.length==0) {
-            System.out.println("xxxxxxxxxxxxxxxxxxxxxx");
-        }
-        InputStream in = new ByteArrayInputStream(b);
-        String a=HxFileUtils.file2String(in,Constant.DEFAULT_DECODE);
-        System.out.println(a);
-        BufferedReader rdr = new BufferedReader(new StringReader(a));
-        List<String> lines = new ArrayList<String>();
-        try {
-            for (String line = rdr.readLine(); line != null; line = rdr.readLine()) {
-                lines.add(line);
-            }
-            rdr.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println(JSONUtils.beanToJson(lines));
+//        byte[] b=downloadFile_NoRootPath("/upfile/62data/1552191252754.txt");
+//
+//        if (b.length==0) {
+//            System.out.println("xxxxxxxxxxxxxxxxxxxxxx");
+//        }
+//        InputStream in = new ByteArrayInputStream(b);
+//        String a=HxFileUtils.file2String(in,Constant.DEFAULT_DECODE);
+//        System.out.println(a);
+//        BufferedReader rdr = new BufferedReader(new StringReader(a));
+//        List<String> lines = new ArrayList<String>();
+//        try {
+//            for (String line = rdr.readLine(); line != null; line = rdr.readLine()) {
+//                lines.add(line);
+//            }
+//            rdr.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        System.out.println(JSONUtils.beanToJson(lines));
     }
 
     /**
