@@ -32,9 +32,9 @@ function load() {
 							return {
 								//说明：传入后台的参数包括offset开始索引，limit步长，sort排序列，order：desc或者,以及所有列的键值对
 								limit: params.limit,
-								offset:params.offset
+								offset:params.offset,
 					           // name:$('#searchName').val(),
-					           // username:$('#searchName').val()
+					           username:$('#searchName').val()
 							};
 						},
 						// //请求服务器数据时，你可以通过重写参数的方式添加一些额外的参数，例如 toolbar 中的参数 如果
@@ -56,6 +56,10 @@ function load() {
 									title : '用户id' 
 								},
 																{
+									field : 'username',
+									title : '用户账号'
+								},
+																{
 									field : 'fileurl', 
 									title : '62数据文件地址' 
 								},
@@ -65,7 +69,7 @@ function load() {
 								},
 																{
 									field : 'parsestate', 
-									title : '解析状态【1：解析中；2：解析完成】' ,
+									title : '解析状态' ,
 									formatter : function (value, row, index) {
 										if (row.parsestate == '1'){
 											return '解析中';

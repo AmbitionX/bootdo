@@ -108,7 +108,7 @@ public class ParseRecordController {
 				//String realPath = request.getSession().getServletContext().getRealPath("");
 //                PropertiesUtils propertiesUtils = new PropertiesUtils();
 //                String realPath = propertiesUtils.getConfig("", "commonFiles");
-				result = FileUtils.uploadFile(myfile, "62data", "");
+				result = FileUtils.uploadFile(myfile, "62data", "","txt");
 			} catch (Exception e) {
 				logger.error("上传62数据失败:" + e.getMessage());
 			}
@@ -132,7 +132,7 @@ public class ParseRecordController {
 				String url = "";
 				if (myfile != null && myfile.getSize() > 0) {
 					try {
-						url = FileUtils.uploadFile(myfile, "62data", "");
+						url = FileUtils.uploadFile(myfile, "62data", "","txt");
 					} catch (Exception e) {
 						logger.error("上传62数据失败:" + e.getMessage());
 					}
@@ -155,6 +155,8 @@ public class ParseRecordController {
 							ret = parseRecordService.batch62DataBusi(lines, url, account);
 						}
 					}
+				} else {
+					ret = R.error(1, "上传失败或者上传文件类型有误");
 				}
 			} else {
 				ret = R.error(1, "账户异常");
