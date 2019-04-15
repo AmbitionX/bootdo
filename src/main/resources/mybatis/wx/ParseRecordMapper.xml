@@ -8,22 +8,24 @@
 	</select>
 
 	<select id="list" resultType="com.bootdo.wx.domain.ParseRecordDO">
-		select `id`,`userId`,`fileUrl`,`parseCode`,`parseDate`,`parseState`,`finishDate` from wx_parse_record
+		select wpr.id,wpr.userId,sysu.username,wpr.fileUrl,wpr.parseCode,wpr.parseDate,wpr.parseState,wpr.finishDate from wx_parse_record wpr
+		join sys_user sysu on sysu.user_id=wpr.userid
         <where>  
-		  		  <if test="id != null and id != ''"> and id = #{id} </if>
-		  		  <if test="userid != null and userid != ''"> and userId = #{userid} </if>
-		  		  <if test="parsecode != null and parsecode != ''"> and parsecode = #{parsecode} </if>
-		  		  <if test="fileurl != null and fileurl != ''"> and fileUrl = #{fileurl} </if>
-		  		  <if test="parsedate != null and parsedate != ''"> and parseDate = #{parsedate} </if>
-		  		  <if test="parsestate != null and parsestate != ''"> and parseState = #{parsestate} </if>
-		  		  <if test="finishdate != null and finishdate != ''"> and finishDate = #{finishdate} </if>
+		  		  <if test="id != null and id != ''"> and wpr.id = #{id} </if>
+		  		  <if test="userid != null and userid != ''"> and wpr.userId = #{userid} </if>
+		  		  <if test="username != null and username != ''"> and sysu.username = #{userid} </if>
+		  		  <if test="parsecode != null and parsecode != ''"> and wpr.parsecode = #{parsecode} </if>
+		  		  <if test="fileurl != null and fileurl != ''"> and wpr.fileUrl = #{fileurl} </if>
+		  		  <if test="parsedate != null and parsedate != ''"> and wpr.parseDate = #{parsedate} </if>
+		  		  <if test="parsestate != null and parsestate != ''"> and wpr.parseState = #{parsestate} </if>
+		  		  <if test="finishdate != null and finishdate != ''"> and wpr.finishDate = #{finishdate} </if>
 		  		</where>
         <choose>
             <when test="sort != null and sort.trim() != ''">
-                order by ${sort} ${order}
+                order by wpr.${sort} ${order}
             </when>
 			<otherwise>
-                order by id desc
+                order by wpr.id desc
 			</otherwise>
         </choose>
 		<if test="offset != null and limit != null">

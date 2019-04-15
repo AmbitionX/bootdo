@@ -56,6 +56,10 @@ function load() {
 									title : '用户id' 
 								},
 																{
+									field : 'username',
+									title : '用户账号'
+								},
+																{
 									field : 'fileurl', 
 									title : '62数据文件地址' 
 								},
@@ -65,7 +69,7 @@ function load() {
 								},
 																{
 									field : 'parsestate', 
-									title : '解析状态【1：解析中；2：解析完成】' ,
+									title : '解析状态' ,
 									formatter : function (value, row, index) {
 										if (row.parsestate == '1'){
 											return '解析中';

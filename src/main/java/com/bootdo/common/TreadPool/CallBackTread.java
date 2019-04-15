@@ -2,6 +2,7 @@ package com.bootdo.common.TreadPool;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bootdo.common.enums.EnumParseRecordDetailType;
+import com.bootdo.common.enums.EnumParseRecordType;
 import com.bootdo.common.enums.EnumWxCmdType;
 import com.bootdo.common.utils.JSONUtils;
 import com.bootdo.common.utils.ShiroUtils;
@@ -114,26 +115,40 @@ public class CallBackTread implements Runnable {
                 parseRecordService.removeByCode(this.parseCode);
                 parseRecordDetailService.removeByCode(this.parseCode);
                 logger.error("l:{}_com.bootdo.common.TreadPool.CallBackTread.run_CallBackTread_执行批量62数据新建明细失败异常，cause:{},message:{},detail:{}",l,e.getCause(),e.getMessage(),e.toString());
+                return;
             }
-            //执行微信功能
-            for (ParseRecordDetailDO parseRecordDetailDO : parseRecordDetailDOList) {
-                //组装62数据登录数据
-                WechatApi wechatApi = new WechatApi();
-                wechatApi.setRandomId(UUID.randomUUID().toString());
-                wechatApi.setAccount(this.account);
-                wechatApi.setSoftwareId("666");
-                wechatApi.setAutoLogin(true);
-                wechatApi.setProtocolVer(Constant.DEFAULT_PROTOCOLVER);
-                wechatApi.setUserName(parseRecordDetailDO.getUsername());
-                wechatApi.setUserPassWord(parseRecordDetailDO.getPassword());
-                wechatApi.setWxDat(parseRecordDetailDO.getWxdata());
-                wechatApi.setCmd(EnumWxCmdType.NUM_TYPE_2222.getCode());
+            if (parseRecordDetailDOList.size() == 0) {
+                Map mapRecord=Maps.newHashMap();
+                mapRecord.put("parsecode",this.parseCode);
+                List<ParseRecordDO> parseRecordDO=parseRecordService.list(mapRecord);
+                if (parseRecordDO.size() > 0) {
+                    ParseRecordDO temp = parseRecordDO.get(0);
+                    temp.setParsestate(EnumParseRecordType.NUM_TYPE_THREE.getCode());
+                    temp.setFinishdate(new Date());
+                    parseRecordService.update(temp);
+                }
+                logger.error("l:{}_com.bootdo.common.TreadPool.CallBackTread.run_CallBackTread_执行批量62数据新建明细失败异常>>txt文件解析为空");
+            } else {
+                //执行微信功能
+                for (ParseRecordDetailDO parseRecordDetailDO : parseRecordDetailDOList) {
+                    //组装62数据登录数据
+                    WechatApi wechatApi = new WechatApi();
+                    wechatApi.setRandomId(UUID.randomUUID().toString());
+                    wechatApi.setAccount(this.account);
+                    wechatApi.setSoftwareId("666");
+                    wechatApi.setAutoLogin(true);
+                    wechatApi.setProtocolVer(Constant.DEFAULT_PROTOCOLVER);
+                    wechatApi.setUserName(parseRecordDetailDO.getUsername());
+                    wechatApi.setUserPassWord(parseRecordDetailDO.getPassword());
+                    wechatApi.setWxDat(parseRecordDetailDO.getWxdata());
+                    wechatApi.setCmd(EnumWxCmdType.NUM_TYPE_2222.getCode());
 
-                //传入微信功能中,用以结束后修改状态
-                wechatApi.setInsideBusi(parseRecordDetailDO.getId().toString());
+                    //传入微信功能中,用以结束后修改状态
+                    wechatApi.setInsideBusi(parseRecordDetailDO.getId().toString());
 
-                //执行62数据登录
-                CommonApi.getInstance().execute(wechatApi);
+                    //执行62数据登录
+                    CommonApi.getInstance().execute(wechatApi);
+                }
             }
 
             logger.info("l:{}_com.bootdo.common.TreadPool.CallBackTread.run_CallBackTread---------结束执行批量62登录",l );
