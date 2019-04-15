@@ -13,7 +13,7 @@
         <where>  
 		  		  <if test="id != null and id != ''"> and wpr.id = #{id} </if>
 		  		  <if test="userid != null and userid != ''"> and wpr.userId = #{userid} </if>
-		  		  <if test="username != null and username != ''"> and sysu.username = #{userid} </if>
+		  		  <if test="username != null and username != ''"> and sysu.username = #{username} </if>
 		  		  <if test="parsecode != null and parsecode != ''"> and wpr.parsecode = #{parsecode} </if>
 		  		  <if test="fileurl != null and fileurl != ''"> and wpr.fileUrl = #{fileurl} </if>
 		  		  <if test="parsedate != null and parsedate != ''"> and wpr.parseDate = #{parsedate} </if>
