@@ -40,7 +40,7 @@ function validateRule() {
 				required : true
 			},
             applymoney : {
-                required : true
+				required: true,number:true,min:10
             },
             paytype : {
                 required : true
@@ -51,10 +51,10 @@ function validateRule() {
 		},
 		messages : {
             phone : {
-                required : icon + "请输入手机号码"
+                required : icon + "请输入收款账号姓名"
             },
             applymoney : {
-				required : icon + "请输入申请提现金额"
+				required : icon + "提现金额要大于等于10元"
 			},
             paytype : {
                 required : icon + "请选择支付方式"
