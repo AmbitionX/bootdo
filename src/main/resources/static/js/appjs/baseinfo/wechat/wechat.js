@@ -76,14 +76,14 @@ function load() {
 									field : 'lastdate', 
 									title : '近一次任务时间'
 								},
-																{
+										/*						{
 									field : 'totaltaskquantity', 
 									title : '累计次数'
 								},
 																{
 									field : 'todaytaskquantity', 
 									title : '今日次数'
-								},
+								},*/
 																{
 									field : 'stauts', 
 									title : '状态',
