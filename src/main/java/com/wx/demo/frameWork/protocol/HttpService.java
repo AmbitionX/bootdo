@@ -47,7 +47,7 @@ public class HttpService {
         if (path.equalsIgnoreCase("/msg/device/login")) {
 
         }
-        System.out.println(path + "   |   "+ httpParam);
+//        System.out.println(path + "   |   "+ httpParam);
     }
 
     public static String downLoadFile(String voiceUrl) {
