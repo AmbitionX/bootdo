@@ -93,7 +93,7 @@
 	</select>
 
  	<select id="count" resultType="int">
-		select count(*) from use_wechat
+		select count(*) from use_wechat left join sys_user t2 on use_wechat.uid=t2.user_id
 		 <where>  
 		  		  <if test="id != null and id != ''"> and id = #{id} </if>
 		  		  <if test="uid != null and uid != ''"> and uid = #{uid} </if>
@@ -121,6 +121,7 @@
 		  		  <if test="nickname != null and nickname != ''"> and NickName = #{nickname} </if>
 		  		  <if test="username != null and username != ''"> and UserName = #{username} </if>
 		  		  <if test="userext != null and userext != ''"> and UserExt = #{userext} </if>
+			 	  <if test="searchName !=null and searchName !='' "> and t2.username = #{searchName}</if>
 		  		</where>
 	</select>
 	 

@@ -34,7 +34,7 @@ function load() {
 								limit: params.limit,
 								offset:params.offset,
 					           // name:$('#searchName').val(),
-					           // username:$('#searchName').val()
+					            searchName:$('#searchName').val(),
 								stauts:$('#status').val()
 							};
 						},
@@ -76,14 +76,14 @@ function load() {
 									field : 'lastdate', 
 									title : '近一次任务时间'
 								},
-																{
+										/*						{
 									field : 'totaltaskquantity', 
 									title : '累计次数'
 								},
 																{
 									field : 'todaytaskquantity', 
 									title : '今日次数'
-								},
+								},*/
 																{
 									field : 'stauts', 
 									title : '状态',

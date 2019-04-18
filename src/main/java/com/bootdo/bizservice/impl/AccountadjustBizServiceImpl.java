@@ -43,6 +43,9 @@ public class AccountadjustBizServiceImpl implements AccountadjustBizService {
     @Override
     public R save(AccountadjustDO accountadjust) {
         try {
+            if(accountadjust.getIsincome()!=1){
+                accountadjust.setDealmoney(accountadjust.getDealmoney().negate());
+            }
             logger.info("------资金冲减-----参数{}", JSONObject.toJSONString(accountadjust));
             // 根据账号找到用户账户
             Map<String,Object> param = Maps.newHashMap();
