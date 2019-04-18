@@ -6,7 +6,7 @@ public interface Constant {
     public static final String WX_READ_NUM_URL="https://mp.weixin.qq.com/mp/getappmsgext?";
 
     //任务使用
-    public final String prefix_task = "wx_task";
+    public final String prefix_task = "wx_task_";
 
 
     public static final String softwareId="666";

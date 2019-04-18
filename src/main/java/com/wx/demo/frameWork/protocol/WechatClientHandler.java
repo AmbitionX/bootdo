@@ -66,7 +66,7 @@ public class WechatClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
                     packageData = null;
                 }
 
-                receiveData(newPackage);
+             //   receiveData(newPackage);
             }
         }
     }

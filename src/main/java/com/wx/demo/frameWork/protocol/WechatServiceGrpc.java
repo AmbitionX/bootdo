@@ -1145,7 +1145,7 @@ public class WechatServiceGrpc implements WechatService {
                     modelReturn.code(3)
                             .retdata(wechatMsg.getBaseMsg().getPlayloadextend().toStringUtf8());
                     loginSuccess(wechatMsg);
-                    initContact();
+                 //   initContact();
                 } else if (wechatMsg.getBaseMsg().getRet() == -301) {//重定向
                     longServerHost = wechatMsg.getBaseMsg().getLongHost();
                     wechatSocket.close();
