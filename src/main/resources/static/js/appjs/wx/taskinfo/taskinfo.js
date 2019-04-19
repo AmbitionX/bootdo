@@ -100,7 +100,7 @@ function load() {
 									field : 'stauts', 
 									title : '任务状态',
 									formatter: function (value) {
-											var sta = value==1?"未开始":value==3?"未完成":value==5?"已完成":value==7?"已结算":value==9?"手动结束":"未知错误";
+											var sta = value==1?"未开始":value==2?"执行中":value==3?"未完成":value==5?"已完成":value==7?"已结算":value==9?"手动结束":"未知错误";
 											return sta;
 										}
 
