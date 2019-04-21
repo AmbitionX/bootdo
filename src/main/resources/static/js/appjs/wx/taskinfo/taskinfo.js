@@ -33,7 +33,9 @@ function load() {
 								//说明：传入后台的参数包括offset开始索引，limit步长，sort排序列，order：desc或者,以及所有列的键值对
 								limit: params.limit,
 								offset:params.offset,
-								stauts:$('#status').val()
+								stauts:$('#status').val(),
+								url : $('#url').val(),
+								wxid :$('#wxid').val()
 					           // name:$('#searchName').val(),
 					           // username:$('#searchName').val()
 							};
@@ -100,7 +102,7 @@ function load() {
 									field : 'stauts', 
 									title : '任务状态',
 									formatter: function (value) {
-											var sta = value==1?"未开始":value==3?"未完成":value==5?"已完成":value==7?"已结算":value==9?"手动结束":"未知错误";
+											var sta = value==1?"未开始":value==2?"执行中":value==3?"未完成":value==5?"已完成":value==7?"已结算":value==9?"手动结束":"未知错误";
 											return sta;
 										}
 
