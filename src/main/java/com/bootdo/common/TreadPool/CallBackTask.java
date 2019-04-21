@@ -69,6 +69,7 @@ public class CallBackTask implements Runnable {
     @Override
     public void run() {
         int count = taskinfo.getFinishnum(); //成功次数
+        int status = taskinfo.getStauts();
         TaskinfoDO tempinfo = new TaskinfoDO();
         tempinfo.setFinishnum(count);
         tempinfo.setId(taskinfo.getId());
@@ -185,8 +186,10 @@ public class CallBackTask implements Runnable {
                     }else {
                         taskinfo.setStauts(3); // 未完成
                     }
-                    taskinfoDao.update(taskinfo);
+                }else{
+                    taskinfo.setStauts(status);
                 }
+                taskinfoDao.update(taskinfo);
                 // 释放任务锁
                 RedisManager.del(Constant.prefix_task + taskinfo.getId());
             }

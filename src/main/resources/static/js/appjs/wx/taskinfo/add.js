@@ -69,7 +69,7 @@ function validateRuleRead() {
 	$("#signupForm").validate({
 		rules : {
             url : {
-				required : true
+				required : true,url:true
 			},
             tasktype : {
                 required : true

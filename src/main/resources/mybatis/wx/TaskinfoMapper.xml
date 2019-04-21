@@ -11,9 +11,9 @@
 		select `id`,`url`,`WxName`,`WxId`,`uin`,`key`,`TaskType`,`Price`,`Num`,`TotalMoney`,`taskPeriod`,`Stauts`,`FinishNum`,`sort`,`Createdate`,`Modifydate`,`SettleType`,`settlenum` from wx_taskinfo
         <where>  
 		  		  <if test="id != null and id != ''"> and id = #{id} </if>
-		  		  <if test="url != null and url != ''"> and trim(url) = #{url} </if>
+		  		  <if test="url != null and url != ''"> and trim(url) = trim(#{url}) </if>
 		  		  <if test="wxname != null and wxname != ''"> and WxName = #{wxname} </if>
-		  		  <if test="wxid != null and wxid != ''"> and trim(WxId) = #{wxid} </if>
+		  		  <if test="wxid != null and wxid != ''"> and trim(WxId) = trim(#{wxid}) </if>
 		  		  <if test="uin != null and uin != ''"> and uin = #{uin} </if>
 		  		  <if test="key != null and key != ''"> and key = #{key} </if>
 		  		  <if test="tasktype != null and tasktype != ''"> and TaskType = #{tasktype} </if>
