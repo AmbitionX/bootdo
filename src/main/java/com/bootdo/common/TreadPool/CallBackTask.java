@@ -68,8 +68,12 @@ public class CallBackTask implements Runnable {
 
     @Override
     public void run() {
+        // 修改任务状态为 2.执行中
+        taskinfo.setStauts(2);
+        taskinfoDao.update(taskinfo);
+
         int count = taskinfo.getFinishnum(); //成功次数
-        int status = taskinfo.getStauts();
+      //  int status = taskinfo.getStauts();
         TaskinfoDO tempinfo = new TaskinfoDO();
         tempinfo.setFinishnum(count);
         tempinfo.setId(taskinfo.getId());
@@ -187,7 +191,7 @@ public class CallBackTask implements Runnable {
                         taskinfo.setStauts(3); // 未完成
                     }
                 }else{
-                    taskinfo.setStauts(status);
+                    taskinfo.setStauts(3);
                 }
                 taskinfoDao.update(taskinfo);
                 // 释放任务锁
