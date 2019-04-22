@@ -133,10 +133,6 @@ public class TaskJobServiceImpl implements TaskJobService {
                         logger.info("------------->>>完成微信号与任务的绑定<<<---------------cc" + now);
                         // 调用执行任务线程
                         TreadUtils.taskRun(wechatListdb, taskinfo);
-
-                        // 修改任务状态为 2.执行中
-                        taskinfo.setStauts(2);
-                        taskinfoDao.update(taskinfo);
                         } else {
                             RedisManager.del(Constant.prefix_task+taskinfo.getId());
                             logger.info("----第" + i + "个----->>>任务url{}" + taskinfo.getUrl() + "没有足够的资源进行操作,稍后系统进行重试.cc" + now);
