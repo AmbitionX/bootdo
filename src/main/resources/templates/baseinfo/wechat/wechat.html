@@ -18,6 +18,10 @@
 								onclick="batchRemove()">
 								<i class="fa fa-trash" aria-hidden="true"></i>删除
 							</button>
+							<button shiro:hasPermission="baseinfo:wechat:updateStatus" type="button" class="btn  btn-primary"
+									onclick="updateStatus(1)">
+								<i class="fa fa-plus" aria-hidden="true"></i>启用
+							</button>
 						</div>
 						<div class="columns pull-right">
 							<button class="btn btn-success" onclick="reLoad()">查询</button>

@@ -290,4 +290,9 @@
         </set>
         where id = #{id}
     </update>
+
+	<update id="updateStatus">
+		update use_wechat set Stauts=1,Remark='--' where Stauts=5
+	</update>
+
 </mapper>

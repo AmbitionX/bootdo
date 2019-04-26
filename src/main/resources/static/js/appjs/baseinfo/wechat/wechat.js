@@ -359,3 +359,25 @@ function batchRemove() {
 
 	});
 }
+
+function updateStatus(id) {
+	layer.confirm('确定要启用这些记录？', {
+		btn : [ '确定', '取消' ]
+	}, function() {
+		$.ajax({
+			url : prefix+"/updateStatus",
+			type : "post",
+			data : {
+				'id' : id
+			},
+			success : function(r) {
+				if (r.code==0) {
+					layer.msg(r.msg);
+					reLoad();
+				}else{
+					layer.msg(r.msg);
+				}
+			}
+		});
+	})
+}
