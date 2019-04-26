@@ -42,4 +42,5 @@ public interface WechatDao {
 
 	int relieveStatus(WechatDO wechat);
 
+	int updateStatus();
 }

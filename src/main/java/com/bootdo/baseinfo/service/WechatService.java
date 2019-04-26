@@ -31,4 +31,6 @@ public interface WechatService {
 	int batchRemove(Integer[] ids);
 
 	int updateForWechatId(WechatDO wechat);
+
+	int updateStatus();
 }
