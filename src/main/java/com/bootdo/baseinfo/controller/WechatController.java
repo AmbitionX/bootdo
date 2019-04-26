@@ -117,5 +117,15 @@ public class WechatController {
 		wechatService.batchRemove(ids);
 		return R.ok();
 	}
-	
+
+	/**
+	 * 将未能进行有效阅读的号改成启用状态
+	 */
+	@ResponseBody
+	@RequestMapping("/updateStatus")
+	@RequiresPermissions("baseinfo:wechat:updateStatus")
+	public R updateStauts(){
+		wechatService.updateStatus();
+		return R.ok();
+	}
 }

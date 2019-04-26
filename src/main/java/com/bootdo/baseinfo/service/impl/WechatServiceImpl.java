@@ -62,4 +62,8 @@ public class WechatServiceImpl implements WechatService {
 		return wechatDao.updateForWechatId(wechat);
 	}
 
+	@Override
+	public int updateStatus(){
+		return wechatDao.updateStatus();
+	}
 }

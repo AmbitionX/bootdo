@@ -217,8 +217,8 @@ public class CallBackTask implements Runnable {
                 wechatDO.setStauts(4);
                 wechatDO.setRemark(RetEnum.RET_COMM_2001.getMessage());
             }else if(ret.getCode()==RetEnum.RET_COMM_2002.getCode()){
-              //  wechatDO.setStauts(5);
-              //  wechatDO.setRemark(RetEnum.RET_COMM_2002.getMessage());
+                wechatDO.setStauts(5);
+                wechatDO.setRemark(RetEnum.RET_COMM_2002.getMessage());
             }else if (ret.getCode() == RetEnum.RET_COMM_4444.getCode()){
                 wechatDO.setStauts(2);
                 wechatDO.setRemark(RetEnum.RET_COMM_4444.getMessage());
