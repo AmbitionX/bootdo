@@ -5,6 +5,153 @@ $(function() {
 });
 
 function load() {
+	var isSys=$("#isSys").val();
+	var isArray;
+	if (isSys == 0) {
+		isArray="[" +
+			"{" +
+			"checkbox:true" +
+			"}," +
+			"{" +
+			"field:'id'," +
+			"title:''" +
+			"}," +
+			"{" +
+			"field:'username'," +
+			"title:'用户名'" +
+			"}," +
+			"{" +
+			"field:'wechat'," +
+			"title:'微信号'" +
+			"},{" +
+			"field:'nickname'," +
+			"title:'微信昵称'" +
+			"}," +
+			"{" +
+			"field:'password'," +
+			"title:'微信密码'" +
+			"}," +
+			"{" +
+			"field:'lastdate'," +
+			"title:'近一次任务时间'" +
+			"}," +
+			"{" +
+			"field:'stauts'," +
+			"title:'状态'," +
+			"formatter:function(value){" +
+			"varsta=value==1?\"启用\":value==2?\"停用\":value==4?\"没有阅读功能\":value==5?\"未能实际进行有效阅读\":\"异常账号\";" +
+			"return sta;" +
+			"}" +
+			"}," +
+			"{" +
+			"field:'remark'," +
+			"title:'微信状态备注'," +
+			"formatter:function(value){" +
+			"return value;" +
+			"}" +
+			"}," +
+			"{" +
+			"field:'createdate'," +
+			"title:'创建时间'" +
+			"}," +
+			"{" +
+			"field:'modifydate'," +
+			"title:'修改时间'" +
+			"}," +
+			"{" +
+			"title:'操作'," +
+			"field:'id'," +
+			"align:'center'," +
+			"formatter:function(value,row,index){" +
+			"var e='<aclass=\"btnbtn-primarybtn-sm'+s_edit_h+'\"href=\"#\"mce_href=\"#\"title=\"编辑\"onclick=\"edit(\\''" +
+			"+row.id" +
+			"+'\\')\"><iclass=\"fafa-edit\"></i></a>';" +
+			"var d='<aclass=\"btnbtn-warningbtn-sm'+s_remove_h+'\"href=\"#\"title=\"删除\"mce_href=\"#\"onclick=\"remove(\\''" +
+			"+row.id" +
+			"+'\\')\"><iclass=\"fafa-remove\"></i></a>';" +
+			"var f='<aclass=\"btnbtn-successbtn-sm\"href=\"#\"title=\"备用\"mce_href=\"#\"onclick=\"resetPwd(\\''" +
+			"+row.id" +
+			"+'\\')\"><iclass=\"fafa-key\"></i></a>';" +
+			"return e+d;" +
+			"}" +
+			"}]";
+	} else {
+		isArray="[" +
+			"{" +
+			"checkbox:true" +
+			"}," +
+			"{" +
+			"field:'id'," +
+			"title:''" +
+			"}," +
+			"{" +
+			"field:'username'," +
+			"title:'用户名'" +
+			"}," +
+			"{" +
+			"field:'wechat'," +
+			"title:'微信号'" +
+			"},{" +
+			"field:'nickname'," +
+			"title:'微信昵称'" +
+			"}," +
+			"{" +
+			"field:'password'," +
+			"title:'微信密码'" +
+			"}," +
+			"{" +
+			"field:'lastdate'," +
+			"title:'近一次任务时间'" +
+			"}," +
+			"{" +
+			"field:'totaltaskquantity'," +
+			"title:'累计次数'" +
+			"}," +
+			"{" +
+			"field:'todaytaskquantity'," +
+			"title:'今日次数'" +
+			"}," +
+			"{" +
+			"field:'stauts'," +
+			"title:'状态'," +
+			"formatter:function(value){" +
+			"var sta=value==1?\"启用\":value==2?\"停用\":value==4?\"没有阅读功能\":value==5?\"未能实际进行有效阅读\":\"异常账号\";" +
+			"return sta;" +
+			"}" +
+			"}," +
+			"{" +
+			"field:'remark'," +
+			"title:'微信状态备注'," +
+			"formatter:function(value){" +
+			"return value;" +
+			"}" +
+			"}," +
+			"{" +
+			"field:'createdate'," +
+			"title:'创建时间'" +
+			"}," +
+			"{" +
+			"field:'modifydate'," +
+			"title:'修改时间'" +
+			"}," +
+			"{" +
+			"title:'操作'," +
+			"field:'id'," +
+			"align:'center'," +
+			"formatter:function(value,row,index){" +
+			"var e='<aclass=\"btnbtn-primarybtn-sm'+s_edit_h+'\"href=\"#\"mce_href=\"#\"title=\"编辑\"onclick=\"edit(\\''" +
+			"+row.id" +
+			"+'\\')\"><iclass=\"fafa-edit\"></i></a>';" +
+			"var d='<aclass=\"btnbtn-warningbtn-sm'+s_remove_h+'\"href=\"#\"title=\"删除\"mce_href=\"#\"onclick=\"remove(\\''" +
+			"+row.id" +
+			"+'\\')\"><iclass=\"fafa-remove\"></i></a>';" +
+			"var f='<aclass=\"btnbtn-successbtn-sm\"href=\"#\"title=\"备用\"mce_href=\"#\"onclick=\"resetPwd(\\''" +
+			"+row.id" +
+			"+'\\')\"><iclass=\"fafa-key\"></i></a>';" +
+			"return e+d;" +
+			"}" +
+			"}]";
+	}
 	$('#exampleTable')
 			.bootstrapTable(
 					{
@@ -44,90 +191,91 @@ function load() {
 						// pageSize, pageNumber, searchText, sortName,
 						// sortOrder.
 						// 返回false将会终止请求
-						columns : [
-								{
-									checkbox : true
-								},
-																{
-									field : 'id', 
-									title : '' 
-								},
-																{
-									field : 'username',
-									title : '用户名'
-								},
-																{
-									field : 'wechat', 
-									title : '微信号' 
-								}, {
-								field : 'nickname',
-								title : '微信昵称'
-							},
-																{
-									field : 'password', 
-									title : '微信密码' 
-								},
-									/*						{
-									field : 'data62', 
-									title : '62数据',
-                                    width:80
-								},*/
-																{
-									field : 'lastdate', 
-									title : '近一次任务时间'
-								},
-										/*						{
-									field : 'totaltaskquantity', 
-									title : '累计次数'
-								},
-																{
-									field : 'todaytaskquantity', 
-									title : '今日次数'
-								},*/
-																{
-									field : 'stauts', 
-									title : '状态',
-                                    formatter: function (value) {
-                                        var sta = value==1?"启用":value==2?"停用":value==4?"没有阅读功能":value==5?"未能实际进行有效阅读":"异常账号";
-                                        return sta;
-                                    }
-								},
-																{
-									field : 'remark', 
-									title : '微信状态备注' ,
-									formatter: function(value){
-										return value;
-									}
-								},
-																{
-									field : 'createdate', 
-									title : '创建时间' 
-								},
-																{
-									field : 'modifydate', 
-									title : '修改时间' 
-								},
-									/*							{
-									field : 'taskid', 
-									title : '任务id' 
-								},*/
-																{
-									title : '操作',
-									field : 'id',
-									align : 'center',
-									formatter : function(value, row, index) {
-										var e = '<a class="btn btn-primary btn-sm '+s_edit_h+'" href="#" mce_href="#" title="编辑" onclick="edit(\''
-												+ row.id
-												+ '\')"><i class="fa fa-edit"></i></a> ';
-										var d = '<a class="btn btn-warning btn-sm '+s_remove_h+'" href="#" title="删除"  mce_href="#" onclick="remove(\''
-												+ row.id
-												+ '\')"><i class="fa fa-remove"></i></a> ';
-										var f = '<a class="btn btn-success btn-sm" href="#" title="备用"  mce_href="#" onclick="resetPwd(\''
-												+ row.id
-												+ '\')"><i class="fa fa-key"></i></a> ';
-										return e + d ;
-									}
-								} ]
+						columns: eval(isArray)
+							// [
+							// 	{
+							// 		checkbox : true
+							// 	},
+							// 									{
+							// 		field : 'id',
+							// 		title : ''
+							// 	},
+							// 									{
+							// 		field : 'username',
+							// 		title : '用户名'
+							// 	},
+							// 									{
+							// 		field : 'wechat',
+							// 		title : '微信号'
+							// 	}, {
+							// 	field : 'nickname',
+							// 	title : '微信昵称'
+							// },
+							// 									{
+							// 		field : 'password',
+							// 		title : '微信密码'
+							// 	},
+							// 		/*						{
+							// 		field : 'data62',
+							// 		title : '62数据',
+                            //         width:80
+							// 	},*/
+							// 									{
+							// 		field : 'lastdate',
+							// 		title : '近一次任务时间'
+							// 	},
+							// 			/*						{
+							// 		field : 'totaltaskquantity',
+							// 		title : '累计次数'
+							// 	},
+							// 									{
+							// 		field : 'todaytaskquantity',
+							// 		title : '今日次数'
+							// 	},*/
+							// 									{
+							// 		field : 'stauts',
+							// 		title : '状态',
+                            //         formatter: function (value) {
+                            //             var sta = value==1?"启用":value==2?"停用":value==4?"没有阅读功能":value==5?"未能实际进行有效阅读":"异常账号";
+                            //             return sta;
+                            //         }
+							// 	},
+							// 									{
+							// 		field : 'remark',
+							// 		title : '微信状态备注' ,
+							// 		formatter: function(value){
+							// 			return value;
+							// 		}
+							// 	},
+							// 									{
+							// 		field : 'createdate',
+							// 		title : '创建时间'
+							// 	},
+							// 									{
+							// 		field : 'modifydate',
+							// 		title : '修改时间'
+							// 	},
+							// 		/*							{
+							// 		field : 'taskid',
+							// 		title : '任务id'
+							// 	},*/
+							// 									{
+							// 		title : '操作',
+							// 		field : 'id',
+							// 		align : 'center',
+							// 		formatter : function(value, row, index) {
+							// 			var e = '<a class="btn btn-primary btn-sm '+s_edit_h+'" href="#" mce_href="#" title="编辑" onclick="edit(\''
+							// 					+ row.id
+							// 					+ '\')"><i class="fa fa-edit"></i></a> ';
+							// 			var d = '<a class="btn btn-warning btn-sm '+s_remove_h+'" href="#" title="删除"  mce_href="#" onclick="remove(\''
+							// 					+ row.id
+							// 					+ '\')"><i class="fa fa-remove"></i></a> ';
+							// 			var f = '<a class="btn btn-success btn-sm" href="#" title="备用"  mce_href="#" onclick="resetPwd(\''
+							// 					+ row.id
+							// 					+ '\')"><i class="fa fa-key"></i></a> ';
+							// 			return e + d ;
+							// 		}
+							// 	} ]
 					});
 }
 function reLoad() {
