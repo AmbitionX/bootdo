@@ -251,6 +251,7 @@
 			</if>
 			<!--<if test="stauts != null and stauts != ''"> and t.Stauts = #{stauts} </if>-->
 			<if test="taskid != null and taskid != ''"> and t.Taskid = #{taskid} </if>
+		 order by t.TodayTaskQuantity ASC
 		<if test="limit != null">
 			limit #{limit}
 		</if>

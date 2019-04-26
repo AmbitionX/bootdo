@@ -68,7 +68,15 @@ public class CallBackTask implements Runnable {
 
     @Override
     public void run() {
-            int count = taskinfo.getFinishnum(); //成功次数
+        // 修改任务状态为 2.执行中
+        taskinfo.setStauts(2);
+        taskinfoDao.update(taskinfo);
+
+        int count = taskinfo.getFinishnum(); //成功次数
+      //  int status = taskinfo.getStauts();
+        TaskinfoDO tempinfo = new TaskinfoDO();
+        tempinfo.setFinishnum(count);
+        tempinfo.setId(taskinfo.getId());
             try {
                 logger.info("开始执行任务CallBackTask--------->>", JSONObject.toJSONString(taskinfo));
                 WechatApi wechatApi = new WechatApi();
@@ -109,6 +117,8 @@ public class CallBackTask implements Runnable {
                             String readNumStr=modelReturn.getRetdata();
                             readNum = Integer.parseInt(readNumStr);
                         }
+                        tempinfo.setFinishnum(count);
+                        taskinfoDao.update(tempinfo);
                         Thread.sleep(taskinfo.getTaskperiod());
                     }
                 } else if (taskinfo.getTasktype().equals(3)) {//关注
@@ -142,32 +152,48 @@ public class CallBackTask implements Runnable {
                         if (modelReturn != null && modelReturn.getCode() == 0) {//记录成功次数
                             count = count + 1;
                         }
+                        tempinfo.setFinishnum(count);
+                        taskinfoDao.update(tempinfo);
                         Thread.sleep(taskinfo.getTaskperiod());
                     }
                 }
                     //------------------------------ 任务结束，执行任务数量累计、任务状态 -----------------------------
-                    taskinfo.setFinishnum(count);
+               /*     taskinfo.setFinishnum(count);
                     if (taskinfo.getNum() <= count) {
                         taskinfo.setStauts(5); //已完成
                     } else {
                         taskinfo.setStauts(3); // 未完成
                     }
-                    taskinfoDao.update(taskinfo);
+                    taskinfoDao.update(taskinfo);*/
 
             } catch (Exception e) {
+               /* //更新任务
+                if (count > taskinfo.getFinishnum()) { // 有执行任务
+                    taskinfo.setFinishnum(count);
+                    if (taskinfo.getNum() <= count) { // 已经完成任务
+                        taskinfo.setStauts(5);
+                    }else {
+                        taskinfo.setStauts(3); // 未完成
+                    }
+                    taskinfoDao.update(taskinfo);
+                }
+                //释放微信号
+                relieveAllForTaskId(taskinfo.getId().toString());*/
+                e.printStackTrace();
+                logger.error("执行任务失败，任务详情：{}，异常：{}，返回：{}", new Object[]{JSONObject.toJSONString(taskinfo), e});
+            } finally {
                 //更新任务
                 if (count > taskinfo.getFinishnum()) { // 有执行任务
                     taskinfo.setFinishnum(count);
                     if (taskinfo.getNum() <= count) { // 已经完成任务
                         taskinfo.setStauts(5);
+                    }else {
+                        taskinfo.setStauts(3); // 未完成
                     }
-                    taskinfoDao.update(taskinfo);
+                }else{
+                    taskinfo.setStauts(3);
                 }
-                //释放微信号
-                relieveAllForTaskId(taskinfo.getId().toString());
-                e.printStackTrace();
-                logger.error("执行任务失败，任务详情：{}，异常：{}，返回：{}", new Object[]{JSONObject.toJSONString(taskinfo), e});
-            } finally {
+                taskinfoDao.update(taskinfo);
                 // 释放任务锁
                 RedisManager.del(Constant.prefix_task + taskinfo.getId());
             }
@@ -191,8 +217,8 @@ public class CallBackTask implements Runnable {
                 wechatDO.setStauts(4);
                 wechatDO.setRemark(RetEnum.RET_COMM_2001.getMessage());
             }else if(ret.getCode()==RetEnum.RET_COMM_2002.getCode()){
-                wechatDO.setStauts(5);
-                wechatDO.setRemark(RetEnum.RET_COMM_2002.getMessage());
+              //  wechatDO.setStauts(5);
+              //  wechatDO.setRemark(RetEnum.RET_COMM_2002.getMessage());
             }else if (ret.getCode() == RetEnum.RET_COMM_4444.getCode()){
                 wechatDO.setStauts(2);
                 wechatDO.setRemark(RetEnum.RET_COMM_4444.getMessage());
