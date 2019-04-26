@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.bootdo.common.utils.ShiroUtils;
+import com.bootdo.system.domain.UserDO;
+import com.google.common.collect.Maps;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -21,6 +23,7 @@ import com.bootdo.baseinfo.service.WechatService;
 import com.bootdo.common.utils.PageUtils;
 import com.bootdo.common.utils.Query;
 import com.bootdo.common.utils.R;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * 微信号信息
@@ -38,9 +41,18 @@ public class WechatController {
 	
 	@GetMapping()
 	@RequiresPermissions("baseinfo:wechat:wechat")
-	String Wechat(){
-	    return "baseinfo/wechat/wechat";
+	ModelAndView Wechat(){
+		//查询列表数据
+		Map map= Maps.newHashMap();
+		UserDO user = ShiroUtils.getUser();
+		if (user.getDeptId() == 16) {  // 判断是否是系统用户
+			map.put("isSys", "0");
+		} else {
+			map.put("isSys", "1");
+		}
+		return new ModelAndView("baseinfo/wechat/wechat",map);
 	}
+
 	
 	@ResponseBody
 	@GetMapping("/list")
