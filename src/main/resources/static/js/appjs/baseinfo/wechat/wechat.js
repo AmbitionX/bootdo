@@ -39,7 +39,7 @@ function load() {
 			"field:'stauts'," +
 			"title:'状态'," +
 			"formatter:function(value){" +
-			"varsta=value==1?\"启用\":value==2?\"停用\":value==4?\"没有阅读功能\":value==5?\"未能实际进行有效阅读\":\"异常账号\";" +
+			"var sta=value==1?\"启用\":value==2?\"停用\":value==4?\"没有阅读功能\":value==5?\"未能实际进行有效阅读\":\"异常账号\";" +
 			"return sta;" +
 			"}" +
 			"}," +
